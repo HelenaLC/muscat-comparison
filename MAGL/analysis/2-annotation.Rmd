@@ -1,0 +1,66 @@
+---
+title: "Cluster annotation"
+author: 
+- name: Pierre-Luc Germain
+  affiliation:
+  - &IMLS Institute for Molecular Life Sciences, University of Zurich, Switzerland
+- name: Helena L. Crowell
+  affiliation: 
+  - *IMLS
+  - Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    toc: true
+---
+
+### Load packages
+```{r}
+suppressPackageStartupMessages({
+    library(ComplexHeatmap)
+    library(viridis)
+})
+```
+
+### Load data
+```{r}
+so <- readRDS(file.path("output", "MAGL-SeuratObject.rds"))
+```
+
+### Cluster-sample counts
+```{r}
+(n_cells_by_cluster_sample <- 
+    table(cluster = Idents(so), sample_id = so$sample_id))
+```
+
+### Relative cluster-abundances
+```{r}
+freqs <- prop.table(n_cells_by_cluster_sample, margin = 2)
+Heatmap(as.matrix(frqs),
+    col = viridis()(10),
+    name = "Frequency",
+    cluster_rows = FALSE,
+    cluster_cols = FALSE)
+```
+
+### Marker genes
+```{r}
+marker_gs <- list(
+    astrocytes = c("Aqp4", "Gfap", "Fgfr3"),
+    endothelial = c("Cldn5","Nostrin"),
+    microglia = c("C1qb","Tyrobp"),
+    neuronal = c("Snap25", "Stmn2"),
+    neuronal_excitatory = "Slc17a7",
+    neuronal_inhibitory = "Gad1",
+    oligodendrocyte = "Opalin",
+    OPC = "Pdgfra")
+
+lapply(marker_gs, function(g)
+    FeaturePlot(so, features = g, reduction = "tsne", pt.size = 0.5))
+```
+
+### Session info
+```{r}
+sessionInfo()
+```
+

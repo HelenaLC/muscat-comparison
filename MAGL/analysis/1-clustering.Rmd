@@ -1,0 +1,96 @@
+---
+title: "Clustering"
+author: 
+- name: Pierre-Luc Germain
+  affiliation:
+  - &IMLS Institute for Molecular Life Sciences, University of Zurich, Switzerland
+- name: Helena L. Crowell
+  affiliation: 
+  - *IMLS
+  - Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    toc: true
+---
+
+### Load packages
+```{r}
+suppressPackageStartupMessages({
+    library(cowplot)
+    library(Seurat)
+    library(SingleCellExperiment)
+})
+
+# increase future's maximum allowed size of objects 
+# to be exported from default of 500 MB to 2 GB
+#options(future.globals.maxSize = 2048 * 1024 ^ 2) 
+```
+
+### Load data
+```{r}
+sce <- readRDS(file.path("output", "MAGL-SCE_filtered.rds"))
+```
+
+### Integration
+```{r}
+# create SeuratObject
+so <- CreateSeuratObject(
+    counts = counts(sce),
+    meta.data = data.frame(colData(sce)),
+    project = "10xMAGL")
+
+# split by sample
+cells_by_sample <- split(colnames(sce), sce$sample_id)
+so <- lapply(cells_by_sample, function(i)
+    SubsetData(so, cells = i))
+
+# normalize, find variable genes, and scale
+so <- lapply(so, NormalizeData, verbose = FALSE)
+so <- lapply(so, FindVariableFeatures, nfeatures = 2e3, 
+    selection.method = "vst", do.plot = FALSE, verbose = FALSE)
+so <- lapply(so, ScaleData, verbose = FALSE)
+
+# find anchors & integrate
+as <- FindIntegrationAnchors(so, verbose = FALSE)
+so <- IntegrateData(anchorset = as, dims = seq_len(30), 
+    features.to.integrate = rownames(sce), verbose = FALSE)
+
+# scale integrated data
+DefaultAssay(so) <- "integrated"
+so <- ScaleData(so, display.progress = FALSE)
+```
+
+### Dimension reduction
+```{r}
+so <- runPCA(so, npcs = 30, verbose = FALSE)
+so <- runRSNE(so, reduction = "pca", dims = seq_len(20), 
+    seed.use = 1, do.fast = TRUE, verbose = FALSE)
+so <- runUMAP(so, reduction = "pca", dims = seq_len(20),
+    seed.use = 1, verbose = FALSE)
+```
+
+### Clustering
+```{r}
+so <- FindNeighbors(so, 
+    reduction = "pca", dims = seq_len(20), resolution = 0.2,
+    random.seed = 1, verbose = FALSE)
+so <- F
+```
+
+### DR colored by sample, group, and ID
+```{r}
+lapply(c("sample_id", "group_id", "ident"), function(u) {
+    p1 <- DimPlot(so, reduction = "tsne", group.by = u) +
+        theme(legend.position = "none")
+    p2 <- DimPlot(so, reduction = "umap", group.by = u)
+    lgd <- get_legend(p2)
+    p2 <- p2 + theme(legend.position = "none")
+    plot_grid(p1, p2, nrow = 1, labels = c("tsne", "umap"))
+})
+```
+
+### Session info
+```{r}
+sessionInfo()
+```
