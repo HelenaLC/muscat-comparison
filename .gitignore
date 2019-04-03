@@ -1,4 +1,8 @@
 .DS_Store
 .snakemake
 
-*/**
+data
+metadata
+config
+results
+figures
