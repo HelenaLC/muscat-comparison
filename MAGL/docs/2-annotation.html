@@ -12,7 +12,7 @@
 
 <meta name="date" content="2019-04-27" />
 
-<title>Preprocessing</title>
+<title>Cluster annotation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -411,7 +411,7 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Preprocessing</h1>
+<h1 class="title toc-ignore">Cluster annotation</h1>
 <h4 class="author">Pierre-Luc Germain</h4>
 <address class="author_afil">
 Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
@@ -579,7 +579,6 @@ Unstaged changes:
     Modified:   MAGL/analysis/0-preprocessing.Rmd
     Modified:   MAGL/analysis/1-clustering.Rmd
     Modified:   MAGL/analysis/2-annotation.Rmd
-    Modified:   MAGL/analysis/index.Rmd
     Modified:   Snakefile
     Modified:   config.yaml
     Modified:   scripts/apply_ad.R
@@ -641,27 +640,10 @@ Message
 <tbody>
 <tr>
 <td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/0-preprocessing.html" target="_blank">ba6cb8c</a>
-</td>
-<td>
-HelenaLC
-</td>
-<td>
-2019-04-03
-</td>
-<td>
-add scripts
-</td>
-</tr>
-<tr>
-<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/HelenaLC/muscat-comparison/blob/eaed7ecf04d1ff5ca101c68dfa7079d114b49658/MAGL/analysis/0-preprocessing.Rmd" target="_blank">eaed7ec</a>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/eaed7ecf04d1ff5ca101c68dfa7079d114b49658/MAGL/analysis/2-annotation.Rmd" target="_blank">eaed7ec</a>
 </td>
 <td>
 HelenaLC
@@ -683,234 +665,184 @@ initial commit
 <div id="load-packages" class="section level3">
 <h3>Load packages</h3>
 <pre class="r"><code>suppressPackageStartupMessages({
+    library(ComplexHeatmap)
     library(cowplot)
-    library(ggplot2)
-    library(scater)
+    library(RColorBrewer)
+    library(viridis)
+    library(scran)
+    library(Seurat)
     library(SingleCellExperiment)
 })</code></pre>
 </div>
-<div id="load-reformat-data" class="section level3">
-<h3>Load &amp; reformat data</h3>
-<pre class="r"><code># load raw counts
-fastq_dirs &lt;- list.dirs(&quot;data&quot;, recursive = FALSE, full.names = TRUE)
-names(fastq_dirs) &lt;- basename(fastq_dirs)
-sce &lt;- DropletUtils::read10xCounts(fastq_dirs)
-
-# rename row/colData &amp; dimnames
-names(rowData(sce)) &lt;- c(&quot;ENSEMBL&quot;, &quot;SYMBOL&quot;)
-names(colData(sce)) &lt;- c(&quot;sample_id&quot;, &quot;barcode&quot;)
-sce$sample_id &lt;- factor(basename(sce$sample_id))
-dimnames(sce) &lt;- list(
-    with(rowData(sce), paste(ENSEMBL, SYMBOL, sep = &quot;.&quot;)),
-    with(colData(sce), paste(barcode, sample_id, sep = &quot;.&quot;)))
-
-# load metadata
-md_dir &lt;- file.path(&quot;data&quot;, &quot;metadata.xlsx&quot;)
-md &lt;- readxl::read_excel(md_dir)
-m &lt;- match(sce$sample_id, md$`Sample ID`)
-sce$group_id &lt;- md$Characteristics[m]
-
-# remove undetected genes
-sce &lt;- sce[Matrix::rowSums(counts(sce) &gt; 0) &gt; 0, ]
-dim(sce)</code></pre>
-<pre><code>[1] 22963 30185</code></pre>
+<div id="load-data-convert-to-sce" class="section level3">
+<h3>Load data &amp; convert to SCE</h3>
+<pre class="r"><code>so &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-SeuratObject.rds&quot;))
+sce &lt;- as.SingleCellExperiment(so, assay = &quot;RNA&quot;)</code></pre>
 </div>
-<div id="calculate-qc-metrics" class="section level3">
-<h3>Calculate QC Metrics</h3>
-<pre class="r"><code>(mito &lt;- grep(&quot;mt-&quot;, rownames(sce), value = TRUE))</code></pre>
-<pre><code> [1] &quot;ENSMUSG00000064341.mt-Nd1&quot;  &quot;ENSMUSG00000064345.mt-Nd2&quot; 
- [3] &quot;ENSMUSG00000064351.mt-Co1&quot;  &quot;ENSMUSG00000064354.mt-Co2&quot; 
- [5] &quot;ENSMUSG00000064356.mt-Atp8&quot; &quot;ENSMUSG00000064357.mt-Atp6&quot;
- [7] &quot;ENSMUSG00000064358.mt-Co3&quot;  &quot;ENSMUSG00000064360.mt-Nd3&quot; 
- [9] &quot;ENSMUSG00000065947.mt-Nd4l&quot; &quot;ENSMUSG00000064363.mt-Nd4&quot; 
-[11] &quot;ENSMUSG00000064367.mt-Nd5&quot;  &quot;ENSMUSG00000064368.mt-Nd6&quot; 
-[13] &quot;ENSMUSG00000064370.mt-Cytb&quot;</code></pre>
-<pre class="r"><code>sce &lt;- calculateQCMetrics(sce, feature_controls = list(Mt = mito))
-plotHighestExprs(sce, n = 20)</code></pre>
-<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
-Past versions of unnamed-chunk-3-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-3-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-3-1.png" target="_blank">ba6cb8c</a>
-</td>
-<td>
-HelenaLC
-</td>
-<td>
-2019-04-03
-</td>
-</tr>
-</tbody>
-</table>
+<div id="number-of-clusters-by-resolution" class="section level3">
+<h3>Number of clusters by resolution</h3>
+<pre class="r"><code>cluster_cols &lt;- grep(&quot;res.[0-9]&quot;, colnames(colData(sce)), value = TRUE)
+vapply(cluster_cols, function(k) nlevels(sce[[k]]), numeric(1))</code></pre>
+<pre><code>integrated_snn_res.0.1 integrated_snn_res.0.2 integrated_snn_res.0.4 
+                    20                     24                     28 
+integrated_snn_res.0.8   integrated_snn_res.1 integrated_snn_res.1.2 
+                    33                     36                     40 
+  integrated_snn_res.2 
+                    48 </code></pre>
 </div>
+<div id="cluster-sample-counts" class="section level3">
+<h3>Cluster-sample counts</h3>
+<pre class="r"><code># set cluster IDs to resolution 0.2 clustering
+sce$cluster_id &lt;- sce$integrated_snn_res.0.2
+(n_cells_by_cluster_sample &lt;- table(sce$cluster_id, sce$sample_id))</code></pre>
+<pre><code>    
+     LC016 LC017 LC019 LC020 LC022 LC023 LC025 LC026
+  0    662   275   250   249   380   523   317   673
+  1    694   238   234   216   346   464   273   752
+  2    123   328   297   264   397   370   368   470
+  3    139    96   224   298   255   188    92   341
+  4    367   139   107    94   236   155   161   258
+  5    209   173   112   111   188   214   178   305
+  6    124    52   200   293   332   117    97   157
+  7    345   136   117   102   159   125   158   201
+  8     61    13    89   879    51    21    93   114
+  9    177    67   145    96   121   193   154   180
+  10   193    91    61    92   164   139   105   224
+  11   190    87    77    85   174   130   110   216
+  12   176    81    66    57   113   121   104   150
+  13    92    37    77    90   115   110    57   161
+  14   118    59    62    45    75    70    94    97
+  15    36    32    42   115    25    39   285    17
+  16   235    15    56    33    41    10    79     7
+  17    36    29    41    58    49    54    27   178
+  18    33    23    73   121    30    51    38    59
+  19    20    32    35   109    42    33    34   108
+  20    24    48    36    33    59    53    60    55
+  21    19    64     0    79    17    61    82    15
+  22     0     3     8    18    25    11    24     7
+  23    11     6     6    10    14    12    20    10</code></pre>
 </div>
+<div id="relative-cluster-abundances" class="section level3">
+<h3>Relative cluster-abundances</h3>
+<pre class="r"><code>fqs &lt;- prop.table(n_cells_by_cluster_sample, margin = 2)
+mat &lt;- as.matrix(unclass(fqs))
+Heatmap(mat,
+    col = rev(brewer.pal(11, &quot;RdGy&quot;)[-6]),
+    name = &quot;Frequency&quot;,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    row_names_side = &quot;left&quot;,
+    row_title = &quot;cluster_id&quot;,
+    column_title = &quot;sample_id&quot;,
+    column_title_side = &quot;bottom&quot;,
+    rect_gp = gpar(col = &quot;white&quot;),
+    cell_fun = function(i, j, x, y, width, height, fill)
+        grid.text(round(mat[j, i] * 100, 2), x = x, y = y, 
+            gp = gpar(col = &quot;white&quot;, fontsize = 8)))</code></pre>
+<p><img src="figure/2-annotation.Rmd/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="filtering" class="section level3">
-<h3>Filtering</h3>
-<pre class="r"><code># get sample-specific outliers
-cols &lt;- c(&quot;total_counts&quot;, &quot;total_features_by_counts&quot;, &quot;pct_counts_Mt&quot;)
-log &lt;- c(TRUE, TRUE, FALSE)
-type &lt;- c(&quot;both&quot;, &quot;both&quot;, &quot;higher&quot;)
+<div id="dr-colored-by-cluster-id" class="section level3">
+<h3>DR colored by cluster ID</h3>
+<pre class="r"><code>make_dr_plot &lt;- function(so, dr)
+    DimPlot(so, 
+        cells = sample(colnames(so), 5e3), 
+        group.by = &quot;integrated_snn_res.0.2&quot;,
+        reduction = dr, pt.size = 0.4) +
+    scale_color_manual(values = muscat:::cluster_colors) +
+    theme(aspect.ratio = 1)
+lgd &lt;- get_legend(p1 &lt;- make_dr_plot(so, &quot;tsne&quot;))
+p1 &lt;- p1 + theme(legend.position = &quot;none&quot;)
+p2 &lt;- make_dr_plot(so, &quot;umap&quot;) + theme(legend.position = &quot;none&quot;)
 
-drop_cols &lt;- paste0(cols, &quot;_drop&quot;)
-for (i in seq_along(cols))
-    colData(sce)[[drop_cols[i]]] &lt;- isOutlier(sce[[cols[i]]], 
-        nmads = 2.5, type = type[i], log = log[i], batch = sce$sample_id)
+# arrange plots &amp; legend
+ps &lt;- plot_grid(plotlist = list(p1, p2), nrow = 1)
+plot_grid(ps, lgd, nrow = 1, rel_widths = c(1, 0.2))</code></pre>
+<p><img src="figure/2-annotation.Rmd/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="known-marker-genes" class="section level3">
+<h3>Known marker genes</h3>
+<pre class="r"><code>known_markers &lt;- list(
+    astrocytes = c(&quot;Aqp4&quot;, &quot;Gfap&quot;, &quot;Fgfr3&quot;),
+    endothelial = c(&quot;Cldn5&quot;,&quot;Nostrin&quot;),
+    microglia = c(&quot;C1qb&quot;,&quot;Tyrobp&quot;),
+    neuronal = c(&quot;Snap25&quot;, &quot;Stmn2&quot;),
+    neuronal_excitatory = &quot;Slc17a7&quot;,
+    neuronal_inhibitory = &quot;Gad1&quot;,
+    oligodendrocyte = &quot;Opalin&quot;,
+    OPC = &quot;Pdgfra&quot;)
 
-sapply(drop_cols, function(i) 
-    sapply(drop_cols, function(j)
-        sum(sce[[i]] &amp; sce[[j]])))</code></pre>
-<pre><code>                              total_counts_drop
-total_counts_drop                           162
-total_features_by_counts_drop                79
-pct_counts_Mt_drop                           38
-                              total_features_by_counts_drop
-total_counts_drop                                        79
-total_features_by_counts_drop                            94
-pct_counts_Mt_drop                                       31
-                              pct_counts_Mt_drop
-total_counts_drop                             38
-total_features_by_counts_drop                 31
-pct_counts_Mt_drop                          3451</code></pre>
-<pre class="r"><code>cd &lt;- data.frame(colData(sce))
-ps &lt;- lapply(seq_along(cols), function (i) {
-    p &lt;- ggplot(cd, aes_string(x = cols[i], alpha = drop_cols[i])) +
-        geom_histogram(bins = 100, show.legend = FALSE) +
-        scale_alpha_manual(values = c(&quot;FALSE&quot; = 1, &quot;TRUE&quot; = 0.4)) +
-        facet_wrap(~sample_id, ncol = 1, scales = &quot;free&quot;) + 
-        theme_classic() + theme(strip.background = element_blank())
-    if (log[i]) 
-        p &lt;- p + scale_x_log10()
-    return(p)
+known_markers &lt;- lapply(known_markers, sapply, function(g) 
+    grep(paste0(g, &quot;$&quot;), rownames(sce), value = TRUE))
+
+gs &lt;- gsub(&quot;.*\\.&quot;, &quot;&quot;, unlist(known_markers))
+ks &lt;- rep.int(names(known_markers), vapply(known_markers, length, numeric(1)))
+labs &lt;- sprintf(&quot;%s(%s)&quot;, gs, ks)</code></pre>
+<div id="heatmap-of-mean-marker-exprs.-by-cluster" class="section level4">
+<h4>Heatmap of mean marker-exprs. by cluster</h4>
+<pre class="r"><code># split cells by cluster
+cells_by_cluster &lt;- split(colnames(sce), sce$cluster_id)
+
+# compute cluster-marker means
+means_by_cluster &lt;- lapply(known_markers, function(gs)
+    vapply(cells_by_cluster, function(i)
+        Matrix::rowMeans(logcounts(sce)[gs, i, drop = FALSE]), 
+        numeric(length(gs))))
+
+# prep. for plotting &amp; scale b/w 0 and 1
+mat &lt;- do.call(&quot;rbind&quot;, means_by_cluster)
+mat &lt;- muscat:::.scale(mat)
+rownames(mat) &lt;- gs
+
+cols &lt;- muscat:::cluster_colors[seq_along(known_markers)]
+cols &lt;- setNames(cols, names(known_markers))
+row_anno &lt;- rowAnnotation(
+    df = data.frame(label = ks),
+    col = list(label = cols),
+    gp = gpar(col = &quot;white&quot;)) 
+hm &lt;- Heatmap(mat,
+    name = &quot;scaled avg.\nexpression&quot;,
+    col = viridis(10),
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    row_names_side = &quot;left&quot;,
+    column_title = &quot;cluster_id&quot;,
+    column_title_side = &quot;bottom&quot;,
+    rect_gp = gpar(col = &quot;white&quot;))
+row_anno + hm</code></pre>
+<p><img src="figure/2-annotation.Rmd/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="dr-colored-by-marker-expr." class="section level4">
+<h4>DR colored by marker expr.</h4>
+<pre class="r"><code># downsample to 2000 cells
+cs &lt;- sample(colnames(sce), 2e3)
+gs &lt;- unlist(known_markers)
+
+# t-SNE colored by marker-expression
+ps &lt;- FeaturePlot(so, 
+    cells = cs, features = gs, 
+    reduction = &quot;tsne&quot;, combine = FALSE, pt.size = 0.4)
+ps &lt;- lapply(seq_along(ps), function(i) {
+    ps[[i]] &lt;- ps[[i]] + theme(aspect.ratio = 1,
+        legend.position = &quot;none&quot;) + 
+        ggtitle(labs[i])
+    return(ps[[i]])
 })
-plot_grid(plotlist = ps, ncol = 3)</code></pre>
-<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" target="_blank">ba6cb8c</a>
-</td>
-<td>
-HelenaLC
-</td>
-<td>
-2019-04-03
-</td>
-</tr>
-</tbody>
-</table>
+
+# arrange plots
+plot_grid(plotlist = ps, ncol = 4, label_size = 10)</code></pre>
+<p><img src="figure/2-annotation.Rmd/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<pre class="r"><code>layout(matrix(1:2, nrow = 1))
-ol &lt;- Matrix::rowSums(as.matrix(colData(sce)[drop_cols])) != 0
-x &lt;- sce$total_counts
-y &lt;- sce$total_features_by_counts
-LSD::heatscatter(x, y, log=&quot;xy&quot;, main = &quot;unfiltered&quot;, 
-    xlab = &quot;Total counts&quot;, ylab = &quot;Non-zero features&quot;)
-LSD::heatscatter(x[!ol], y[!ol], log=&quot;xy&quot;, main = &quot;filtered&quot;, 
-    xlab = &quot;Total counts&quot;, ylab = &quot;Non-zero features&quot;)</code></pre>
-<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-5-1.png" target="_blank">ba6cb8c</a>
-</td>
-<td>
-HelenaLC
-</td>
-<td>
-2019-04-03
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code># summary of cells kept
-ns &lt;- table(sce$sample_id)
-ns_fil &lt;- table(sce$sample_id[!ol])
-print(rbind(
-    unfiltered = ns, filtered = ns_fil, 
-    &quot;%&quot; = ns_fil / ns * 100), digits = 0)</code></pre>
-<pre><code>           LC016 LC017 LC019 LC020 LC022 LC023 LC025 LC026
-unfiltered  4553  2420  2947  4430  3783  3529  3347  5176
-filtered    4084  2124  2415  3547  3408  3264  3010  4755
-%             90    88    82    80    90    92    90    92</code></pre>
-<pre class="r"><code># drop outlier cells
-sce &lt;- sce[, !ol]
-dim(sce)</code></pre>
-<pre><code>[1] 22963 26607</code></pre>
-<pre class="r"><code># require count &gt; 1 in at least 20 cells
-sce &lt;- sce[Matrix::rowSums(counts(sce) &gt; 1) &gt;= 20, ]
-dim(sce)</code></pre>
-<pre><code>[1] 11309 26607</code></pre>
-</div>
-<div id="save-object" class="section level3">
-<h3>Save object</h3>
-<pre class="r"><code>saveRDS(sce, file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))</code></pre>
+<div id="find-markers-using-scran" class="section level3">
+<h3>Find markers using <code>scran</code></h3>
+<pre class="r"><code>scran_markers &lt;- findMarkers(sce, 
+    clusters = sce$cluster_id, block = sce$sample_id, 
+    direction = &quot;up&quot;, lfc = 2, full.stats = TRUE)</code></pre>
+<div id="heatmap-of-mean-marker-exprs.-by-cluster-1" class="section level4">
+<h4>Heatmap of mean marker-exprs. by cluster</h4>
+<pre class="r"><code>gs &lt;- lapply(scran_markers, function(u) rownames(u)[u$Top == 1])
+muscat::plotMarkerGenes(sce, gs)</code></pre>
+<p><img src="figure/2-annotation.Rmd/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -936,51 +868,101 @@ locale:
 [11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+ [1] parallel  stats4    grid      stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
 
 other attached packages:
- [1] scater_1.10.1               SingleCellExperiment_1.4.1 
- [3] SummarizedExperiment_1.12.0 DelayedArray_0.8.0         
- [5] BiocParallel_1.16.6         matrixStats_0.54.0         
+ [1] Seurat_3.0.0                scran_1.10.2               
+ [3] SingleCellExperiment_1.4.1  SummarizedExperiment_1.12.0
+ [5] DelayedArray_0.8.0          matrixStats_0.54.0         
  [7] Biobase_2.42.0              GenomicRanges_1.34.0       
  [9] GenomeInfoDb_1.18.2         IRanges_2.16.0             
 [11] S4Vectors_0.20.1            BiocGenerics_0.28.0        
-[13] cowplot_0.9.4               ggplot2_3.1.1              
+[13] BiocParallel_1.16.6         viridis_0.5.1              
+[15] viridisLite_0.3.0           RColorBrewer_1.1-2         
+[17] cowplot_0.9.4               ggplot2_3.1.1              
+[19] ComplexHeatmap_1.20.0      
 
 loaded via a namespace (and not attached):
- [1] locfit_1.5-9.1           Rcpp_1.0.1              
- [3] lattice_0.20-38          assertthat_0.2.1        
- [5] rprojroot_1.3-2          digest_0.6.18           
- [7] cellranger_1.1.0         R6_2.4.0                
- [9] plyr_1.8.4               backports_1.1.4         
-[11] evaluate_0.13            pillar_1.3.1            
-[13] zlibbioc_1.28.0          rlang_0.3.4             
-[15] readxl_1.3.1             lazyeval_0.2.2          
-[17] whisker_0.3-2            Matrix_1.2-17           
-[19] rmarkdown_1.12           labeling_0.3            
-[21] stringr_1.4.0            RCurl_1.95-4.12         
-[23] munsell_0.5.0            HDF5Array_1.10.1        
-[25] compiler_3.5.1           vipor_0.4.5             
-[27] xfun_0.6                 DropletUtils_1.2.2      
-[29] pkgconfig_2.0.2          ggbeeswarm_0.6.0        
-[31] htmltools_0.3.6          tidyselect_0.2.5        
-[33] tibble_2.1.1             gridExtra_2.3           
-[35] GenomeInfoDbData_1.2.0   edgeR_3.24.3            
-[37] workflowr_1.3.0          viridisLite_0.3.0       
-[39] crayon_1.3.4             dplyr_0.8.0.1           
-[41] withr_2.1.2              bitops_1.0-6            
-[43] grid_3.5.1               gtable_0.3.0            
-[45] git2r_0.25.2             magrittr_1.5            
-[47] scales_1.0.0             LSD_4.0-0               
-[49] stringi_1.4.3            XVector_0.22.0          
-[51] reshape2_1.4.3           viridis_0.5.1           
-[53] fs_1.2.7                 limma_3.38.3            
-[55] DelayedMatrixStats_1.4.0 Rhdf5lib_1.4.3          
-[57] tools_3.5.1              glue_1.3.1              
-[59] beeswarm_0.2.3           purrr_0.3.2             
-[61] yaml_2.2.0               colorspace_1.4-1        
-[63] rhdf5_2.26.2             knitr_1.22              </code></pre>
+  [1] reticulate_1.12          R.utils_2.8.0           
+  [3] tidyselect_0.2.5         lme4_1.1-21             
+  [5] RSQLite_2.1.1            AnnotationDbi_1.44.0    
+  [7] htmlwidgets_1.3          Rtsne_0.15              
+  [9] munsell_0.5.0            codetools_0.2-16        
+ [11] ica_1.0-2                statmod_1.4.30          
+ [13] future_1.12.0            withr_2.1.2             
+ [15] colorspace_1.4-1         knitr_1.22              
+ [17] rstudioapi_0.10          ROCR_1.0-7              
+ [19] gbRd_0.4-11              listenv_0.7.0           
+ [21] labeling_0.3             Rdpack_0.11-0           
+ [23] git2r_0.25.2             muscat_0.99.8           
+ [25] GenomeInfoDbData_1.2.0   bit64_0.9-7             
+ [27] rhdf5_2.26.2             rprojroot_1.3-2         
+ [29] xfun_0.6                 doParallel_1.0.14       
+ [31] R6_2.4.0                 ggbeeswarm_0.6.0        
+ [33] rsvd_1.0.0               locfit_1.5-9.1          
+ [35] bitops_1.0-6             assertthat_0.2.1        
+ [37] SDMTools_1.1-221.1       scales_1.0.0            
+ [39] nnet_7.3-12              beeswarm_0.2.3          
+ [41] gtable_0.3.0             npsurv_0.4-0            
+ [43] globals_0.12.4           workflowr_1.3.0         
+ [45] rlang_0.3.4              genefilter_1.64.0       
+ [47] GlobalOptions_0.1.0      splines_3.5.1           
+ [49] lazyeval_0.2.2           acepack_1.4.1           
+ [51] checkmate_1.9.1          yaml_2.2.0              
+ [53] reshape2_1.4.3           backports_1.1.4         
+ [55] Hmisc_4.2-0              tools_3.5.1             
+ [57] gplots_3.0.1.1           dynamicTreeCut_1.63-1   
+ [59] ggridges_0.5.1           Rcpp_1.0.1              
+ [61] plyr_1.8.4               progress_1.2.0          
+ [63] base64enc_0.1-3          zlibbioc_1.28.0         
+ [65] purrr_0.3.2              RCurl_1.95-4.12         
+ [67] prettyunits_1.0.2        rpart_4.1-15            
+ [69] pbapply_1.4-0            GetoptLong_0.1.7        
+ [71] zoo_1.8-5                ggrepel_0.8.0           
+ [73] cluster_2.0.8            colorRamps_2.3          
+ [75] fs_1.2.7                 variancePartition_1.12.3
+ [77] magrittr_1.5             data.table_1.12.2       
+ [79] lmerTest_3.1-0           circlize_0.4.6          
+ [81] lmtest_0.9-36            RANN_2.6.1              
+ [83] whisker_0.3-2            fitdistrplus_1.0-14     
+ [85] hms_0.4.2                lsei_1.2-0              
+ [87] evaluate_0.13            xtable_1.8-4            
+ [89] pbkrtest_0.4-7           XML_3.98-1.19           
+ [91] gridExtra_2.3            shape_1.4.4             
+ [93] compiler_3.5.1           scater_1.10.1           
+ [95] tibble_2.1.1             KernSmooth_2.23-15      
+ [97] crayon_1.3.4             minqa_1.2.4             
+ [99] R.oo_1.22.0              htmltools_0.3.6         
+[101] Formula_1.2-3            tidyr_0.8.3             
+[103] geneplotter_1.60.0       DBI_1.0.0               
+[105] MASS_7.3-51.3            boot_1.3-20             
+[107] Matrix_1.2-17            R.methodsS3_1.7.1       
+[109] gdata_2.18.0             metap_1.1               
+[111] igraph_1.2.4.1           pkgconfig_2.0.2         
+[113] numDeriv_2016.8-1        foreign_0.8-71          
+[115] plotly_4.9.0             foreach_1.4.4           
+[117] annotate_1.60.1          vipor_0.4.5             
+[119] blme_1.0-4               XVector_0.22.0          
+[121] bibtex_0.4.2             stringr_1.4.0           
+[123] digest_0.6.18            sctransform_0.2.0       
+[125] tsne_0.1-3               rmarkdown_1.12          
+[127] htmlTable_1.13.1         edgeR_3.24.3            
+[129] DelayedMatrixStats_1.4.0 gtools_3.8.1            
+[131] rjson_0.2.20             nloptr_1.2.1            
+[133] nlme_3.1-139             jsonlite_1.6            
+[135] Rhdf5lib_1.4.3           BiocNeighbors_1.0.0     
+[137] limma_3.38.3             pillar_1.3.1            
+[139] lattice_0.20-38          httr_1.4.0              
+[141] survival_2.44-1.1        glue_1.3.1              
+[143] iterators_1.0.10         png_0.1-7               
+[145] bit_1.1-14               stringi_1.4.3           
+[147] HDF5Array_1.10.1         blob_1.1.1              
+[149] DESeq2_1.22.2            latticeExtra_0.6-28     
+[151] caTools_1.17.1.2         memoise_1.1.0           
+[153] dplyr_0.8.0.1            irlba_2.3.3             
+[155] future.apply_1.2.0       ape_5.3                 </code></pre>
+</div>
 </div>
 </div>
 
