@@ -5,13 +5,20 @@ navbar:
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+  - text: Preprocessing
+    href: 0-preprocessing.html
+  - text: Clustering
+    href: 1-clustering.html
+  - text: Annotation
+    href: 2-annotation.html
+  right:
+  - text: Robinson Lab
+    href: https://robinsonlabuzh.github.io
+  - icon: fa-github
+    href: https://github.com/HelenaLC/muscat-comparison
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
-    theme: cosmo
+    theme: flatly
     highlight: textmate
