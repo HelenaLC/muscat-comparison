@@ -15,7 +15,7 @@ output:
 ---
 
 ### Load packages
-```{r}
+```{r warning = FALSE}
 suppressPackageStartupMessages({
     library(cowplot)
     library(Seurat)
@@ -24,12 +24,12 @@ suppressPackageStartupMessages({
 
 # increase future's maximum allowed size of objects 
 # to be exported from default of 500 MB to 2 GB
-#options(future.globals.maxSize = 2048 * 1024 ^ 2) 
+options(future.globals.maxSize = 2048 * 1024 ^ 2) 
 ```
 
 ### Load data
 ```{r}
-sce <- readRDS(file.path("output", "MAGL-SCE_filtered.rds"))
+sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 ```
 
 ### Integration
@@ -63,34 +63,36 @@ so <- ScaleData(so, display.progress = FALSE)
 
 ### Dimension reduction
 ```{r}
-so <- runPCA(so, npcs = 30, verbose = FALSE)
-so <- runRSNE(so, reduction = "pca", dims = seq_len(20), 
+so <- RunPCA(so, npcs = 30, verbose = FALSE)
+so <- RunTSNE(so, reduction = "pca", dims = seq_len(20), 
     seed.use = 1, do.fast = TRUE, verbose = FALSE)
-so <- runUMAP(so, reduction = "pca", dims = seq_len(20),
+so <- RunUMAP(so, reduction = "pca", dims = seq_len(20),
     seed.use = 1, verbose = FALSE)
 ```
 
 ### Clustering
 ```{r}
-so <- FindNeighbors(so, 
-    reduction = "pca", dims = seq_len(20), resolution = 0.2,
-    random.seed = 1, verbose = FALSE)
-so <- F
+so <- FindNeighbors(so, reduction = "pca", dims = seq_len(20), verbose = FALSE)
+for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2)) 
+    so <- FindClusters(so, resolution = res, random.seed = 1, verbose = FALSE)
 ```
 
-### DR colored by sample, group, and ID
-```{r}
-lapply(c("sample_id", "group_id", "ident"), function(u) {
-    p1 <- DimPlot(so, reduction = "tsne", group.by = u) +
-        theme(legend.position = "none")
+### DR colored by sample, group, and cluster ID
+```{r fig.width = 10, fig.height = 14}
+thm <- theme(aspect.ratio = 1, legend.position = "none")
+ps <- lapply(c("sample_id", "group_id", "ident"), function(u) {
+    p1 <- DimPlot(so, reduction = "tsne", group.by = u) + thm
     p2 <- DimPlot(so, reduction = "umap", group.by = u)
     lgd <- get_legend(p2)
-    p2 <- p2 + theme(legend.position = "none")
-    plot_grid(p1, p2, nrow = 1, labels = c("tsne", "umap"))
+    p2 <- p2 + thm
+    list(p1, p2, lgd)
+    plot_grid(p1, p2, lgd, nrow = 1, 
+        rel_widths = c(1, 1, 0.5))
 })
+plot_grid(plotlist = ps, ncol = 1)
 ```
 
-### Session info
+### Save object
 ```{r}
-sessionInfo()
+saveRDS(so, file.path("output", "MAGL-SeuratObject.rds"))
 ```

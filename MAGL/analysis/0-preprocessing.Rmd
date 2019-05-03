@@ -15,7 +15,7 @@ output:
 ---
 
 ### Load packages
-```{r}
+```{r warning = FALSE}
 suppressPackageStartupMessages({
     library(cowplot)
     library(ggplot2)
@@ -32,11 +32,11 @@ names(fastq_dirs) <- basename(fastq_dirs)
 sce <- DropletUtils::read10xCounts(fastq_dirs)
 
 # rename row/colData & dimnames
-names(rowData(sce)) <- c("feature", "symbol")
+names(rowData(sce)) <- c("ENSEMBL", "SYMBOL")
 names(colData(sce)) <- c("sample_id", "barcode")
 sce$sample_id <- factor(basename(sce$sample_id))
 dimnames(sce) <- list(
-    with(rowData(sce), paste(feature, symbol, sep = ".")),
+    with(rowData(sce), paste(ENSEMBL, SYMBOL, sep = ".")),
     with(colData(sce), paste(barcode, sample_id, sep = ".")))
 
 # load metadata
@@ -58,7 +58,7 @@ plotHighestExprs(sce, n = 20)
 ```
 
 ### Filtering
-```{r fig.height = 16}
+```{r fig.height = 10, fig.width = 12}
 # get sample-specific outliers
 cols <- c("total_counts", "total_features_by_counts", "pct_counts_Mt")
 log <- c(TRUE, TRUE, FALSE)
@@ -87,13 +87,15 @@ ps <- lapply(seq_along(cols), function (i) {
 plot_grid(plotlist = ps, ncol = 3)
 ```
 
-```{r}
+```{r fig.width = 12, fig.height = 5}
+layout(matrix(1:2, nrow = 1))
 ol <- Matrix::rowSums(as.matrix(colData(sce)[drop_cols])) != 0
-plot_grid(nrow = 1, labels = c("unfiltered", "filtered"),
-    LSD::heatscatter(sce$total_counts, sce$total_features_by_counts, 
-        xlab = "Total counts", ylab = "Non-zero features", log="xy"),
-    LSD::heatscatter(sce$total_counts[ol], sce$total_features_by_counts[ol], 
-        xlab = "Total counts", ylab = "Non-zero features", log="xy"))
+x <- sce$total_counts
+y <- sce$total_features_by_counts
+LSD::heatscatter(x, y, log="xy", main = "unfiltered", 
+    xlab = "Total counts", ylab = "Non-zero features")
+LSD::heatscatter(x[!ol], y[!ol], log="xy", main = "filtered", 
+    xlab = "Total counts", ylab = "Non-zero features")
 
 # summary of cells kept
 ns <- table(sce$sample_id)
@@ -111,12 +113,7 @@ sce <- sce[Matrix::rowSums(counts(sce) > 1) >= 20, ]
 dim(sce)
 ```
 
-### Save objects
+### Save object
 ```{r}
-saveRDS(sce, "output/MAGL-SCE_filtered.rds")
-```
-
-### Session info
-```{r}
-sessionInfo()
+saveRDS(sce, file.path("output", "MAGL-SCE.rds"))
 ```
