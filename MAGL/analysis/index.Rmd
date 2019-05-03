@@ -6,4 +6,19 @@ output:
     toc: false
 ---
 
-Welcome to my research website.
+- [Preprocessing](0-preprocessing.html):
+    - Calculation of QC metrics & identification of outliers using `scater`
+    - Filtering of genes and cells
+    
+- [Clustering](1-clustering.html):
+    - Integration & clustering using a sequence of resolutions
+    - t-SNE and UMAP dimension reductions colored by sample, group, and cluster ID
+    
+- [Annotation](2-annotation.html):
+    - Number of clusters by resolution
+    - Number of cells by cluster-sample
+    - Relative cluster abundances by sample
+    - t-SNE colored by expression of known marker genes
+    - Heatmap of mean known marker-gene expressions by cluster
+    - Identification of cluster-markers using `scran`
+    - Hetamap of mean `scran` marker-gene expressions by cluster
