@@ -7,9 +7,9 @@ author:
   - &SIB Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  BiocStyle::html_document:
-    toc: true,
-    code_folding: true
+  html_document:
+    toc: true
+    code_folding: hide
 bibliography:
     refs.bib
 ---
@@ -34,8 +34,6 @@ library(SingleCellExperiment)
 
 ## Load data & prep. for `muscat`
 
-`drop = FALSE` specifies that we wish to retain all available cell metadata columns besides those specified as `group/sample/cluster_id` columns.
-
 ```{r prep-data}
 # load data
 sce0 <- readRDS(file.path("output", "MAGL-SCE.rds"))
@@ -55,7 +53,7 @@ sce <- prepSCE(sce0,
     cluster_id = "integrated_snn_res.0.2",
     drop = FALSE)
 
-metadata(sce)$experiment_info
+(ei <- metadata(sce)$experiment_info)
 ```
 
 ## Cluster annotation
@@ -88,7 +86,9 @@ sce$cluster_id <- lab[m]
 # remove unassigned cells
 sce <- sce[, !is.na(sce$cluster_id)]
 sce$cluster_id <- factor(sce$cluster_id)
-dim(sce)
+
+# normalize for visualization
+sce <- normalize(sce)
 ```
 
 # Aggregation of single-cell to pseudo-bulk data
@@ -109,7 +109,7 @@ Prior to conducting any formal testing, we can compute a multi-dimensional scali
 
 In our MDS plot on pseudobulk counts (Fig. \@ref(fig:pb-mds)), we can observe that cell-populations (clusters) are separated quite well, while WT and stimulated samples (groups) are separated to a lesser (if any) extend.
 
-```{r pb-mds, fig.wide = TRUE, fig.cap = "Pseudobulk-level MDS plot. Each point represent one cluster-sample instance; points are colored by cluster ID and shaped by group ID."}
+```{r pb-mds, fig.wide = TRUE, fig.cap = "Pseudobulk-level MDS plot. Each point represent one cluster-sample instance;\npoints are colored by cluster ID and shaped by group ID."}
 pbMDS(pb)
 ```
 
@@ -117,9 +117,8 @@ pbMDS(pb)
 
 ```{r ds-analysis}
 # specify design & contrast matrix
-ei <- metadata(sce)$experiment_info
 (design <- model.matrix(~ 0 + ei$group_id) %>% 
-    set_rownames(levels(ei$sample_id)) %>% 
+    set_rownames(ei$sample_id) %>% 
     set_colnames(levels(ei$group_id)))
 (contrast <- makeContrasts("LPS-WT", levels = design))
 system.time(res <- pbDS(sce, pb, design, contrast, verbose = FALSE))
@@ -160,26 +159,27 @@ cs_by_k <- split(colnames(sce), sce$cluster_id)
 kids <- levels(sce$cluster_id)
 names(kids) <- kids
 
-ps <- lapply(kids, function(k)
+ps <- lapply(kids, function(k) 
+  if (length(top_gs[[k]]) != 0)
     plotExpression(sce[, cs_by_k[[k]]], features = top_gs[[k]], 
         x = "sample_id", colour_by = "group_id") +
         guides(fill = guide_legend(override.aes = list(size = 2, alpha = 1))) +
         theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))) 
 ```
 
-```{echo = FALSE, results = "asis"}
+### &nbsp; {.tabset}
+```{r echo = FALSE, results = "asis"}
 for (k in kids) {
-  cat("##### ",k, "\n")
+  cat("#### ", k, "\n")
   print(ps[[k]])
   cat("\n\n")
 }
 ```
 
-## Sample-level visualization
+## Sample-level visualization {.tabset}
 
 ```{r diff-hm, warning = FALSE, collapse = TRUE}
 # normalize & compute cluster-sample expression-means
-sce <- normalize(sce)
 ms <- aggregateData(sce, assay = "logcounts", fun = "mean")
 
 # wrapper for z-normalization
@@ -196,7 +196,7 @@ ms <- aggregateData(sce, assay = "logcounts", fun = "mean")
 
 # wrapper to plot differential heatmap
 .plot_diff_hm <- function(ms, k, gs, ei) {
-    mat <- .z_norm(assays(ms)[[k]][gs, ])
+    mat <- .z_norm(assays(ms)[[k]][gs, , drop = FALSE])
     m <- match(colnames(mat), ei$sample_id)
     cols <- scales::hue_pal()(nlevels(ei$group_id))
     names(cols) <- levels(ei$group_id)
@@ -216,12 +216,16 @@ ms <- aggregateData(sce, assay = "logcounts", fun = "mean")
         rect_gp = gpar(col = "white"),
         top_annotation = col_anno)
 }
-hms <- lapply(kids, function(k) .plot_diff_hm(ms, k, tbl[[k]]$gene, ei))
+hms <- lapply(kids, function(k)
+  if (nrow(tbl[[k]]) != 0) {
+    n <- min(nrow(tbl[[k]]), 10)
+    .plot_diff_hm(ms, k, tbl[[k]]$gene[seq_len(n)], ei)
+  })
 ```
 
 ```{r echo = FALSE, results = "asis"}
 for (k in kids) {
-  cat("##### ", k, "\n")
+  cat("### ", k, "\n")
   print(hms[[k]])
   cat("\n\n")
 }
@@ -229,35 +233,48 @@ for (k in kids) {
 
 ## Dimension reduction
 
-Dimensionaly reductions available within our SCE can be accessed via `reducedDims` from the `r Biocpkg("scater")` package, and visualized using `plotReducedDim`:
+```{r tsne-umap, fig.wide = TRUE, fig.height = 8, fig.cap = "t-SNEs colored by cluster ID (a) and group ID (b)."}
+df <- data.frame(reducedDim(sce, "TSNE"), colData(sce))
+prettify <- list(
+  labs(x = "t-SNE dim. 1", y = "t-SNE dim. 2"),
+  theme(aspect.ratio = 1, legend.key.height = unit(2, "mm"), legend.position = "bottom"))
 
-```{r tsne-umap, collapse = TRUE, fig.wide = TRUE, fig.cap = "Dimension reduction plots: t-SNE (a) and UMAP (b). Cells are colored by cluster ID and shaped by group ID."}
-ps <- lapply(c(plotTSNE, plotUMAP), function(fun) 
-    fun(sce, colour_by = "cluster_id", shape_by = "group_id",
-        point_size = 0.8, point_alpha = 0.4) +
-        scale_shape_manual(values = c(2, 3)) +
-        guides(shape = guide_legend(title = "group_id", ncol = 1,
-            override.aes = list(size = 3, alpha = 1)),
-            color = guide_legend(override.aes = list(size = 3, alpha = 1))) +
-    theme_bw() + theme(aspect.ratio = 1, panel.grid.minor = element_blank()))
-lgd <- get_legend(ps[[1]] + theme(
-    legend.position = "bottom",
-    legend.direction = "horizontal"))
-ps <- lapply(ps, "+", theme(legend.position = "none"))
-ps <- plot_grid(plotlist = ps, nrow = 1, labels = "auto") 
-plot_grid(ps, lgd, ncol = 1, rel_heights = c(1, 0.2))
+p1 <- ggplot(df, aes(x = tSNE_1, y = tSNE_2, col = cluster_id)) +
+  scale_color_manual(values = muscat:::cluster_colors) +
+  geom_point(size = 0.1, alpha = 0.2) + guides(color = guide_legend(
+    ncol = 3, override.aes = list(size = 2, alpha = 1))) + 
+  theme_bw() + prettify
+
+p2 <- ggplot(df, aes(x = tSNE_1, y = tSNE_2, col = group_id)) +
+  geom_point(size = 0.1, alpha = 0.2) + guides(color = guide_legend(
+    ncol = 1, override.aes = list(size = 2, alpha = 1))) + 
+  theme_bw() + prettify
+
+ls <- list(get_legend(p1), get_legend(p2))
+ps <- lapply(list(p1, p2), "+", theme(legend.position = "none"))
+plot_grid(
+  plot_grid(plotlist = ps, nrow = 1, labels = "auto"), 
+  plot_grid(plotlist = ls, nrow = 1, rel_widths = c(3, 1)),
+  nrow = 2, rel_heights = c(1, 0.2))
 ```
 
 In addition to above cell- and sample-level visualizations, we can generate a set of t-SNEs colored by gene expression for the top DE gene in each cluster:
 
-```{r}
-ps <- lapply(kids[1:2], function(k)
-    lapply(top_gs[[k]][1:2], function(g)
-        plotTSNE(sce, colour_by = g) + 
-            ggtitle(sprintf("%s(%s)", g, k)) +
-            theme_void() + theme(legend.position = "none", 
-                plot.title = element_text(size = 6))))
-plot_grid(plotlist = Reduce("c", ps), ncol = 2)
+```{r collapse = TRUE, fig.wide = TRUE, fig.height = 18}
+ps <- lapply(kids, function(k)
+    lapply(top_gs[[k]], function(g) {
+      df$u <- logcounts(sce)[g, ]
+      ggplot(df, aes(x = tSNE_1, y = tSNE_2, col = u)) +
+          geom_point(size = 0.1, alpha = 0.2) +
+          scale_color_viridis_c() +
+          ggtitle(sprintf("%s(%s)", g, k)) +
+          theme_void() + theme(
+              aspect.ratio = 1, 
+              legend.position = "none", 
+              plot.title = element_text(size = 4))
+    })
+)
+plot_grid(plotlist = Reduce("c", ps), ncol = 4)
 ```
 
 ### Save SCE & unfiltered results

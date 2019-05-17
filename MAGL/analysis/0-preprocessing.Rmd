@@ -14,17 +14,18 @@ output:
     toc: true
 ---
 
-### Load packages
-```{r warning = FALSE}
-suppressPackageStartupMessages({
-    library(cowplot)
-    library(ggplot2)
-    library(scater)
-    library(SingleCellExperiment)
-})
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
 ```
 
-### Load & reformat data
+```{r message = FALSE, warning = FALSE}
+library(cowplot)
+library(ggplot2)
+library(scater)
+library(SingleCellExperiment)
+```
+
+# Load & reformat data
 ```{r}
 # load raw counts
 fastq_dirs <- list.dirs("data", recursive = FALSE, full.names = TRUE)
@@ -50,14 +51,14 @@ sce <- sce[Matrix::rowSums(counts(sce) > 0) > 0, ]
 dim(sce)
 ```
 
-### Calculate QC Metrics
+# Calculate QC Metrics
 ```{r}
 (mito <- grep("mt-", rownames(sce), value = TRUE))
 sce <- calculateQCMetrics(sce, feature_controls = list(Mt = mito))
 plotHighestExprs(sce, n = 20)
 ```
 
-### Filtering
+# Filtering
 ```{r fig.height = 10, fig.width = 12}
 # get sample-specific outliers
 cols <- c("total_counts", "total_features_by_counts", "pct_counts_Mt")
@@ -113,7 +114,7 @@ sce <- sce[Matrix::rowSums(counts(sce) > 1) >= 20, ]
 dim(sce)
 ```
 
-### Save object
+# Save SCE to .rds
 ```{r}
 saveRDS(sce, file.path("output", "MAGL-SCE.rds"))
 ```

@@ -22,3 +22,7 @@ output:
     - Heatmap of mean known marker-gene expressions by cluster
     - Identification of cluster-markers using `scran`
     - Hetamap of mean `scran` marker-gene expressions by cluster
+    
+- [DS analysis](3-differential.html)
+
+- [Geneset analysis](4-geneset.html)
