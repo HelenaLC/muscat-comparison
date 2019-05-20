@@ -1,5 +1,5 @@
 ---
-title: "Home"
+title: "Contents"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -22,13 +22,18 @@ output:
     - Heatmap of mean known marker-gene expressions by cluster
     - Identification of cluster-markers using `scran`
     - Hetamap of mean `scran` marker-gene expressions by cluster
-
-- [DS analysis](3-differential.html):
-    - Data preparation for `muscat`
-    - Aggregation to pseudbulk-counts
+    
+- [DS analysis](3-differential.html)
+    - Cluster annoation
+    - Aggregation to pseudobulk counts
     - Pseudobulk-level MDS plot
-    - Cluster-level DE analysis
+    - Cluster-level DE analysis with `edgeR`
     - Results filtering & overview
-    - Cell- & sample-level visualization  
-    (violins & heatmaps for cluster-sample mean-expressions)
-    - Dimension reduction plots (t-SNE and UMAP)
+    - Cell-level vis.: Violin plots
+    - Sample-level vis.: Heatmap of cluster-sample mean-expressions
+    - Dimension reduction: t-SNE & UMAP
+
+- [Geneset analysis](4-geneset.html)
+    - Cluster-level geneset analysis using `camera`
+    - Heatmap summary
+    - Barcode plots

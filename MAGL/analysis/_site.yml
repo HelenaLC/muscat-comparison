@@ -3,7 +3,7 @@ output_dir: ../docs
 navbar:
   title: "MAGL"
   left:
-  - text: Home
+  - text: Contents
     href: index.html
   - text: Preprocessing
     href: 0-preprocessing.html
@@ -13,6 +13,8 @@ navbar:
     href: 2-annotation.html
   - text: "DS analysis"
     href: 3-differential.html
+  - text: "Geneset analysis"
+    href: 4-geneset.html
   right:
   - text: Robinson Lab
     href: https://robinsonlabuzh.github.io
