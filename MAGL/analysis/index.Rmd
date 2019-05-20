@@ -22,3 +22,13 @@ output:
     - Heatmap of mean known marker-gene expressions by cluster
     - Identification of cluster-markers using `scran`
     - Hetamap of mean `scran` marker-gene expressions by cluster
+
+- [DS analysis](3-differential.html):
+    - Data preparation for `muscat`
+    - Aggregation to pseudbulk-counts
+    - Pseudobulk-level MDS plot
+    - Cluster-level DE analysis
+    - Results filtering & overview
+    - Cell- & sample-level visualization  
+    (violins & heatmaps for cluster-sample mean-expressions)
+    - Dimension reduction plots (t-SNE and UMAP)

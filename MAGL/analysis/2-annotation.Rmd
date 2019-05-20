@@ -171,3 +171,4 @@ scran_markers <- findMarkers(sce,
 gs <- lapply(scran_markers, function(u) rownames(u)[u$Top == 1])
 muscat::plotMarkerGenes(sce, gs)
 ```
+
