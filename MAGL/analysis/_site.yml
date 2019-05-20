@@ -3,7 +3,7 @@ output_dir: ../docs
 navbar:
   title: "MAGL"
   left:
-  - text: Home
+  - text: Contents
     href: index.html
   - text: Preprocessing
     href: 0-preprocessing.html

@@ -14,40 +14,37 @@ output:
     toc: true
 ---
 
-### Load packages
-```{r warning = FALSE}
-suppressPackageStartupMessages({
-    library(ComplexHeatmap)
-    library(cowplot)
-    library(RColorBrewer)
-    library(viridis)
-    library(scran)
-    library(Seurat)
-    library(SingleCellExperiment)
-})
+```{r message = FALSE, warning = FALSE}
+library(ComplexHeatmap)
+library(cowplot)
+library(RColorBrewer)
+library(viridis)
+library(scran)
+library(Seurat)
+library(SingleCellExperiment)
 ```
 
-### Load data & convert to SCE
+# Load data & convert to SCE
 ```{r}
 so <- readRDS(file.path("output", "MAGL-SeuratObject.rds"))
 sce <- as.SingleCellExperiment(so, assay = "RNA")
 ```
 
-### Number of clusters by resolution
+# Nb. of clusters by resolution
 ```{r}
 cluster_cols <- grep("res.[0-9]", colnames(colData(sce)), value = TRUE)
-vapply(cluster_cols, function(k) nlevels(sce[[k]]), numeric(1))
+sapply(colData(sce)[cluster_cols], nlevels)
 ```
 
 
-### Cluster-sample counts
+# Cluster-sample counts
 ```{r}
 # set cluster IDs to resolution 0.2 clustering
 sce$cluster_id <- sce$integrated_snn_res.0.2
 (n_cells_by_cluster_sample <- table(sce$cluster_id, sce$sample_id))
 ```
 
-### Relative cluster-abundances
+# Relative cluster-abundances
 ```{r fig.width = 6, fig.height = 5}
 fqs <- prop.table(n_cells_by_cluster_sample, margin = 2)
 mat <- as.matrix(unclass(fqs))
@@ -66,7 +63,7 @@ Heatmap(mat,
             gp = gpar(col = "white", fontsize = 8)))
 ```
 
-### DR colored by cluster ID
+# DR colored by cluster ID
 ```{r fig.width = 12, fig.height = 5}
 make_dr_plot <- function(so, dr)
     DimPlot(so, 
@@ -84,7 +81,7 @@ ps <- plot_grid(plotlist = list(p1, p2), nrow = 1)
 plot_grid(ps, lgd, nrow = 1, rel_widths = c(1, 0.2))
 ```
 
-### Known marker genes
+# Known marker genes
 ```{r}
 known_markers <- list(
     astrocytes = c("Aqp4", "Gfap", "Fgfr3"),
@@ -104,7 +101,7 @@ ks <- rep.int(names(known_markers), vapply(known_markers, length, numeric(1)))
 labs <- sprintf("%s(%s)", gs, ks)
 ```
 
-#### Heatmap of mean marker-exprs. by cluster
+## Heatmap of mean marker-exprs. by cluster
 ```{r fig.width = 8, fig.height = 4}
 # split cells by cluster
 cells_by_cluster <- split(colnames(sce), sce$cluster_id)
@@ -138,7 +135,7 @@ hm <- Heatmap(mat,
 row_anno + hm
 ```
 
-#### DR colored by marker expr.
+## DR colored by marker expr.
 ```{r fig.width = 12, fig.height = 12}
 # downsample to 2000 cells
 cs <- sample(colnames(sce), 2e3)
@@ -159,15 +156,21 @@ ps <- lapply(seq_along(ps), function(i) {
 plot_grid(plotlist = ps, ncol = 4, label_size = 10)
 ```
 
-### Find markers using `scran`
+# Find markers using `scran`
 ```{r}
 scran_markers <- findMarkers(sce, 
     clusters = sce$cluster_id, block = sce$sample_id, 
     direction = "up", lfc = 2, full.stats = TRUE)
 ```
 
-#### Heatmap of mean marker-exprs. by cluster
+## Heatmap of mean marker-exprs. by cluster
 ```{r fig.width = 12, fig.height = 6}
 gs <- lapply(scran_markers, function(u) rownames(u)[u$Top == 1])
+sapply(gs, length)
 muscat::plotMarkerGenes(sce, gs)
+```
+
+# Save SCE to .rds
+```{r}
+saveRDS(sce, file.path("output", "MAGL-SCE_tmp.rds"))
 ```

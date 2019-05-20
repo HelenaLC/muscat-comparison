@@ -26,7 +26,7 @@ library(SingleCellExperiment)
 ```
 
 # Load & reformat data
-```{r}
+```{r message = FALSE}
 # load raw counts
 fastq_dirs <- list.dirs("data", recursive = FALSE, full.names = TRUE)
 names(fastq_dirs) <- basename(fastq_dirs)

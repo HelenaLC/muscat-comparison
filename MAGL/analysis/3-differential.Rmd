@@ -10,13 +10,12 @@ output:
   html_document:
     toc: true
     code_folding: hide
-bibliography:
-    refs.bib
 ---
 
-```{r echo = FALSE, warning = FALSE, message = FALSE}
+```{r include = FALSE}
 library(BiocStyle)
 knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+options(width = 100)
 ```
 
 ### load packages
@@ -36,7 +35,7 @@ library(SingleCellExperiment)
 
 ```{r prep-data}
 # load data
-sce0 <- readRDS(file.path("output", "MAGL-SCE.rds"))
+sce0 <- readRDS(file.path("output", "MAGL-SCE_tmp.rds"))
 
 # concat. sample & group ID
 sce0$id <- factor(paste(sce0$sample_id, sce0$group_id, sep = "_"))
@@ -60,7 +59,7 @@ sce <- prepSCE(sce0,
 
 In consideration of the visualizations provided in the [Annotation](docs/2-annotation.html) tab and additional exploration with `r Biocpkg("iSEE")`, we arrive at the following cluster annotations: 
 
-```{r cluster-anno}
+```{r cluster-anno, warning = FALSE}
 anno <- list(
     "excit_neuron1" = c(0, 1, 4, 5, 16),
     "excit_neuron2" = 7,
@@ -86,6 +85,9 @@ sce$cluster_id <- lab[m]
 # remove unassigned cells
 sce <- sce[, !is.na(sce$cluster_id)]
 sce$cluster_id <- factor(sce$cluster_id)
+
+# cluster-sample cell-counts
+table(sce$cluster_id, sce$sample_id)
 
 # normalize for visualization
 sce <- normalize(sce)
@@ -124,7 +126,7 @@ pbMDS(pb)
 system.time(res <- pbDS(sce, pb, design, contrast, verbose = FALSE))
 ```
 
-## Results filtering & overview
+# Results filtering & overview
 
 To get a general overview of the differential testing results, we first filter them to retain hits with $\text{FDR}<5\%$ and $~|~logFC~|~>1$, and view the number & percentage of differential findings by cluster. Finally, we extract the top hits (lowest adj. p-value) in each cluster.
 
@@ -146,7 +148,7 @@ top_gs <- lapply(tbl, function(u) {
 })
 ```
 
-# Visualizing results
+# Visualization results
 
 ## Cell-level visualization
 
@@ -258,29 +260,8 @@ plot_grid(
   nrow = 2, rel_heights = c(1, 0.2))
 ```
 
-In addition to above cell- and sample-level visualizations, we can generate a set of t-SNEs colored by gene expression for the top DE gene in each cluster:
-
-```{r collapse = TRUE, fig.wide = TRUE, fig.height = 18}
-ps <- lapply(kids, function(k)
-    lapply(top_gs[[k]], function(g) {
-      df$u <- logcounts(sce)[g, ]
-      ggplot(df, aes(x = tSNE_1, y = tSNE_2, col = u)) +
-          geom_point(size = 0.1, alpha = 0.2) +
-          scale_color_viridis_c() +
-          ggtitle(sprintf("%s(%s)", g, k)) +
-          theme_void() + theme(
-              aspect.ratio = 1, 
-              legend.position = "none", 
-              plot.title = element_text(size = 4))
-    })
-)
-plot_grid(plotlist = Reduce("c", ps), ncol = 4)
+# Save SCE & unfiltered results
+```{r}
+saveRDS(sce, file.path("output", "MAGL-SCE.rds"))
+saveRDS(res, file.path("output", "MAGL-DS_res.rds"))
 ```
-
-### Save SCE & unfiltered results
-```{r save-data, eval = FALSE}
-saveRDS(sce, file.path("output", "MAGL-SCE_final.rds"))
-saveRDS(res, file.path("output", "MAGL-DS_results.rds"))
-```
-
-# References

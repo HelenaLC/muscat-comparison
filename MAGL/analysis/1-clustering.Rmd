@@ -14,25 +14,22 @@ output:
     toc: true
 ---
 
-### Load packages
-```{r warning = FALSE}
-suppressPackageStartupMessages({
-    library(cowplot)
-    library(Seurat)
-    library(SingleCellExperiment)
-})
+```{r message = FALSE, warning = FALSE}
+library(cowplot)
+library(Seurat)
+library(SingleCellExperiment)
 
 # increase future's maximum allowed size of objects 
 # to be exported from default of 500 MB to 2 GB
 options(future.globals.maxSize = 2048 * 1024 ^ 2) 
 ```
 
-### Load data
+# Load data
 ```{r}
 sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 ```
 
-### Integration
+# Integration
 ```{r}
 # create SeuratObject
 so <- CreateSeuratObject(
@@ -61,7 +58,7 @@ DefaultAssay(so) <- "integrated"
 so <- ScaleData(so, display.progress = FALSE)
 ```
 
-### Dimension reduction
+# Dimension reduction
 ```{r}
 so <- RunPCA(so, npcs = 30, verbose = FALSE)
 so <- RunTSNE(so, reduction = "pca", dims = seq_len(20), 
@@ -70,14 +67,14 @@ so <- RunUMAP(so, reduction = "pca", dims = seq_len(20),
     seed.use = 1, verbose = FALSE)
 ```
 
-### Clustering
+# Clustering
 ```{r}
 so <- FindNeighbors(so, reduction = "pca", dims = seq_len(20), verbose = FALSE)
 for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2)) 
     so <- FindClusters(so, resolution = res, random.seed = 1, verbose = FALSE)
 ```
 
-### DR colored by sample, group, and cluster ID
+# DR colored by sample, group, and cluster ID
 ```{r fig.width = 10, fig.height = 14}
 thm <- theme(aspect.ratio = 1, legend.position = "none")
 ps <- lapply(c("sample_id", "group_id", "ident"), function(u) {
@@ -92,7 +89,7 @@ ps <- lapply(c("sample_id", "group_id", "ident"), function(u) {
 plot_grid(plotlist = ps, ncol = 1)
 ```
 
-### Save object
+# Save SeuratObject to .rds
 ```{r}
 saveRDS(so, file.path("output", "MAGL-SeuratObject.rds"))
 ```

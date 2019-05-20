@@ -27,6 +27,7 @@ library(limma)
 library(magrittr)
 library(msigdbr)
 library(dplyr)
+library(reshape2)
 library(SingleCellExperiment)
 library(pheatmap)
 ```
@@ -109,10 +110,10 @@ cats_by_cluster <- gs_df %>%
 vapply(cats_by_cluster, length, numeric(1))
 ```
 
-## &nbsp; {.tabset}
+### &nbsp; {.tabset}
 ```{r results = "asis", fig.width = 6, fig.height = 4}
 lapply(names(res$data), function(k) {
-    cat("### ", k, "\n")
+    cat("#### ", k, "\n")
     lapply(cats_by_cluster[[k]], function(c)
         barcodeplot(
             statistics = gs_dat[[k]]$contrasts.fit$t[, 1],
