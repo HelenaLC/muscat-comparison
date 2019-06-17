@@ -3,7 +3,6 @@
 .snakemake
 
 data
-metadata
-config
+meta
 results
 figures
