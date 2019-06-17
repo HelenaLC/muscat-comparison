@@ -2,7 +2,6 @@
 suppressWarnings(
     suppressPackageStartupMessages({
         library(dplyr)
-        library(limma)
         library(muscat)
         library(purrr)
         library(SingleCellExperiment)

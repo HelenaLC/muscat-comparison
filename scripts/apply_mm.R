@@ -1,20 +1,18 @@
-apply_mm <- function(x, pars) {
-    # get method parameters
-    args <- as.list(args("mmDS"))
-    pars <- pars[names(pars) %in% names(args)]
+apply_mm <- function(sce, pars, ds_only = TRUE) {
+    pars <- pars[names(pars) != "id"]
     
     # run & time method
     t <- system.time({
-        if (pars$covs == "dr") {
-            colData(x)$dr <- Matrix::colMeans(counts(x) > 0)
-        } else {
-            pars$covs <- NULL
-        }
-        res <- tryCatch(error = function(e) NULL, {
-            do.call(mmDS, c(list(x, verbose = FALSE), pars))
-        })
+        if (pars$covs == "dr")
+            colData(sce)$dr <- colMeans(counts(sce) > 0)
+        pars[sapply(pars, `==`, "")] <- NULL
+        res <- tryCatch(
+            do.call(mmDS, c(list(sce, n_threads = 1, verbose = FALSE), pars)),
+            error = function(e) e)
+        if (!inherits(res, "error"))
+            res <- bind_rows(res)
     })[[3]]
 
     # return results
-    list(rt = t, res = bind_rows(res))
+    list(rt = t, res = res)
 }

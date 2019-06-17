@@ -4,6 +4,7 @@ suppressWarnings(
         library(dplyr)
         library(muscat)
         library(scater)
+        library(sctransform)
         library(SingleCellExperiment)
     }))
 
@@ -17,7 +18,7 @@ sce <- readRDS(snakemake@input$data)
 sim_pars <- jsonlite::fromJSON(snakemake@input$sim_pars)
 
 # default to 3 clusters & 3 samples
-if (!"nk" %in% names(sim_pars)) sim_pars$nk <- 3
+if (!"nk" %in% names(sim_pars)) sim_pars$nk <- 2
 if (!"ns" %in% names(sim_pars)) sim_pars$ns <- 3
 
 # filter clusters & samples
@@ -33,17 +34,26 @@ sce <- .filter_sce(sce, dimnames(n_cells))
 sim_pars <- sim_pars[names(sim_pars) %in% 
         names(as.list(args("simData")))]
 
-# simulate, normalize, and compute CPM
+# simulate data
 sim <- do.call(simData, c(
     list(x = sce, n_genes = nrow(sce)), 
     sim_pars[names(sim_pars) != "n_genes"]))
-suppressWarnings(sim <- normalize(normalize(sim, return_log = FALSE)))
-assays(sim)$cpm <- calculateCPM(sim)
-assays(sim)$logcpm <- log2(assays(sim)$cpm + 1)
 
-# downsample to n_genes & write to .rds
+# remove genes detected in less than 10 cells
+sim <- sim[rowSums(counts(sim) > 0) >= 10, ]
+
+# downsample to n_genes
 gs <- sample(rownames(sim), sim_pars$n_genes)
 gi <- metadata(sim)$gene_info
 metadata(sim)$gene_info <- gi %>% dplyr::filter(gene %in% gs)
 sim <- sim[gs, ]
+
+# compute assay slots
+assays(sim)$cpm <- calculateCPM(sim) 
+assays(sim)$logcpm <- log2(cpm(sim) + 1)
+suppressWarnings(sim <- normalize(normalize(sim, return_log = FALSE))) 
+assays(sim)$vstcounts <- suppressWarnings(
+    vst(counts(sim), show_progress = FALSE)$y)
+
+# write SCE to .rds
 saveRDS(sim, snakemake@output$sim_data)

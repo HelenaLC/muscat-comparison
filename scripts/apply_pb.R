@@ -1,5 +1,13 @@
-apply_pb <- function(sce, pars) {
-    
+suppressWarnings(
+    suppressPackageStartupMessages({
+        library(limma)
+        library(scater)
+        library(sctransform)
+        library(SingleCellExperiment)
+    })
+)
+
+apply_pb <- function(sce, pars, ds_only = TRUE) {
     # specify design & contrast matrix
     ei <- metadata(sce)$experiment_info
     design <- model.matrix(~ 0 + ei$group_id)
@@ -9,10 +17,22 @@ apply_pb <- function(sce, pars) {
     # get aggregateData() parameters
     args <- as.list(args("aggregateData"))
     pb_pars <- pars[names(pars) %in% names(args)]
-    pb_pars <- c(list(sce), pb_pars)
     
     # run & time method
-    t1 <- system.time(pb <- do.call(aggregateData, pb_pars))[[3]]
+    t1 <- system.time({
+        if (!ds_only) {
+            a <- pb_pars$assay
+            suppressWarnings(suppressMessages(
+                assays(sce)[[a]] <- switch(a, 
+                    counts = counts(sce),
+                    normcounts = normcounts(normalize(sce, return_log = FALSE)),
+                    logcounts = logcounts(normalize(sce)),
+                    vstcounts = vst(counts(sce), show_progress = FALSE)$y,
+                    cpm = calculateCPM(counts(sce)),
+                    logcpm = log2(calculateCPM(counts(sce)) + 1))))
+        }
+        pb <- do.call(aggregateData, c(list(sce), pb_pars))
+    })[[3]]
     
     # get runDS() parameters
     args <- as.list(args("pbDS"))
@@ -20,10 +40,13 @@ apply_pb <- function(sce, pars) {
     ds_pars <- c(list(sce, pb, design, contrast, verbose = FALSE), ds_pars)
     
     # run & time method
-    t2 <- system.time(ds <- do.call(pbDS, ds_pars))[[3]]
-    res <- bind_rows(ds$table[[1]])
-    
+    t2 <- system.time(
+        suppressWarnings(
+            res <- tryCatch(
+                error = function(e) NULL, 
+                do.call(pbDS, ds_pars))))[[3]]
+
     # return results
-    list(rt = c(t1, t2), res = res)
+    list(rt = c(t1, t2), res = bind_rows(res$table[[1]]))
 }
 

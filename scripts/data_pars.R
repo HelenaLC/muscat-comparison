@@ -1,3 +1,5 @@
+config <- yaml::read_yaml("config.yaml")
+
 # for each dataset, create a list of
 #   dir_raw:        directory to raw counts
 #   dir_gene_md:    directory to gene metadata (SCE rowData)
@@ -20,14 +22,13 @@ data_ids <- names(
             cluster_id = "cell",
             group_keep = "ctrl"
         ),
-        sala = list(
-            dir_raw = "raw_counts.mtx",
-            dir_gene_md = "genes.tsv",
-            dir_cell_md = "meta.tab",
-            filter_cells = NULL,
-            sample_id = function(x) paste0("sample", x$sample),
-            group_id = function(x) factor(x$tomato, labels = c("0" = "WT", "1" = "KO")),
-            cluster_id = "celltype.mapped",
+        magl = list(
+            dir_raw = "MAGL-SCE.rds",
+            dir_gene_md = NULL,
+            dir_cell_md = NULL,
+            sample_id = "sample_id",
+            group_id = "group_id",
+            cluster_id = "cluster_id",
             group_keep = "WT"
         )
     )
@@ -37,13 +38,13 @@ data_ids <- names(
 data_pars <- setNames(lapply(data_ids, function(id) {
     dirs <- grep("dir", names(data_pars[[id]]))
     data_pars[[id]][dirs] <- lapply(data_pars[[id]][dirs], 
-        function(u) file.path(snakemake@config$raw_data, id, u))
+        function(u) file.path(config$raw_data, id, u))
     return(data_pars[[id]])
 }), data_ids)
 
 # create directories
-for (u in c("sim_data", "agg_data", "results", "figures")) {
-    base <- snakemake@config[[u]]
+for (u in c("sim_data", "results", "figures")) {
+    base <- config[[u]]
     dirs <- file.path(base, data_ids)
     for (dir in dirs) 
         if (!dir.exists(dir)) 
@@ -52,7 +53,7 @@ for (u in c("sim_data", "agg_data", "results", "figures")) {
 
 # write parameters to .rds
 # (only if something changed!)
-dir <- snakemake@config$data_pars
+dir <- config$data_pars
 if (!dir.exists(dir))
     dir.create(dir)
 

@@ -1,12 +1,13 @@
-apply_mast <- function(sce, pars) {
-    
-    # get method parameters
-    args <- as.list(args("run_mast"))
-    pars <- pars[names(pars) %in% names(args)]
-    
-    # compute logCPM
-    assays(sce)$logcpm <- log2(assays(sce)$cpm + 1)
-    
+suppressWarnings(
+    suppressPackageStartupMessages({
+        library(dplyr)
+        library(MAST)
+        library(scater)
+        library(SingleCellExperiment)
+    })
+)
+
+apply_mast <- function(sce, pars, ds_only = TRUE) {
     # run & time method
     t <- system.time({
         if (pars$covs == "dr") {
@@ -14,23 +15,21 @@ apply_mast <- function(sce, pars) {
         } else {
             pars$covs <- NULL
         }
-        res <- tryCatch(error = function(e) NULL, 
-            do.call(run_mast, c(list(sce), pars)))
+        if (!ds_only) {
+            assays(sce)$lCount <- switch(pars$assay, 
+                logcpm = log2(calculateCPM(sce) + 1),
+                logcounts = suppressWarnings(logcounts(normalize(sce))))
+        } else {
+            assays(sce)$lCount <- assays(sce)[[pars$assay]]
+        }
+        res <- tryCatch(
+            error = function(e) NULL, 
+            run_mast(sce, pars$covs))
     })[[3]]
     
     # return results
     list(rt = t, res = res)
 }
-
-# ------------------------------------------------------------------------------
-suppressWarnings(
-    suppressPackageStartupMessages({
-        library(dplyr)
-        library(edgeR)
-        library(MAST)
-        library(SummarizedExperiment)
-    })
-)
 
 run_mast <- function(sce, covs = NULL) {
     formula <- ~ group_id
@@ -52,12 +51,12 @@ run_mast <- function(sce, covs = NULL) {
         fit <- suppressMessages(zlm(formula, sca))
         lrt <- suppressMessages(lrTest(fit, "group_id"))
         p_val <- lrt[, "hurdle", "Pr(>Chisq)"]
-        p_adj.loc <- stats::p.adjust(p_val)
+        p_adj.loc <- p.adjust(p_val)
         data.frame(
             gene = rownames(y),
             cluster_id = k,
             p_val, p_adj.loc,
             row.names = NULL,
             stringsAsFactors = FALSE)
-    }) %>% bind_rows %>% mutate(p_adj.glb = p.adjust(p_val))
+    }) %>% bind_rows %>% dplyr::mutate(p_adj.glb = p.adjust(p_val))
 }

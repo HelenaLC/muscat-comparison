@@ -1,43 +1,43 @@
-apply_ad <- function(x, pars) {
-    # get method parameters
-    args <- as.list(args("run_ad"))
-    pars <- pars[names(pars) %in% names(args)]
-    
+suppressMessages({
+    library(dplyr)
+    library(kSamples)
+    library(purrr)
+    library(scater)
+    library(sctransform)
+    library(SingleCellExperiment)
+})
+
+apply_ad <- function(sce, pars, ds_only = TRUE) {
     # run & time method
-    t <- system.time(
-        res <- tryCatch(error = function(e) NULL, 
-            do.call(run_ad, c(list(x), pars))))[[3]]
+    t <- system.time({
+        if (!ds_only) {
+            suppressWarnings(suppressMessages(
+                assay(sce) <- switch(pars$assay,
+                    logcounts = logcounts(normalize(sce)),
+                    vstcounts = vst(counts(sce), show_progress = FALSE)$y)))
+        } else {
+            assay(sce) <- assays(sce)[[pars$assay]]
+        }
+        res <- tryCatch(
+            error = function(e) NULL, 
+            run_ad(sce))
+    })[[3]]
     
     # return results
     list(rt = t, res = res)
 }
 
-
-# ------------------------------------------------------------------------------
-suppressWarnings(
-    suppressPackageStartupMessages({
-        library(dplyr)
-        library(kSamples)
-        library(purrr)
-        library(SingleCellExperiment)
-    })
-)
-
-run_ad <- function(x) {
-    nk <- length(kids <- levels(x$cluster_id))
-    p_val <- apply(logcounts(x), 1, function(y) {
-        re <- ad.test.combined(
-            y ~ group_id | cluster_id, 
-            data = data.frame(y, colData(x)))
-        map(re$ad.list, 5)
-    }) %>% map(unlist) %>% unlist
-    data.frame(
-        stringsAsFactors = FALSE,
-        gene = rep(rownames(x), each = nk),
-        cluster_id = rep(kids, nrow(x)),
-        p_val, p_adj.glb = p.adjust(p_val)) %>% 
-        group_by(cluster_id) %>% 
-        mutate(p_adj.loc = p.adjust(p_val)) %>% 
-        data.frame
+run_ad <- function(sce) {
+    kids <- levels(sce$cluster_id)
+    cs_by_k <- split(colnames(sce), sce$cluster_id)
+    lapply(kids, function(k) {
+        sub <- sce[, cs_by_k[[k]]]
+        apply(assay(sub), 1, function(y)
+            ad.test(y ~ group_id, data = data.frame(y, colData(sub)))) %>% 
+            map(function(u) u$ad[5]) %>% 
+            unlist %>% data.frame(stringsAsFactors = FALSE,
+                gene = names(.), cluster_id = k, p_val = .) %>% 
+            dplyr::mutate(p_adj.loc = p.adjust(p_val))
+    }) %>% bind_rows %>% dplyr::mutate(p_adj.glb = p.adjust(p_val))
 }
 

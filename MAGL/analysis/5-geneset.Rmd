@@ -1,0 +1,135 @@
+---
+title: "Geneset analysis"
+author: 
+- name: Mark D. Robinson
+  affiliation: 
+  - &IMLS Institute for Molecular Life Sciences, University of Zurich, Switzerland
+  - &SIB Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
+- name: Helena L. Crowell
+  affiliation: 
+  - *IMLS
+  - *SIB
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    toc: true
+    code_folding: show
+bibliography:
+    refs.bib
+---
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+```
+
+```{r warning = FALSE, message = FALSE}
+library(limma)
+library(magrittr)
+library(msigdbr)
+library(dplyr)
+library(reshape2)
+library(SingleCellExperiment)
+library(pheatmap)
+```
+
+# Load data
+
+```{r}
+res <- readRDS(file.path("output", "MAGL-DS_res.rds"))
+```
+
+# Organize genesets & names
+
+```{r}
+m_df <- msigdbr(
+    species = "Mus musculus") %>%
+    dplyr::filter(gs_cat %in% c("H", "C5", "C7"))
+
+dat <- lapply(res$data, function(u) {
+  ss <- strsplit(rownames(u), ".", fixed=TRUE)
+  u$genes <- data.frame(
+      ensembl_id = sapply(ss, .subset, 1), 
+      symbol = sapply(ss, .subset, 2))
+  return(u)
+})
+
+sapply(dat, function(u) 
+    table(u$genes$symbol %in% m_df$gene_symbol))
+sets <- split(m_df$gene_symbol, m_df$gs_name)
+n <- vapply(sets, length, numeric(1))
+sets <- sets[n >= 20 & n <= 1000]
+length(sets)
+```
+
+# Run `camera` on ea. cluster
+
+```{r camera}
+gs_dat <- mapply(function(uu, vv) {
+    inds <- ids2indices(sets, uu$genes$symbol, remove.empty = TRUE)
+
+    mm <- res$design[colnames(uu),]
+    v <- voom(uu, mm)
+  
+    f <- lmFit(v, mm)
+    f <- eBayes(f)
+    cf <- contrasts.fit(f, res$contrast)
+    cf <- eBayes(cf)
+  
+    list(indices = inds, voom = v, design = mm, 
+        cluster_id = vv, contrasts.fit = cf)
+}, dat, names(dat), SIMPLIFY = FALSE)
+
+gs_df <- lapply(gs_dat, function(u)
+    camera(u$voom, u$indices, res$design, res$contrast) %>% 
+        rownames_to_column("geneset")) %>% 
+    bind_rows(.id = "cluster_id")
+```
+
+# Heatmap summary
+
+```{r fig.width = 8, fig.height = 6}
+cats <- gs_df %>% 
+    dplyr::filter(FDR < 1e-10) %>%
+    pull(geneset) %>% unique
+length(cats)
+
+gs_df %>% 
+    dplyr::filter(geneset %in% cats) %>%
+    dplyr::mutate(neg_log10_fdr = -log10(FDR)) %>% 
+    acast(cluster_id ~ geneset, value.var = "neg_log10_fdr") %>% 
+    set_colnames(strtrim(colnames(.), 25)) %>% 
+    pheatmap
+```
+
+# Barcode plots {.tabset}
+
+```{r barcode, results = "asis", fig.width = 6, fig.height = 4}
+cats_by_cluster <- gs_df %>% 
+    dplyr::filter(FDR < 1e-10) %>% 
+    group_by(cluster_id) %>% 
+    group_split %>% 
+    lapply(pull, geneset) %>% 
+    set_names(names(res$data))
+vapply(cats_by_cluster, length, numeric(1))
+
+lapply(names(res$data), function(k) {
+    cat("## ", k, "\n")
+    lapply(cats_by_cluster[[k]], function(c)
+        barcodeplot(
+            statistics = gs_dat[[k]]$contrasts.fit$t[, 1],
+            index = gs_dat[[k]]$indices[[c]],
+            quantiles=c(-1, 1) * qt(0.95, df = 14),
+            main = c, cex.main = 0.8))
+    cat("\n\n")
+})
+```
+
+# Write results to .rds & .csv
+
+```{r}
+saveRDS(gs_dat, file.path("output", "MAGL-geneset_data.rds")) 
+saveRDS(gs_df, file.path("output", "MAGL-geneset_df.rds")) 
+write.csv(dplyr::filter(gs_df, FDR < 0.05),
+    file.path("output", "MAGL-geneset_res.csv"),
+    quote = FALSE, row.names = FALSE)
+```

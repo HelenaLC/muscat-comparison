@@ -10,13 +10,13 @@
 
 
 
-<meta name="date" content="2019-04-27" />
+<meta name="date" content="2019-05-20" />
 
 <title>Preprocessing</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -26,6 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -384,17 +386,34 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">Contents</a>
 </li>
 <li>
-  <a href="about.html">About</a>
+  <a href="0-preprocessing.html">Preprocessing</a>
 </li>
 <li>
-  <a href="license.html">License</a>
+  <a href="1-clustering.html">Clustering</a>
+</li>
+<li>
+  <a href="2-annotation.html">Annotation</a>
+</li>
+<li>
+  <a href="3-differential.html">DS analysis</a>
+</li>
+<li>
+  <a href="4-geneset.html">Geneset analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://robinsonlabuzh.github.io">Robinson Lab</a>
+</li>
+<li>
+  <a href="https://github.com/HelenaLC/muscat-comparison">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -416,14 +435,14 @@ div.section {
 <address class="author_afil">
 Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
 <address class="author_afil">
-Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">April 27, 2019</h4>
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">May 20, 2019</h4>
 
 </div>
 
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -432,7 +451,7 @@ Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -441,10 +460,10 @@ Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-04-27
+<strong>Last updated:</strong> 2019-05-20
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -460,12 +479,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -520,10 +539,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree091c87e274f5e0106d13f37c6c46d4acd7e23051targetblank091c87ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/091c87e274f5e0106d13f37c6c46d4acd7e23051" target="_blank">091c87e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5e2e38dda0353fb43df735d4cf981df7ea1dec48targetblank5e2e38da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/5e2e38dda0353fb43df735d4cf981df7ea1dec48" target="_blank">5e2e38d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree091c87e274f5e0106d13f37c6c46d4acd7e23051targetblank091c87ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5e2e38dda0353fb43df735d4cf981df7ea1dec48targetblank5e2e38da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -535,6 +554,7 @@ Ignored files:
     Ignored:    MAGL/.DS_Store
     Ignored:    MAGL/.RData
     Ignored:    MAGL/.Rhistory
+    Ignored:    MAGL/analysis/3-differential_cache/
     Ignored:    MAGL/data/
     Ignored:    MAGL/output/
     Ignored:    config/
@@ -546,40 +566,52 @@ Ignored files:
 Untracked files:
     Untracked:  .RData
     Untracked:  .Rhistory
+    Untracked:  ._.gitignore
     Untracked:  ._README.md
     Untracked:  ._Snakefile
     Untracked:  ._config.yaml
     Untracked:  MAGL/._.DS_Store
     Untracked:  MAGL/._.Rprofile
     Untracked:  MAGL/._data
-    Untracked:  MAGL/docs/figure/1-clustering.Rmd/
-    Untracked:  MAGL/docs/figure/2-annotation.Rmd/
+    Untracked:  MAGL/analysis/._refs.bib
+    Untracked:  MAGL/current
+    Untracked:  MAGL/docs/figure/3-differential.Rmd/
+    Untracked:  Rplots.pdf
     Untracked:  scripts/._apply_ad.R
     Untracked:  scripts/._apply_mm.R
     Untracked:  scripts/._apply_scdd.R
     Untracked:  scripts/._calc_conc.R
+    Untracked:  scripts/._countsimQC.R
+    Untracked:  scripts/._data_sim.R
     Untracked:  scripts/._meth_pars.R
     Untracked:  scripts/._plot_conc.R
     Untracked:  scripts/._plot_padj_local_vs_global.R
+    Untracked:  scripts/._plot_pbMDS.R
+    Untracked:  scripts/._plot_perf_combined.R
     Untracked:  scripts/._plot_perf_split_by_cat.R
     Untracked:  scripts/._plot_perf_split_by_lfc.R
     Untracked:  scripts/._plot_perf_vs_ncells.R
+    Untracked:  scripts/._plot_sim_pars.R
+    Untracked:  scripts/._plot_summary.R
     Untracked:  scripts/._plot_upsets.R
     Untracked:  scripts/._run_method.R
     Untracked:  scripts/._sim_data.R
     Untracked:  scripts/._sim_pars.R
     Untracked:  scripts/._utils.R
     Untracked:  scripts/plot_padj_local_vs_global.R
+    Untracked:  scripts/plot_pbMDS.R
+    Untracked:  scripts/plot_perf_combined.R
     Untracked:  scripts/plot_perf_split_by_cat.R
     Untracked:  scripts/plot_perf_split_by_lfc.R
     Untracked:  scripts/plot_sim_ex_hm.R
+    Untracked:  scripts/plot_sim_pars.R
     Untracked:  scripts/plot_sim_vs_est_logFC.R
+    Untracked:  scripts/plot_summary.R
 
 Unstaged changes:
-    Modified:   MAGL/analysis/0-preprocessing.Rmd
-    Modified:   MAGL/analysis/1-clustering.Rmd
-    Modified:   MAGL/analysis/2-annotation.Rmd
-    Modified:   MAGL/analysis/index.Rmd
+    Modified:   .gitignore
+    Deleted:    MAGL/analysis/about.Rmd
+    Deleted:    MAGL/analysis/license.Rmd
     Modified:   Snakefile
     Modified:   config.yaml
     Modified:   scripts/apply_ad.R
@@ -588,10 +620,13 @@ Unstaged changes:
     Modified:   scripts/apply_pb.R
     Modified:   scripts/apply_scdd.R
     Modified:   scripts/calc_conc.R
+    Modified:   scripts/countsimQC.R
+    Modified:   scripts/data_sim.R
     Modified:   scripts/meth_pars.R
     Modified:   scripts/plot_conc.R
     Modified:   scripts/plot_null.R
     Deleted:    scripts/plot_padj_loc_vs_glb.R
+    Modified:   scripts/plot_pb_mean_vs_disp.R
     Modified:   scripts/plot_perf.R
     Deleted:    scripts/plot_perf_split.R
     Modified:   scripts/plot_perf_vs_ncells.R
@@ -641,6 +676,74 @@ Message
 <tbody>
 <tr>
 <td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/61c0b067f9144eecf49366d6d9bc4000c4d10986/MAGL/analysis/0-preprocessing.Rmd" target="_blank">61c0b06</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-20
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/faf858d01b3ab307553b2e18a712af44215401d1/MAGL/analysis/0-preprocessing.Rmd" target="_blank">faf858d</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-17
+</td>
+<td>
+add DS &amp; geneset analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/3c5aa5f379847c31386b94463c65fa6295f26fc2/MAGL/docs/0-preprocessing.html" target="_blank">3c5aa5f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+<td>
+add MAGL prepro,clust,anno
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/10c7525a571656c0b7abe7bc179a09c3d477149b/MAGL/analysis/0-preprocessing.Rmd" target="_blank">10c7525</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+<td>
+add MAGL prepro,clust,anno
+</td>
+</tr>
+<tr>
+<td>
 html
 </td>
 <td>
@@ -680,17 +783,12 @@ initial commit
 </div>
 </div>
 </div>
-<div id="load-packages" class="section level3">
-<h3>Load packages</h3>
-<pre class="r"><code>suppressPackageStartupMessages({
-    library(cowplot)
-    library(ggplot2)
-    library(scater)
-    library(SingleCellExperiment)
-})</code></pre>
-</div>
-<div id="load-reformat-data" class="section level3">
-<h3>Load &amp; reformat data</h3>
+<pre class="r"><code>library(cowplot)
+library(ggplot2)
+library(scater)
+library(SingleCellExperiment)</code></pre>
+<div id="load-reformat-data" class="section level1">
+<h1>Load &amp; reformat data</h1>
 <pre class="r"><code># load raw counts
 fastq_dirs &lt;- list.dirs(&quot;data&quot;, recursive = FALSE, full.names = TRUE)
 names(fastq_dirs) &lt;- basename(fastq_dirs)
@@ -715,8 +813,8 @@ sce &lt;- sce[Matrix::rowSums(counts(sce) &gt; 0) &gt; 0, ]
 dim(sce)</code></pre>
 <pre><code>[1] 22963 30185</code></pre>
 </div>
-<div id="calculate-qc-metrics" class="section level3">
-<h3>Calculate QC Metrics</h3>
+<div id="calculate-qc-metrics" class="section level1">
+<h1>Calculate QC Metrics</h1>
 <pre class="r"><code>(mito &lt;- grep(&quot;mt-&quot;, rownames(sce), value = TRUE))</code></pre>
 <pre><code> [1] &quot;ENSMUSG00000064341.mt-Nd1&quot;  &quot;ENSMUSG00000064345.mt-Nd2&quot; 
  [3] &quot;ENSMUSG00000064351.mt-Co1&quot;  &quot;ENSMUSG00000064354.mt-Co2&quot; 
@@ -727,13 +825,13 @@ dim(sce)</code></pre>
 [13] &quot;ENSMUSG00000064370.mt-Cytb&quot;</code></pre>
 <pre class="r"><code>sce &lt;- calculateQCMetrics(sce, feature_controls = list(Mt = mito))
 plotHighestExprs(sce, n = 20)</code></pre>
-<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
-Past versions of unnamed-chunk-3-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div id="fig-unnamed-chunk-4-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -752,7 +850,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-3-1.png" target="_blank">ba6cb8c</a>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/67f5a1b688156232aa3ee82b60730aecf6f7757e/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" target="_blank">67f5a1b</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" target="_blank">ba6cb8c</a>
 </td>
 <td>
 HelenaLC
@@ -766,8 +875,8 @@ HelenaLC
 </div>
 </div>
 </div>
-<div id="filtering" class="section level3">
-<h3>Filtering</h3>
+<div id="filtering" class="section level1">
+<h1>Filtering</h1>
 <pre class="r"><code># get sample-specific outliers
 cols &lt;- c(&quot;total_counts&quot;, &quot;total_features_by_counts&quot;, &quot;pct_counts_Mt&quot;)
 log &lt;- c(TRUE, TRUE, FALSE)
@@ -805,52 +914,6 @@ ps &lt;- lapply(seq_along(cols), function (i) {
     return(p)
 })
 plot_grid(plotlist = ps, ncol = 3)</code></pre>
-<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-4-1.png" target="_blank">ba6cb8c</a>
-</td>
-<td>
-HelenaLC
-</td>
-<td>
-2019-04-03
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>layout(matrix(1:2, nrow = 1))
-ol &lt;- Matrix::rowSums(as.matrix(colData(sce)[drop_cols])) != 0
-x &lt;- sce$total_counts
-y &lt;- sce$total_features_by_counts
-LSD::heatscatter(x, y, log=&quot;xy&quot;, main = &quot;unfiltered&quot;, 
-    xlab = &quot;Total counts&quot;, ylab = &quot;Non-zero features&quot;)
-LSD::heatscatter(x[!ol], y[!ol], log=&quot;xy&quot;, main = &quot;filtered&quot;, 
-    xlab = &quot;Total counts&quot;, ylab = &quot;Non-zero features&quot;)</code></pre>
 <p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
@@ -876,6 +939,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/67f5a1b688156232aa3ee82b60730aecf6f7757e/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-5-1.png" target="_blank">67f5a1b</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/HelenaLC/muscat-comparison/blob/ba6cb8c10455e4e867de937087d2d2831b0a1881/MAGL/docs/figure/0-preprocessing.Rmd/unnamed-chunk-5-1.png" target="_blank">ba6cb8c</a>
 </td>
 <td>
@@ -889,6 +963,15 @@ HelenaLC
 </table>
 </div>
 </div>
+<pre class="r"><code>layout(matrix(1:2, nrow = 1))
+ol &lt;- Matrix::rowSums(as.matrix(colData(sce)[drop_cols])) != 0
+x &lt;- sce$total_counts
+y &lt;- sce$total_features_by_counts
+LSD::heatscatter(x, y, log=&quot;xy&quot;, main = &quot;unfiltered&quot;, 
+    xlab = &quot;Total counts&quot;, ylab = &quot;Non-zero features&quot;)
+LSD::heatscatter(x[!ol], y[!ol], log=&quot;xy&quot;, main = &quot;filtered&quot;, 
+    xlab = &quot;Total counts&quot;, ylab = &quot;Non-zero features&quot;)</code></pre>
+<p><img src="figure/0-preprocessing.Rmd/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># summary of cells kept
 ns &lt;- table(sce$sample_id)
 ns_fil &lt;- table(sce$sample_id[!ol])
@@ -908,8 +991,8 @@ sce &lt;- sce[Matrix::rowSums(counts(sce) &gt; 1) &gt;= 20, ]
 dim(sce)</code></pre>
 <pre><code>[1] 11309 26607</code></pre>
 </div>
-<div id="save-object" class="section level3">
-<h3>Save object</h3>
+<div id="save-sce-to-.rds" class="section level1">
+<h1>Save SCE to .rds</h1>
 <pre class="r"><code>saveRDS(sce, file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))</code></pre>
 <br>
 <p>
@@ -919,21 +1002,21 @@ dim(sce)</code></pre>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.1 (2018-07-02)
+<pre><code>R version 3.5.3 (2019-03-11)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
 
 Matrix products: default
-BLAS: /usr/local/R/R-3.5.1/lib/libRblas.so
-LAPACK: /usr/local/R/R-3.5.1/lib/libRlapack.so
+BLAS: /home/HelenaLC/soft/R-3.5.3/lib/libRblas.so
+LAPACK: /home/HelenaLC/soft/R-3.5.3/lib/libRlapack.so
 
 locale:
- [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8    
- [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
- [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                 
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
@@ -949,38 +1032,39 @@ other attached packages:
 [13] cowplot_0.9.4               ggplot2_3.1.1              
 
 loaded via a namespace (and not attached):
- [1] locfit_1.5-9.1           Rcpp_1.0.1              
- [3] lattice_0.20-38          assertthat_0.2.1        
- [5] rprojroot_1.3-2          digest_0.6.18           
- [7] cellranger_1.1.0         R6_2.4.0                
- [9] plyr_1.8.4               backports_1.1.4         
-[11] evaluate_0.13            pillar_1.3.1            
-[13] zlibbioc_1.28.0          rlang_0.3.4             
-[15] readxl_1.3.1             lazyeval_0.2.2          
-[17] whisker_0.3-2            Matrix_1.2-17           
-[19] rmarkdown_1.12           labeling_0.3            
-[21] stringr_1.4.0            RCurl_1.95-4.12         
-[23] munsell_0.5.0            HDF5Array_1.10.1        
-[25] compiler_3.5.1           vipor_0.4.5             
-[27] xfun_0.6                 DropletUtils_1.2.2      
-[29] pkgconfig_2.0.2          ggbeeswarm_0.6.0        
-[31] htmltools_0.3.6          tidyselect_0.2.5        
-[33] tibble_2.1.1             gridExtra_2.3           
-[35] GenomeInfoDbData_1.2.0   edgeR_3.24.3            
-[37] workflowr_1.3.0          viridisLite_0.3.0       
-[39] crayon_1.3.4             dplyr_0.8.0.1           
-[41] withr_2.1.2              bitops_1.0-6            
-[43] grid_3.5.1               gtable_0.3.0            
-[45] git2r_0.25.2             magrittr_1.5            
-[47] scales_1.0.0             LSD_4.0-0               
-[49] stringi_1.4.3            XVector_0.22.0          
-[51] reshape2_1.4.3           viridis_0.5.1           
-[53] fs_1.2.7                 limma_3.38.3            
-[55] DelayedMatrixStats_1.4.0 Rhdf5lib_1.4.3          
-[57] tools_3.5.1              glue_1.3.1              
-[59] beeswarm_0.2.3           purrr_0.3.2             
-[61] yaml_2.2.0               colorspace_1.4-1        
-[63] rhdf5_2.26.2             knitr_1.22              </code></pre>
+ [1] viridis_0.5.1            edgeR_3.24.3            
+ [3] viridisLite_0.3.0        DelayedMatrixStats_1.4.0
+ [5] assertthat_0.2.1         GenomeInfoDbData_1.2.0  
+ [7] vipor_0.4.5              cellranger_1.1.0        
+ [9] yaml_2.2.0               pillar_1.4.0            
+[11] backports_1.1.4          lattice_0.20-38         
+[13] glue_1.3.1               limma_3.38.3            
+[15] digest_0.6.18            XVector_0.22.0          
+[17] colorspace_1.4-1         htmltools_0.3.6         
+[19] Matrix_1.2-17            plyr_1.8.4              
+[21] pkgconfig_2.0.2          zlibbioc_1.28.0         
+[23] purrr_0.3.2              scales_1.0.0            
+[25] HDF5Array_1.10.1         whisker_0.3-2           
+[27] LSD_4.0-0                git2r_0.25.2            
+[29] tibble_2.1.1             withr_2.1.2             
+[31] lazyeval_0.2.2           magrittr_1.5            
+[33] crayon_1.3.4             readxl_1.3.1            
+[35] evaluate_0.13            fs_1.2.7                
+[37] beeswarm_0.2.3           tools_3.5.3             
+[39] stringr_1.4.0            Rhdf5lib_1.4.3          
+[41] DropletUtils_1.2.2       munsell_0.5.0           
+[43] locfit_1.5-9.1           compiler_3.5.3          
+[45] rlang_0.3.4              rhdf5_2.26.2            
+[47] grid_3.5.3               RCurl_1.95-4.12         
+[49] bitops_1.0-6             labeling_0.3            
+[51] rmarkdown_1.12           gtable_0.3.0            
+[53] codetools_0.2-16         reshape2_1.4.3          
+[55] R6_2.4.0                 gridExtra_2.3           
+[57] knitr_1.22               dplyr_0.8.1             
+[59] workflowr_1.3.0          rprojroot_1.3-2         
+[61] stringi_1.4.3            ggbeeswarm_0.6.0        
+[63] Rcpp_1.0.1               tidyselect_0.2.5        
+[65] xfun_0.7                </code></pre>
 </div>
 </div>
 

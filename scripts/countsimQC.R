@@ -41,6 +41,6 @@ countsimQCReport(
     outputFile = snakemake@output$res,
     outputDir = ".",
     outputFormat = "html_document",
-    maxNForCorr = 100,
-    maxNForDisp = 1e3,
+    maxNForCorr = 1e3,
+    maxNForDisp = 2e3,
     forceOverwrite = TRUE)

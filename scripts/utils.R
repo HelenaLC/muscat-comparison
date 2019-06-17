@@ -1,27 +1,40 @@
 library(RColorBrewer)
+rs <- colorRampPalette(brewer.pal(9, "Reds")   [-seq_len(2)])(10)
+gs <- colorRampPalette(brewer.pal(9, "Greens") [-seq_len(2)])(13)
+ps <- colorRampPalette(brewer.pal(9, "Purples")[-seq_len(2)])(13)
 method_colors <- c(
-    "AD"      = "peru",
-    "scDD"    = "maroon",
-    "MAST"    = "gold",
-    "MAST.dr" = "orange", 
-    "mm-dream"    = "royalblue", 
-    "mm-dream.dr" = "skyblue", 
-    "mm-vst"      = "cyan",
-    "mm-vst.dr"   = "aquamarine",
-    "sum(counts).edgeR"             = "black", 
-    "sum(counts).limma-voom"        = "grey80", 
-    "sum(counts).limma-trend"       = "grey40", 
-    "sum(normcounts).limma-trend"   = brewer.pal(9, "Purples")[9],
-    "sum(logcounts).limma-trend"    = brewer.pal(9, "Purples")[7],
-    "sum(cpm).limma-trend"          = brewer.pal(9, "Purples")[5],
-    "sum(scalecpm).limma-trend"     = brewer.pal(9, "Purples")[3],
-    "mean(normcounts).limma-trend"  = brewer.pal(9, "Reds")[9],
-    "mean(logcounts).limma-trend"   = brewer.pal(9, "Reds")[7],
-    "mean(cpm).limma-trend"         = brewer.pal(9, "Reds")[5],
-    "mean(scalecpm).limma-trend"    = brewer.pal(9, "Reds")[3],
-    "median(cpm).limma-trend"       = brewer.pal(9, "Greens")[9],
-    "median(logcounts).limma-trend" = brewer.pal(9, "Greens")[7],
-    "median(scalecpm).limma-trend"  = brewer.pal(9, "Greens")[6])
+    "AD.logcounts" = "peru",
+    "AD.vstcounts" = "sandybrown",
+    "scDD.logcounts" = "maroon",
+    "scDD.vstcounts" = "pink",
+    "MAST.logcpm"       = rs[10],
+    "MAST.logcpm_dr"    = rs[7],
+    "MAST.logcounts"    = rs[4],
+    "MAST.logcounts_dr" = rs[1],
+    "MM-dream"    = "royalblue", 
+    "MM-dream_dr" = "skyblue", 
+    "MM-vst"      = "cyan",
+    "MM-vst_dr"   = "aquamarine",
+    "edgeR.sum(counts)"             = "black", 
+    "limma-voom.sum(counts)"        = "grey40", 
+    "limma-trend.sum(counts)"       = "grey80", 
+    
+    "limma-trend.median(cpm)"       = gs[10],
+    "limma-trend.median(logcounts)" = gs[7],
+    "limma-trend.median(vstcounts)" = gs[4],
+    "limma-trend.median(scalecpm)"  = "gold",
+    
+    "limma-trend.sum(normcounts)"   = ps[13],
+    "limma-trend.sum(logcounts)"    = ps[10],
+    "limma-trend.sum(vstcounts)"    = ps[7],
+    "limma-trend.sum(cpm)"          = ps[4],
+    "limma-trend.sum(scalecpm)"     = ps[1],
+    
+    "limma-trend.mean(normcounts)"  = gs[13],
+    "limma-trend.mean(logcounts)"   = gs[10],
+    "limma-trend.mean(vstcounts)"   = gs[7],
+    "limma-trend.mean(cpm)"         = gs[4],
+    "limma-trend.mean(scalecpm)"    = gs[1])
 
 # ------------------------------------------------------------------------------
 # aesthetics for plotting
@@ -36,8 +49,8 @@ prettify <- function(theme = NULL, ...) {
         plot.title = element_text(face = "bold", hjust = 0),
         axis.text = element_text(color = "black"),
         legend.key.size = unit(0.2, "cm"),
-        strip.background = element_rect(color = "grey90", fill = "grey90"),
-        panel.spacing = unit(0.2, "cm"),
+        strip.background = element_rect(fill = NA),
+        panel.spacing = unit(0, "cm"),
         ...)
 }
 
@@ -50,7 +63,8 @@ prettify <- function(theme = NULL, ...) {
             scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0.05, 0)) +
             scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0.05, 0)) +
             prettify(theme = "bw", aspect.ratio = 1,
-                axis.line = element_blank()))
+                axis.line = element_blank()) +
+            theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)))
     p$layers[[1]] <- NULL # remove vertical dashed lightgrey lines 
     p$layers[[1]]$aes_params$size <- 0.4 # dashed lines at thrs
     return(p)
@@ -60,17 +74,19 @@ prettify <- function(theme = NULL, ...) {
     color_by = "method", colors = method_colors, facet = NULL) {
     p <- ggplot(df, aes_string(x = "FDR", y = "TPR", col = color_by)) +
         geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 
-        geom_point(size = 1.2, alpha = 0.8) + 
+        geom_point(size = 1, alpha = 0.8) + 
         geom_line(size = 0.4, alpha = 0.4, show.legend = FALSE) +
         scale_color_manual(NULL, values = colors) +
-        scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
+        scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0, 1, 0.2)), 
+            labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
         scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
         guides(col = guide_legend(ncol = 3,
             override.aes = list(size = 2, alpha = 1))) +
         prettify(theme = "bw", aspect.ratio = 1,
             legend.position = "bottom",
             legend.direction = "horizontal")
-    if (!is.null(facet)) p <- p + facet_wrap(facet)
+    if (!is.null(facet)) p <- p + facet_wrap(facet, 
+        labeller = labeller(.multi_line = FALSE))
     return(p)
 }
 
@@ -125,7 +141,7 @@ prettify <- function(theme = NULL, ...) {
 # ------------------------------------------------------------------------------
 .parse_fns <- function(x) {
     list(
-        method = gsub(";.*", "", x) %>% factor(levels = names(method_colors)),
+        method = factor(basename(gsub(";.*", "", x)), levels = names(method_colors)),
         n_genes = gsub(".*n_genes=([0-9]*).*", "\\1", x) %>% as.numeric,
         n_cells = gsub(".*n_cells=([0-9]*).*", "\\1", x) %>% as.numeric,
         n_samples = gsub(".*n_samples=([0-9]*).*", "\\1", x) %>% as.numeric,
@@ -142,11 +158,14 @@ prettify <- function(theme = NULL, ...) {
     rep <- gsub(".*simrep=([0-9]+).*", "\\1", fns)
     sce <- lapply(fns, readRDS)
     md <- map(sce, S4Vectors::metadata)
-    gi <- map(md, "gene_info")
-    lapply(gi, function(u) u %>%
-            mutate_if(is.factor, as.character) %>% 
-            dplyr::mutate(is_de = !category %in% c("ee", "ep")) %>% 
-            mutate_at("is_de", as.integer)) %>% set_names(rep)
+    gi <- map(md, function(u)
+        u$gene_info %>% 
+            mutate_if(is.factor, as.character) %>% select(-"logFC") %>% 
+            mutate(sim_logFC = log2(sim_mean.B/sim_mean.A)) %>% 
+            mutate(is_de = !category %in% c("ee", "ep")) %>% 
+            mutate_at("is_de", as.integer))
+    o <- order(as.numeric(rep))
+    gi[o] %>% set_names(rep[o])
 }
 
 # ------------------------------------------------------------------------------
@@ -154,8 +173,6 @@ prettify <- function(theme = NULL, ...) {
 # and return a list of tidy-format data.frames
 # ------------------------------------------------------------------------------
 .tidy_res <- function(fns, gis = NULL) {
-    library(dplyr)
-    library(purrr)
     # load data
     bns <- basename(fns)
     res <- lapply(fns, readRDS)
@@ -169,10 +186,12 @@ prettify <- function(theme = NULL, ...) {
     pars <- lapply(.parse_fns(bns), function(u) 
         if (is.factor(u)) droplevels(u) else u)
     # construct data.frames
+    cols_keep <- c("gene", "cluster_id", "p_val", "p_adj.loc", "p_adj.glb")
     if (!is.null(gis)) {
-        #gi <- gi %>% select(-grep("sim+", names(.)))
         dfs <- lapply(seq_along(res), function(i) {
-            re <- res[[i]] %>% select(gene, cluster_id, p_val, p_adj.loc, p_adj.glb)
+            if ("logFC" %in% names(res[[i]])) 
+                cols_keep <- c(cols_keep, "logFC")
+            re <- res[[i]] %>% select(cols_keep)
             gi <- gis[[as.character(pars$sim_rep[i])]]
             df <- left_join(gi, re, c("gene", "cluster_id"))
             df[, names(pars)] <- map(pars, i)
@@ -180,12 +199,17 @@ prettify <- function(theme = NULL, ...) {
         })
     } else {
         dfs <- lapply(seq_along(res), function(i) {
-            df <- res[[i]] %>% select(gene, cluster_id, p_val, p_adj.loc, p_adj.glb)
+            if ("logFC" %in% names(res[[i]])) 
+                cols_keep <- c(cols_keep, "logFC")
+            df <- res[[i]] %>% select(cols_keep)
             df[, names(pars)] <- map(pars, i)
             return(df)
         })
     }
-    return(dfs %>% bind_rows)
+    dfs %>% bind_rows %>% 
+        dplyr::rename(est_logFC = logFC) %>% 
+        mutate_at(c("sim_rep", "run_rep"), function(u)
+            factor(as.character(u), levels = sort(as.numeric(levels(u)))))
 }
 
 # ------------------------------------------------------------------------------
@@ -252,6 +276,16 @@ prettify <- function(theme = NULL, ...) {
 }
 
 # ------------------------------------------------------------------------------
+# update SCE colData such that only levels of existent factors are retained
+# ------------------------------------------------------------------------------
+.update_cd <- function(sce) {
+    colData(sce) <- as.data.frame(colData(sce)) %>% 
+        mutate_if(is.factor, droplevels) %>% 
+        DataFrame(row.names = colnames(sce))
+    return(sce)
+}
+
+# ------------------------------------------------------------------------------
 # calculate performance using iCOBRA
 #   - df: data.frame containing p_val & p_adj.X
 #   - gi: data.frame as returned by simData() 
@@ -266,4 +300,62 @@ prettify <- function(theme = NULL, ...) {
         splv = facet, maxsplit = Inf, 
         aspects = c("fdrtpr", "fdrtprcurve"))) %>% 
         prepare_data_for_plot(facetted = (facet != "none"))
+}
+
+# ------------------------------------------------------------------------------
+# for ea. k in 1:maxrank, count the nb. of genes occurring ea. nb. of times
+# > 3 column data.frame: nbr_occ | nbr_genes | k 
+#   (for a given row, among the top-k genes from each column of mtx, 
+#    nbr_genes occur exactly nbr_occ times)
+# ------------------------------------------------------------------------------
+.calc_occs <- function(mtx, maxrank) {
+    maxrank <- min(maxrank, nrow(mtx))
+    ks <- seq_len(maxrank)
+    if (ncol(mtx) > 1) {
+        M <- matrix(0, max(mtx[ks, ]), maxrank)
+        for (i in seq_len(ncol(mtx)))
+            M[cbind(mtx[ks, i], ks)] <- M[cbind(mtx[ks, i], ks)] + 1
+        M <- M[rowSums(M) != 0, ]
+        M <- t(apply(M, 1, cumsum))
+        M2 <- matrix(0, ncol(mtx), maxrank)
+        for (i in 1:nrow(M))
+            M2[cbind(M[i, ], seq_len(ncol(M)))] <- 
+                M2[cbind(M[i, ], seq_len(ncol(M)))] + 1
+        M2 <- M2 %>% reshape2::melt() %>%
+            dplyr::rename(k = Var2, nbr_genes = value, nbr_occ = Var1)
+        M2 %>% dplyr::arrange(k, nbr_occ) %>%
+            dplyr::mutate(nbr_cols = ncol(mtx))
+    } else {
+        NULL
+    }
+}
+
+# ------------------------------------------------------------------------------
+# calculate partial (cumulative) AUCs. 
+# (assumes that x variable = k, y variable = nbr_genes
+# ------------------------------------------------------------------------------
+.calc_aucs <- function(x) {
+    x %>% dplyr::mutate(dx = c(k[1], diff(k)),
+        dy = c(nbr_genes[1], diff(nbr_genes)),
+        ys = c(0, nbr_genes[-length(nbr_genes)])) %>%
+        dplyr::mutate(AUC = cumsum(dx * dy/2 + dx * ys)) %>%
+        dplyr::mutate(AUCs = AUC/(k^2/2))
+}
+
+# ------------------------------------------------------------------------------
+# get all subclusters from an hclust object
+# ------------------------------------------------------------------------------
+.get_subcl <- function(hcl) {
+    m <- hcl$merge
+    labs <- hcl$labels
+    L <- list()
+    for (i in seq_len(nrow(m))) {
+        tmp <- c()
+        if (m[i, 1] < 0) tmp <- c(tmp, labs[-m[i, 1]])
+        else tmp <- c(tmp, L[[m[i, 1]]])
+        if (m[i, 2] < 0) tmp <- c(tmp, labs[-m[i, 2]])
+        else tmp <- c(tmp, L[[m[i, 2]]])
+        L[[i]] <- sort(tmp)
+    }
+    L
 }
