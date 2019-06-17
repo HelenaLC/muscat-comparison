@@ -1,12 +1,10 @@
-suppressWarnings(
-    suppressPackageStartupMessages({
-        library(dplyr)
-        library(scater)
-        library(scDD)
-        library(sctransform)
-        library(SingleCellExperiment)
-    })
-)
+suppressMessages({
+    library(dplyr)
+    library(scater)
+    library(scDD)
+    library(sctransform)
+    library(SingleCellExperiment)
+})
 
 apply_scdd <- function(sce, pars, ds_only = TRUE) {
     # run & time method
@@ -18,8 +16,8 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
                     vstcounts = exp(vst(counts(sce), show_progress = FALSE)$y))))
         } else {
             assays(sce)$normcounts <- switch(pars$assay,
-                vstcounts = exp(assays(sce)$vstcounts),
-                assays(sce)[[pars$assay]])
+                logcounts = 2^normcounts(sce)-1,
+                vstcounts = exp(assays(sce)$vstcounts))
         }
         res <- tryCatch(
             error = function(e) NULL, 
@@ -27,7 +25,7 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
     })[[3]]
     
     # return results
-    list(rt = t, res = res)
+    list(rt = t, tbl = res)
 }
 
 run_scdd <- function(sce) {
@@ -39,8 +37,7 @@ run_scdd <- function(sce) {
         lapply(kids, function(k) {
             res <- results(scDD(sce[, cells_by_k[[k]]],
                 condition = "group_id", prior_param = priors, 
-                testZeroes = FALSE, min.size = 3, min.nonzero = NULL,
-                param = BiocParallel::MulticoreParam(workers = 1)))
+                testZeroes = FALSE, min.nonzero = 20))
             data.frame(
                 gene = rownames(sce),
                 cluster_id = k,

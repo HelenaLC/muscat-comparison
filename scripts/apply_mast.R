@@ -1,11 +1,9 @@
-suppressWarnings(
-    suppressPackageStartupMessages({
-        library(dplyr)
-        library(MAST)
-        library(scater)
-        library(SingleCellExperiment)
-    })
-)
+suppressMessages({
+    library(dplyr)
+    library(MAST)
+    library(scater)
+    library(SingleCellExperiment)
+})
 
 apply_mast <- function(sce, pars, ds_only = TRUE) {
     # run & time method
@@ -28,7 +26,7 @@ apply_mast <- function(sce, pars, ds_only = TRUE) {
     })[[3]]
     
     # return results
-    list(rt = t, res = res)
+    list(rt = t, tbl = res)
 }
 
 run_mast <- function(sce, covs = NULL) {

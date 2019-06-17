@@ -1,4 +1,3 @@
-# load packages
 suppressWarnings(
     suppressPackageStartupMessages({
         library(dplyr)
@@ -6,54 +5,35 @@ suppressWarnings(
         library(scater)
         library(sctransform)
         library(SingleCellExperiment)
-    }))
-
-# source helpers
+    })
+)
 source(snakemake@config$utils)
 
-# load data
-sce <- readRDS(snakemake@input$data)
-
-# get simulation parameters
+sce <- readRDS(snakemake@input$sce)
 sim_pars <- jsonlite::fromJSON(snakemake@input$sim_pars)
 
-# default to 3 clusters & 3 samples
-if (!"nk" %in% names(sim_pars)) sim_pars$nk <- 2
-if (!"ns" %in% names(sim_pars)) sim_pars$ns <- 3
+i <- as.numeric(snakemake@wildcards$i)
+set.seed(sim_pars$seed + i)
 
-# filter clusters & samples
-n_cells <- as.matrix(table(sce$cluster_id, sce$sample_id))
-n_cells <- .filter_matrix(n_cells, dim = c(sim_pars$nk, sim_pars$ns))
+kids <- levels(sce$cluster_id)
+sids <- levels(sce$sample_id)
 
-# set seed (input + rep. nb.)
-i <- snakemake@wildcards$i_sim
-set.seed(sim_pars$seed + as.numeric(i))
+sce <- .filter_sce(sce, 
+    kids = sample(kids, sim_pars$nk),
+    sids = sample(sids, sim_pars$ns))
 
-# subset SCE
-sce <- .filter_sce(sce, dimnames(n_cells))
-sim_pars <- sim_pars[names(sim_pars) %in% 
-        names(as.list(args("simData")))]
-
-# simulate data
-sim <- do.call(simData, c(
-    list(x = sce, n_genes = nrow(sce)), 
-    sim_pars[names(sim_pars) != "n_genes"]))
-
-# remove genes detected in less than 10 cells
+sim <- simData(sce, nrow(sce), sim_pars$nc, p_dd = sim_pars$p_dd)
 sim <- sim[rowSums(counts(sim) > 0) >= 10, ]
+sim <- sim[sample(nrow(sim), sim_pars$ng), ]
 
-# downsample to n_genes
-gs <- sample(rownames(sim), sim_pars$n_genes)
-gi <- metadata(sim)$gene_info
-metadata(sim)$gene_info <- gi %>% dplyr::filter(gene %in% gs)
-sim <- sim[gs, ]
+gi <- metadata(sim)$gene_info 
+gi <- dplyr::filter(gi, gene %in% rownames(sim))
+metadata(sim)$gene_info <- gi
 
-# compute assay slots
-assays(sim)$cpm <- calculateCPM(sim) 
-assays(sim)$logcpm <- log2(cpm(sim) + 1)
-suppressWarnings(sim <- normalize(normalize(sim, return_log = FALSE))) 
-assays(sim)$vstcounts <- suppressWarnings(
-    vst(counts(sim), show_progress = FALSE)$y)
+sim$dr <- colMeans(counts(sim) > 0)
+assays(sim)$cpm <- calculateCPM(sim)
+assays(sim)$logcpm <- log2(cpm(sim)+1)
+assays(sim)$vstcounts <- suppressWarnings(vst(counts(sim), show_progress = FALSE)$y)
+sim <- suppressWarnings(normalize(normalize(sim, return_log = FALSE)))
 
-# write SCE to .rds
-saveRDS(sim, snakemake@output$sim_data)
+saveRDS(sim, snakemake@output$sim)
