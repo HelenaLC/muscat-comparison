@@ -37,7 +37,8 @@ run_scdd <- function(sce) {
         lapply(kids, function(k) {
             res <- results(scDD(sce[, cells_by_k[[k]]],
                 condition = "group_id", prior_param = priors, 
-                testZeroes = FALSE, min.nonzero = 20))
+                testZeroes = FALSE, min.nonzero = 20,
+                param = BiocParallel::MulticoreParam(workers = 1)))
             data.frame(
                 gene = rownames(sce),
                 cluster_id = k,
