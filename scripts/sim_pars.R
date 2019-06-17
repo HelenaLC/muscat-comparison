@@ -4,16 +4,16 @@ ds10 <- c(0.9, 0, 0.1, 0, 0, 0)
 
 sim_pars <- list(
     nill = list(nr = 3, p_dd = diag(6)[1, ], seed = 1),
-    ds10 = list(nr = 2, p_dd = c(0.9, 0, 0.1, 0, 0, 0), seed = 10),
-    dp10 = list(nr = 2, p_dd = c(0.9, 0, 0, 0.1, 0, 0), seed = 20),
-    dm10 = list(nr = 2, p_dd = c(0.9, 0, 0, 0, 0.1, 0), seed = 30),
-    db10 = list(nr = 2, p_dd = c(0.9, 0, 0, 0, 0, 0.1), seed = 40),
+    ds10 = list(nr = 5, p_dd = c(0.9, 0, 0.1, 0, 0, 0), seed = 10),
+    dp10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0.1, 0, 0), seed = 20),
+    dm10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0, 0.1, 0), seed = 30),
+    db10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0, 0, 0.1), seed = 40),
     
-    ds10_nc = list(nk = 2, ns = 3, seed = 10),
-    ds10_ns = list(nk = 2, ns = 5, seed = 20)
+    ds10_nc = list(nk = 2, ns = 3, seed = 50, nc = 2*2*3*500),
+    ds10_ns = list(nk = 2, ns = 5, seed = 60)
 )
 
-def_pars <- list(nr = 1, nk = 3, ns = 3, ng = 1e3, nc = function(nk, ns) 2*nk*ns*100, p_dd = ds10, seed = 1)
+def_pars <- list(nr = 1, nk = 3, ns = 3, ng = 4e3, nc = function(nk, ns) 2*nk*ns*200, p_dd = ds10, seed = 1)
 
 sim_pars <- lapply(sim_pars, function(u) {
     v <- !names(def_pars) %in% names(u)

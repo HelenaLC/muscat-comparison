@@ -5,11 +5,11 @@ def_pars <- list(nr = 1, nk = "x", ns = "x", ng = "x", nc = "x", seed = 1)
 
 run_pars <- list(
     kang = list(
-        ds10_nc = list(nr = 2, nc = c(25, 50, 100, 200)),
-        ds10_ns = list(nr = 2, ns = c(2, 3, 4, 5))
+        ds10_nc = list(nr = 5, nc = c(50, 100, 200, 400),
+        ds10_ns = list(nr = 5, ns = c(2, 3, 4, 5))
     ),
     magl = list(
-        ds10_nc = list(nr = 2, nc = c(25, 50, 100, 200)),
+        ds10_nc = list(nr = 5, nc = c(50, 100, 200, 400)),
         ds10_ns = NULL
     )
 )
