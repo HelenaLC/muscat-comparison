@@ -11,26 +11,31 @@ author:
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
-    toc: true
+    toc: true,
+    code_folding: show
 ---
 
-```{r message = FALSE, warning = FALSE}
+```{r include = FALSE}
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+```
+
+```{r setup, message = FALSE, warning = FALSE}
 library(cowplot)
 library(Seurat)
 library(SingleCellExperiment)
 
-# increase future's maximum allowed size of objects 
+# increase future's maximum allowed size of objects
 # to be exported from default of 500 MB to 2 GB
-options(future.globals.maxSize = 2048 * 1024 ^ 2) 
+options(future.globals.maxSize = 2048 * 1024 ^ 2)
 ```
 
 # Load data
-```{r}
+```{r data}
 sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 ```
 
 # Integration
-```{r}
+```{r integration}
 # create SeuratObject
 so <- CreateSeuratObject(
     counts = counts(sce),
@@ -44,13 +49,13 @@ so <- lapply(cells_by_sample, function(i)
 
 # normalize, find variable genes, and scale
 so <- lapply(so, NormalizeData, verbose = FALSE)
-so <- lapply(so, FindVariableFeatures, nfeatures = 2e3, 
+so <- lapply(so, FindVariableFeatures, nfeatures = 2e3,
     selection.method = "vst", do.plot = FALSE, verbose = FALSE)
 so <- lapply(so, ScaleData, verbose = FALSE)
 
 # find anchors & integrate
 as <- FindIntegrationAnchors(so, verbose = FALSE)
-so <- IntegrateData(anchorset = as, dims = seq_len(30), 
+so <- IntegrateData(anchorset = as, dims = seq_len(30),
     features.to.integrate = rownames(sce), verbose = FALSE)
 
 # scale integrated data
@@ -59,18 +64,18 @@ so <- ScaleData(so, display.progress = FALSE)
 ```
 
 # Dimension reduction
-```{r}
+```{r dimred}
 so <- RunPCA(so, npcs = 30, verbose = FALSE)
-so <- RunTSNE(so, reduction = "pca", dims = seq_len(20), 
+so <- RunTSNE(so, reduction = "pca", dims = seq_len(20),
     seed.use = 1, do.fast = TRUE, verbose = FALSE)
 so <- RunUMAP(so, reduction = "pca", dims = seq_len(20),
     seed.use = 1, verbose = FALSE)
 ```
 
 # Clustering
-```{r}
+```{r clustering}
 so <- FindNeighbors(so, reduction = "pca", dims = seq_len(20), verbose = FALSE)
-for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2)) 
+for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2))
     so <- FindClusters(so, resolution = res, random.seed = 1, verbose = FALSE)
 ```
 
@@ -83,7 +88,7 @@ ps <- lapply(c("sample_id", "group_id", "ident"), function(u) {
     lgd <- get_legend(p2)
     p2 <- p2 + thm
     list(p1, p2, lgd)
-    plot_grid(p1, p2, lgd, nrow = 1, 
+    plot_grid(p1, p2, lgd, nrow = 1,
         rel_widths = c(1, 1, 0.5))
 })
 plot_grid(plotlist = ps, ncol = 1)

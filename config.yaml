@@ -1,21 +1,19 @@
 utils:    "scripts/utils.R"
-data_ids: ["kang"]
 
 raw_data: "data/raw_data"
 sim_data: "data/sim_data"
 
-sim_ids:   "metadata/sim_ids.txt"
-agg_ids:   "metadata/agg_ids.txt"
-sim_pars:  "metadata/sim_pars"
-data_pars: "metadata/data_pars"
-
-pb_pars:    "metadata/pb_pars.csv"
-mm_pars:    "metadata/mm_pars.csv"
-ad_pars:    "metadata/ad_pars.csv"
-mast_pars:  "metadata/mast_pars.csv"
-scdd_pars:  "metadata/scdd_pars.csv"
+dat_ids:   ["kang", "magl"]
+sim_ids:    "metadata/sim_ids.txt"
 method_ids: "metadata/method_ids.csv"
+
+data_pars: "metadata/data_pars"
+sim_pars:  "metadata/sim_pars"
+meth_pars: "metadata/meth_pars"
+anno_tbl:  "metadata/anno_tbl.rds"
 
 scripts: "scripts"
 results: "results"
 figures: "figures"
+
+plotting: "scripts/plotting"
