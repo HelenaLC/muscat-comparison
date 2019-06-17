@@ -1,8 +1,5 @@
-## This makes sure that R loads the workflowr package
-## automatically, everytime the project is loaded
-if (requireNamespace("workflowr", quietly = TRUE)) {
-  message("Loading .Rprofile for the current workflowr project")
-  library("workflowr")
-} else {
-  message("workflowr package not installed, please run devtools::install_github('jdblischak/workflowr') to use the workflowr functions")
-}
+if (requireNamespace("workflowr", quietly = TRUE))
+	library(workflowr)
+
+reticulate::use_python("~/soft/miniconda3/bin/python")
+options(future.globals.maxSize = 2048 * 1024 ^ 2)
