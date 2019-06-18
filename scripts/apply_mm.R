@@ -9,15 +9,13 @@ apply_mm <- function(sce, pars, ds_only = TRUE) {
     # run & time method
     t <- system.time({
         if (!ds_only & pars$covs == "dr")
-            sce$dr <- colMeans(counts(sce) > 0)
+            sce$dr <- Matrix::colMeans(counts(sce) > 0)
         pars[sapply(pars, `==`, "")] <- NULL
         res <- tryCatch(
             do.call(mmDS, c(list(sce, n_threads = 1, verbose = FALSE), pars)),
             error = function(e) e)
         if (!inherits(res, "error")) {
             res <- dplyr::bind_rows(res)
-        } else {
-            print(res)
         }
     })[[3]]
     
