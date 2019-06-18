@@ -31,11 +31,10 @@ top <- res %>% group_by(sid, i) %>% do({
 .cat_cols <- c("royalblue", "cornflowerblue", "red3", "tomato", "orange", "gold")
 names(.cat_cols) <- levels(res$category)
 
-df <- fromList(set_names(top$hit, top$mid)) %>% 
-    mutate(
-        code = apply(.[top$mid], 1, paste, collapse = ""),
-        degree = apply(.[top$mid], 1, sum),
-        hit = unique(unlist(top$hit))) %>% {
+df <- UpSetR::fromList(set_names(top$hit, top$mid)) %>% mutate(
+    code = apply(.[top$mid], 1, paste, collapse = ""),
+    degree = apply(.[top$mid], 1, sum),
+    hit = unique(unlist(top$hit))) %>% {
         m <- match(.$hit, res$hit)
         mutate(., sid = res$sid[m], i = res$i[m], cat = res$category[m])
     } %>% add_count(code) %>% group_by(code) %>% 
