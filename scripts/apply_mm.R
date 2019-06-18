@@ -14,9 +14,8 @@ apply_mm <- function(sce, pars, ds_only = TRUE) {
         res <- tryCatch(
             do.call(mmDS, c(list(sce, n_threads = 1, verbose = FALSE), pars)),
             error = function(e) e)
-        if (!inherits(res, "error")) {
+        if (!inherits(res, "error"))
             res <- dplyr::bind_rows(res)
-        }
     })[[3]]
     
     # return results
