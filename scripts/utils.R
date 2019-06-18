@@ -1,3 +1,4 @@
+mm <- RColorBrewer::brewer.pal(6, "Pastel1")
 .meth_cols <- c(
     "edgeR.sum(counts)" = "#000000",
     "limma-voom.sum(counts)" = "#5E5E5E",
@@ -24,7 +25,14 @@
     "AD-sid.vstcounts" = "#E29CF2",
     
     "scDD.logcounts" = "royalblue",
-    "scDD.vstcounts" = "cornflowerblue"
+    "scDD.vstcounts" = "cornflowerblue",
+    
+    "MM-dream"              = mm[1],
+    "MM-dream_dr"           = mm[2],
+    "MM-vst.DESeq2"         = mm[3],
+    "MM-vst.DESeq2_dr"      = mm[4],
+    "MM-vst.sctransform"    = mm[5],
+    "MM-vst.sctransform_dr" = mm[6]
 )
 
 #cols <- .meth_cols
