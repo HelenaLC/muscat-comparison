@@ -92,7 +92,7 @@ p2 <- ggplot(dfm, aes(x = code, y = method, color = factor(value))) +
         axis.title = element_blank(),
         aspect.ratio = NULL) 
 
-anno <- read.csv(config$mids)
+anno <- read.csv(snakemake@config$mids)
 anno$type <- factor(anno$type, levels = unique(anno$type[match(top$mid, anno$id)]))
 .typ_cols <- setNames(RColorBrewer::brewer.pal(nlevels(anno$type), "Set2"), levels(anno$type))
 
