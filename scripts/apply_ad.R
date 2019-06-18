@@ -19,7 +19,7 @@ apply_ad <- function(sce, pars, ds_only = TRUE) {
                     vstcounts = vst(counts(sce), show_progress = FALSE)$y)))
         }
         res <- tryCatch(
-            error = function(e) NULL, 
+            error = function(e) e, 
             run_ad(sce, pars$assay, pars$var))
     })[[3]]
     

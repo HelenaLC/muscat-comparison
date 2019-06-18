@@ -20,7 +20,7 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
                 vstcounts = exp(assays(sce)$vstcounts))
         }
         res <- tryCatch(
-            error = function(e) NULL, 
+            error = function(e) e, 
             run_scdd(sce))
     })[[3]]
     
@@ -29,23 +29,21 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
 }
 
 run_scdd <- function(sce) {
-    priors <- list(alpha = 0.01, mu0 = 0, s0 = 0.01, a0 = 0.01, b0 = 0.01)
-    sce$group_id <- as.numeric(sce$group_id)
     kids <- levels(sce$cluster_id)
     cells_by_k <- split(colnames(sce), sce$cluster_id)
     suppressMessages(
         lapply(kids, function(k) {
-            res <- results(scDD(sce[, cells_by_k[[k]]],
-                condition = "group_id", prior_param = priors, 
-                testZeroes = FALSE, min.nonzero = 20,
+            res <- results(scDD(sce[, cells_by_k[[k]]], 
+                min.nonzero = 20, condition = "group_id",
+                categorize = FALSE, testZeroes = FALSE,
                 param = BiocParallel::MulticoreParam(workers = 1)))
             data.frame(
-                gene = rownames(sce),
+                row.names = NULL, 
+                stringsAsFactors = FALSE,
+                gene = rownames(sce), 
                 cluster_id = k,
                 p_val = res$nonzero.pvalue, 
-                p_adj.loc = res$nonzero.pvalue.adj,
-                row.names = NULL,
-                stringsAsFactors = FALSE)
+                p_adj.loc = res$nonzero.pvalue.adj)
         }) %>% bind_rows %>% dplyr::mutate(p_adj.glb = p.adjust(p_val))
     )
 }

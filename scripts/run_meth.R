@@ -21,7 +21,6 @@ run_pars <- as.list(jsonlite::fromJSON(snakemake@input$run_pars))
 set.seed(run_pars$seed + as.numeric(j))
 
 # subset clusters & samples
-
 kids <- levels(sim$cluster_id)
 sids <- levels(sim$sample_id)
 m <- match(sids, sim$sample_id)
@@ -37,30 +36,33 @@ gs <- seq_len(nrow(sim))
 cs <- seq_len(ncol(sim))
 
 if (g != "x") 
-    gs <- sample(nrow(sim), g)
+    gs <- sample(gs, g)
 
 if (c != "x") {
-    cs <- split(cs, list(sim$cluster_id, sim$sample_id))
+    cs <- split(cs, list(sim$cluster_id, sim$sample_id)) 
     cs <- unlist(lapply(cs, function(u) 
         sample(u, min(length(u), as.numeric(c)))))
-}
+    
+sim <- sim[gs, cs]
 
 # run method & write results to .rds
 source(fun <- snakemake@input$fun)
 fun <- gsub("(.R)", "", basename(fun))
-res <- get(fun)(sim[gs, cs], meth_pars)
+res <- get(fun)(sim, meth_pars)
 
-# add metadata
-gi <- metadata(sim)$gene_info %>% 
-    dplyr::mutate_at("cluster_id", as.character) %>% 
-    dplyr::select(-"logFC") %>% 
-    dplyr::mutate(., sim_lfc = eval(parse(text = ifelse(
-        .$sim_mean.B == 0, "0", "log2(sim_mean.B/sim_mean.A)"))))
-
-res$tbl <- left_join(gi, res$tbl, by = c("gene", "cluster_id")) %>%
-    {if ("logFC" %in% names(.)) 
-        dplyr::rename(., est_lfc = logFC) else .} %>%
-    dplyr::mutate(did, sid, mid, i, j, g, c, k, s,
-        is_de = as.integer(!category %in% c("ee", "ep")))
+if (!inherits(res$tbl), "error") {
+    # add metadata
+    gi <- metadata(sim)$gene_info %>% 
+        dplyr::mutate_at("cluster_id", as.character) %>% 
+        dplyr::select(-"logFC") %>% 
+        dplyr::mutate(., sim_lfc = eval(parse(text = ifelse(
+            .$sim_mean.B == 0, "0", "log2(sim_mean.B/sim_mean.A)"))))
+    
+    res$tbl <- left_join(gi, res$tbl, by = c("gene", "cluster_id")) %>%
+        {if ("logFC" %in% names(.)) 
+            dplyr::rename(., est_lfc = logFC) else .} %>%
+        dplyr::mutate(did, sid, mid, i, j, g, c, k, s,
+            is_de = as.integer(!category %in% c("ee", "ep")))
+}
 
 saveRDS(res, snakemake@output$res)

@@ -21,7 +21,7 @@ apply_mast <- function(sce, pars, ds_only = TRUE) {
             assays(sce)$lCount <- assays(sce)[[pars$assay]]
         }
         res <- tryCatch(
-            error = function(e) NULL, 
+            error = function(e) e, 
             run_mast(sce, pars$covs))
     })[[3]]
     
