@@ -39,10 +39,11 @@ if (g != "x")
     gs <- sample(gs, g)
 
 if (c != "x") {
-    cs <- split(cs, list(sim$cluster_id, sim$sample_id)) 
+    cs <- split(cs, list(sim$cluster_id, sim$sample_id))
     cs <- unlist(lapply(cs, function(u) 
         sample(u, min(length(u), as.numeric(c)))))
-    
+}
+
 sim <- sim[gs, cs]
 
 # run method & write results to .rds
