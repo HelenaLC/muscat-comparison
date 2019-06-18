@@ -38,7 +38,8 @@ df <- UpSetR::fromList(set_names(top$hit, top$mid)) %>% mutate(
         m <- match(.$hit, res$hit)
         mutate(., sid = res$sid[m], i = res$i[m], cat = res$category[m])
     } %>% add_count(code) %>% group_by(code) %>% 
-    mutate(p_true = 100 * sum(cat %in% dd) / n) %>% ungroup
+    mutate(p_true = 100 * sum(cat %in% c("ds", "dp", "dm", "db")) / n) %>% 
+    ungroup
 
 m <- match(unique(df$code), df$code)
 keep <- pull(top_n(df[m, ], 50, n), "code")
@@ -48,7 +49,6 @@ o <- order(df$degree[m], -df$n[m])
 
 #/ (sum(n_dd) * nrow(top))
 max <- ceiling(max(df$n)/100)*100
-dd <- c("ds", "dp", "dm", "db")
 p1 <- ggplot(df, aes(x = code)) +
     coord_cartesian(clip = 'off') +
     geom_bar(aes(y = ..count.., fill = cat)) + 
