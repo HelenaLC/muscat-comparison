@@ -50,7 +50,7 @@ source(fun <- snakemake@input$fun)
 fun <- gsub("(.R)", "", basename(fun))
 res <- get(fun)(sim, meth_pars)
 
-if (!inherits(res$tbl), "error") {
+if (!inherits(res$tbl, "error")) {
     # add metadata
     gi <- metadata(sim)$gene_info %>% 
         dplyr::mutate_at("cluster_id", as.character) %>% 
