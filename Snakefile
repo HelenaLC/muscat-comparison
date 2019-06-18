@@ -56,7 +56,7 @@ fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 rule all: 
 	input:	sim_dirs, res_dirs, fig_dirs,
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
-				nms = ["null", "pb_mean_disp", "sim_vs_est_lfc", "perf_by_cat"]),
+				nms = ["null", "pb_mean_disp", "sim_vs_est_lfc", "perf_by_cat", "upset"]),
 			expand(join(config["figures"], "{did}", "perf_by_cat_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
@@ -126,6 +126,15 @@ rule plot_perf_by_nx:
 				"/ds10_n" + wc.x + ";.*").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "perf_by_n{x}.rds"),
 			fig = join(config["figures"], "{did}", "perf_by_n{x}.pdf")
+	script: "{input.script}"
+
+rule plot_upset:
+	input:	config["utils"],
+			script = join(config["scripts"], "plot_upset.R"),
+			res = lambda wc: filter(re.compile(\
+				config["results"] + "/" + wc.did +\
+				"/d[a-z][0-9]+;.*").search, res_dirs)
+	output: fig = join(config["figures"], "{did}", "upset.pdf")
 	script: "{input.script}"
 
 rule plot_lfc:
