@@ -48,7 +48,7 @@ m <- match(unique(df$code), df$code)
 o <- order(df$degree[m], -df$n[m])
 
 #/ (sum(n_dd) * nrow(top))
-max <- ceiling(max(df$n)/100)*100
+max <- ceiling(max(df$n)/500)*500
 p1 <- ggplot(df, aes(x = code)) +
     coord_cartesian(clip = 'off') +
     geom_bar(aes(y = ..count.., fill = cat)) + 
