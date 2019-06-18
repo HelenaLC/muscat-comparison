@@ -32,8 +32,8 @@ if (s != "x") sids <- sapply(split(sids, gids), sample, s)
 sim <- .filter_sce(sim, kids, sids)
 
 # subset genes & cells
-gs <- seq_len(nrow(sim))
-cs <- seq_len(ncol(sim))
+gs <- rownames(sim)
+cs <- colnames(sim)
 
 if (g != "x") 
     gs <- sample(gs, g)
@@ -44,16 +44,15 @@ if (c != "x") {
         sample(u, min(length(u), as.numeric(c)))))
 }
 
-sim <- sim[gs, cs]
-
 # run method & write results to .rds
 source(fun <- snakemake@input$fun)
 fun <- gsub("(.R)", "", basename(fun))
-res <- get(fun)(sim, meth_pars)
+res <- get(fun)(sim[gs, cs], meth_pars)
 
 if (!inherits(res$tbl, "error")) {
     # add metadata
     gi <- metadata(sim)$gene_info %>% 
+        dplyr::filter(gene %in% gs) %>% 
         dplyr::mutate_at("cluster_id", as.character) %>% 
         dplyr::select(-"logFC") %>% 
         dplyr::mutate(., sim_lfc = eval(parse(text = ifelse(
