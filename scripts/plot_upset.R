@@ -119,7 +119,11 @@ p <- plot_grid(
         rel_heights = c(3, 2)),
     nrow = 1, rel_widths = c(6, 1))
 
-ggsave(snakemake@output$fig, p,
+ggsave(snakemake@output$fig1, p,
     width = 15, height = 10, units = "cm", 
-    dpi = 300, useDingbats = FALSE)
+    dpi = 300)
+
+ggsave(snakemake@output$fig2, p,
+    width = 15, height = 10, units = "cm", 
+    dpi = 300, compression = "lzw", type = "cairo")
 
