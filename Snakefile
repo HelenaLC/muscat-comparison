@@ -57,7 +57,7 @@ rule all:
 	input:	sim_dirs, res_dirs, fig_dirs,
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
 				nms = ["null", "pb_mean_disp", "sim_vs_est_lfc", "perf_by_cat"]),
-			expand(join(config["figures"], "{did}", "upset.png"), did = config["dids"]),
+			expand(join(config["figures"], "{did}", "upset.pdf"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "perf_by_cat_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
@@ -135,7 +135,7 @@ rule plot_upset:
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
 				"/d[a-z][0-9]+;.*").search, res_dirs)
-	output: fig = join(config["figures"], "{did}", "upset.png")
+	output: fig = join(config["figures"], "{did}", "upset.pdf")
 	script: "{input.script}"
 
 rule plot_lfc:
