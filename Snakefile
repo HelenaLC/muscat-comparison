@@ -55,6 +55,7 @@ fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 
 rule all: 
 	input:	sim_dirs, res_dirs, fig_dirs,
+			expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
 				nms = ["null", "pb_mean_disp", "sim_vs_est_lfc", "perf_by_cat"]),
 			expand(join(config["figures"], "{did}", "upset.pdf"), did = config["dids"]),
@@ -64,6 +65,12 @@ rule all:
 				did = config["dids"], x = "c", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
 				did = "kang", x = "s", ext = ["rds", "pdf"])
+
+rule sim_qc:
+	input:	script = join(config["scripts"], "sim_qc.R"),
+			sce = lambda wc: join(config["raw_data"], wc.did + ".rds")
+	output: html = join(config["figures"], "{did}_qc.html")
+	script:	"{input.script}"
 
 rule sim_data:
 	priority: 100
