@@ -16,7 +16,7 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
                     vstcounts = exp(vst(counts(sce), show_progress = FALSE)$y))))
         } else {
             assays(sce)$normcounts <- switch(pars$assay,
-                logcounts = 2^normcounts(sce)-1,
+                logcounts = 2^logcounts(sce)-1,
                 vstcounts = exp(assays(sce)$vstcounts))
         }
         res <- tryCatch(

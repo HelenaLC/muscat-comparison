@@ -6,51 +6,34 @@ pb <- dplyr::bind_rows(
     expand.grid(
         stringsAsFactors = FALSE,
         assay = "counts", fun = "sum", scale = FALSE, 
-        method = c("edgeR", "limma-voom", "limma-trend")
+        method = c("edgeR", "limma-voom")
     ),
     expand.grid(
         stringsAsFactors = FALSE, scale = FALSE,
-        assay = c("normcounts", "cpm", "logcpm"),
-        fun = "sum", method = "limma-trend"
-    ),
-    expand.grid(
-        stringsAsFactors = FALSE, scale = FALSE,
-        assay = c("normcounts", "logcounts", "vstcounts"),
+        assay = c("logcounts", "vstresiduals"),
         fun = "mean", method = "limma-trend"
     ),
     data.frame(
-        stringsAsFactors = FALSE,
-        assay = "cpm", fun = "median", scale = TRUE, method = "limma-trend"
+        stringsAsFactors = FALSE, scale = TRUE,
+        assay = "cpm", fun = "sum", method = "edgeR"
     )    
 )
 pb$id <- with(pb, sprintf("%s.%s(%s%s)", 
     method, fun, ifelse(scale, "scale", ""), assay))
 
 # mixed-models -----------------------------------------------------------------
-mm <- dplyr::bind_rows(
-    expand.grid(
-        stringsAsFactors = FALSE,
-        method = "dream",
-        vst = "",
-        covs = c("dr", ""),
-        ddf = "Kenward-Roger"),
-    expand.grid(
-        stringsAsFactors = FALSE,
-        method = "vst",
-        vst = c("sctransform", "DESeq2"),
-        covs = c("dr", ""),
-        ddf = "Kenward-Roger"))
-mm$id <- with(mm, {
-    sep1 <- ifelse(vst != "", ".", "")
-    sep2 <- ifelse(covs != "", "_", "")
-    sprintf("MM-%s%s%s%s%s", method, sep1, vst, sep2, covs)
-})
+mm <- data.frame(
+    stringsAsFactors = FALSE,
+    method = c("dream", "vst", "poisson"),
+    vst = c("", "sctransform", ""),
+    ddf = "Kenward-Roger")
+mm$id <- with(mm, paste0("MM-", method))
 
 # Anderson-Darling -------------------------------------------------------------
 ad <-  expand.grid(
     KEEP.OUT.ATTRS = FALSE,
     stringsAsFactors = FALSE,
-    assay = c("logcounts", "vstcounts"),
+    assay = c("logcounts", "vstresiduals"),
     var = c("sample_id", "group_id"))
 ad$id <- with(ad, sprintf("AD-%s.%s",
     gsub("(.).*", "\\1id", var), assay))
@@ -58,17 +41,15 @@ ad$id <- with(ad, sprintf("AD-%s.%s",
 # scDD -------------------------------------------------------------------------
 scdd <- data.frame(
     stringsAsFactors = FALSE,
-    assay = c("logcounts", "vstcounts"))
+    assay = c("logcounts", "vstresiduals"))
 scdd$id <- with(scdd, sprintf("scDD.%s", assay))
 
 # MAST -------------------------------------------------------------------------
 mast <- expand.grid(
     KEEP.OUT.ATTRS = FALSE,
     stringsAsFactors = FALSE,
-    assay = c("logcounts", "vstcounts"),
-    covs = c("dr", ""))
-mast$id <- with(mast, sprintf("MAST.%s%s%s",
-    assay, ifelse(covs == "", "", "_"), covs))
+    assay = c("logcounts", "vstresiduals"))
+mast$id <- paste("MAST", mast$assay, sep = ".")
 
 # write method IDs to .csv -----------------------------------------------------
 for (id in ids) {

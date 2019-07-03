@@ -8,8 +8,6 @@ apply_mm <- function(sce, pars, ds_only = TRUE) {
     
     # run & time method
     t <- system.time({
-        if (!ds_only & pars$covs == "dr")
-            sce$dr <- Matrix::colMeans(counts(sce) > 0)
         pars[sapply(pars, `==`, "")] <- NULL
         res <- tryCatch(
             do.call(mmDS, c(list(sce, n_threads = 1, verbose = FALSE), pars)),

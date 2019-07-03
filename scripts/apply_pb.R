@@ -7,20 +7,10 @@ suppressMessages({
 })
 
 apply_pb <- function(sce, pars, ds_only = TRUE) {
-    # specify design & contrast matrix
-    ei <- metadata(sce)$experiment_info
-    design <- model.matrix(~ 0 + ei$group_id)
-    dimnames(design) <- list(ei$sample_id, levels(ei$group_id))
-    contrast <- makeContrasts("B-A", levels = design)
-    
-    # get aggregateData() parameters
-    args <- as.list(args("aggregateData"))
-    agg_pars <- pars[names(pars) %in% names(args)]
-    
-    # run & time method
+    # run & time aggregation
     t1 <- system.time({
+        a <- pars$assay
         if (!ds_only) {
-            a <- agg_pars$assay
             suppressWarnings(suppressMessages(
                 assays(sce)[[a]] <- switch(a, 
                     counts = counts(sce),
@@ -30,21 +20,14 @@ apply_pb <- function(sce, pars, ds_only = TRUE) {
                     cpm = calculateCPM(counts(sce)),
                     logcpm = log2(calculateCPM(counts(sce)) + 1))))
         }
-        pb <- do.call(aggregateData, c(list(sce), agg_pars))
+        pb <- aggregateData(sce, a, fun = pars$fun, scale = pars$scale)
     })[[3]]
-    
-    # get pbDS() parameters
-    args <- as.list(args("pbDS"))
-    ds_pars <- pars[names(pars) %in% names(args)]
-    ds_pars <- c(list(sce, pb, design, contrast, verbose = FALSE), ds_pars)
-    
-    # run & time method
-    t2 <- system.time(
-        suppressWarnings(
-            res <- tryCatch(
-                error = function(e) NULL, 
-                do.call(pbDS, ds_pars))))[[3]]
-    
+
+    # run & time DS analysis
+    t2 <- system.time(suppressWarnings(
+        res <- tryCatch(error = function(e) NULL, 
+            pbDS(pb, method = pars$method))))[[3]]
+
     # return results
     list(rt = c(t1, t2), tbl = dplyr::bind_rows(res$table[[1]]))
 }
