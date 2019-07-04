@@ -64,7 +64,9 @@ rule all:
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
 				did = config["dids"], x = "c", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
-				did = "kang", x = "s", ext = ["rds", "pdf"])
+				did = "kang", x = "s", ext = ["rds", "pdf"]),
+			expand(join(config["figures"], "{did}", "perf_by_expr.{ext}"),\
+				did = config["dids"], ext = ["rds", "pdf"])
 
 rule sim_qc:
 	input:	script = join(config["scripts"], "sim_qc.R"),
@@ -134,6 +136,16 @@ rule plot_perf_by_nx:
 				"/ds10_n" + wc.x + ";.*").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "perf_by_n{x}.rds"),
 			fig = join(config["figures"], "{did}", "perf_by_n{x}.pdf")
+	script: "{input.script}"
+
+rule plot_perf_by_expr:
+	input:	config["utils"],
+			script = join(config["scripts"], "plot_perf_by_expr.R"),
+			res = lambda wc: filter(re.compile(\
+				config["results"] + "/" + wc.did +\
+				"/ds10;" + wc.x + ";.*").search, res_dirs)
+	output: ggp = join(config["figures"], "{did}", "perf_by_expr.rds"),
+			fig = join(config["figures"], "{did}", "perf_by_expr.pdf")
 	script: "{input.script}"
 
 rule plot_upset:
