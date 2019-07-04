@@ -16,7 +16,7 @@ apply_ad <- function(sce, pars, ds_only = TRUE) {
             suppressWarnings(suppressMessages(
                 assays(sce)[[pars$assay]] <- switch(pars$assay,
                     logcounts = logcounts(normalize(sce)),
-                    vstcounts = vst(counts(sce), show_progress = FALSE)$y)))
+                    vstresiduals = vst(counts(sce), show_progress = FALSE)$y)))
         }
         res <- tryCatch(
             error = function(e) e, 

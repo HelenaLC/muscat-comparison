@@ -26,7 +26,7 @@ apply_pb <- function(sce, pars, ds_only = TRUE) {
     # run & time DS analysis
     t2 <- system.time(suppressWarnings(
         res <- tryCatch(error = function(e) NULL, 
-            pbDS(pb, method = pars$method))))[[3]]
+            pbDS(pb, method = pars$method, verbose = FALSE))))[[3]]
 
     # return results
     list(rt = c(t1, t2), tbl = dplyr::bind_rows(res$table[[1]]))

@@ -5,11 +5,11 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
   
     "edgeR.sum(scalecpm)" = "#C6C6C6",
     
-    "limma-trend.mean(logcounts)" = "#007700",
+    "limma-trend.mean(logcounts)"    = "#007700",
     "limma-trend.mean(vstresiduals)" = "#00B161",
     
     "MAST.logcounts"    = "#A06A50",
-    "MAST.vstresiduals"    = "#735D00",
+    "MAST.vstresiduals" = "#735D00",
     
     "AD-gid.logcounts" = "#B03060",
     "AD-gid.vstresiduals" = "#FFABD3",
