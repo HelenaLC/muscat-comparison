@@ -143,7 +143,7 @@ rule plot_perf_by_expr:
 			script = join(config["scripts"], "plot_perf_by_expr.R"),
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
-				"/ds10;" + wc.x + ";.*").search, res_dirs)
+				"/ds10;.*").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "perf_by_expr.rds"),
 			fig = join(config["figures"], "{did}", "perf_by_expr.pdf")
 	script: "{input.script}"
