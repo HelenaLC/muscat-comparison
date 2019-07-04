@@ -21,7 +21,7 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
     
     "MM-dream"   = "#336A7C",
     "MM-vst"     = "#3BB3B7",
-    "MM-poisson" = "#00E3DD"
+    "MM-nbinom" = "#00E3DD"
 )
 
 
