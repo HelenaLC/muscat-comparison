@@ -26,6 +26,7 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
     "MM-poisson" = "#00E3DD"
 )
 
+
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
