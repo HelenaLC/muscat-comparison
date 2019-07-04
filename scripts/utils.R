@@ -6,20 +6,18 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
     "edgeR.sum(scalecpm)" = "#C6C6C6",
     
     "limma-trend.mean(logcounts)" = "#007700",
-    "limma-trend.mean(vstcounts)" = "#00B161",
-
-    "limma-trend.median(scalecpm)" = "#FFD700",
+    "limma-trend.mean(vstresiduals)" = "#00B161",
     
     "MAST.logcounts"    = "#A06A50",
-    "MAST.vstcounts"    = "#735D00",
+    "MAST.vstresiduals"    = "#735D00",
     
     "AD-gid.logcounts" = "#B03060",
-    "AD-gid.vstcounts" = "#FFABD3",
+    "AD-gid.vstresiduals" = "#FFABD3",
     "AD-sid.logcounts" = "#9E6A92",
-    "AD-sid.vstcounts" = "#E29CF2",
+    "AD-sid.vstresiduals" = "#E29CF2",
     
     "scDD.logcounts" = "royalblue",
-    "scDD.vstcounts" = "cornflowerblue",
+    "scDD.vstresiduals" = "cornflowerblue",
     
     "MM-dream"   = "#336A7C",
     "MM-vst"     = "#3BB3B7",
