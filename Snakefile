@@ -65,8 +65,8 @@ rule all:
 				did = config["dids"], x = "c", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
 				did = "kang", x = "s", ext = ["rds", "pdf"]),
-			expand(join(config["figures"], "{did}", "perf_by_expr.{ext}"),\
-				did = config["dids"], ext = ["rds", "pdf"])
+			expand(join(config["figures"], "{did}", "perf_by_expr_{padj}.{ext}"),\
+				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"])
 
 rule sim_qc:
 	input:	script = join(config["scripts"], "sim_qc.R"),
@@ -144,8 +144,8 @@ rule plot_perf_by_expr:
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
 				"/ds10;.*").search, res_dirs)
-	output: ggp = join(config["figures"], "{did}", "perf_by_expr.rds"),
-			fig = join(config["figures"], "{did}", "perf_by_expr.pdf")
+	output: ggp = join(config["figures"], "{did}", "perf_by_expr_{padj}.rds"),
+			fig = join(config["figures"], "{did}", "perf_by_expr_{padj}.pdf")
 	script: "{input.script}"
 
 rule plot_upset:
