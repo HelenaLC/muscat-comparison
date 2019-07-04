@@ -2,22 +2,16 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
 .meth_cols <- c(
     "edgeR.sum(counts)" = "#000000",
     "limma-voom.sum(counts)" = "#5E5E5E",
-    "limma-trend.sum(counts)" = "#C6C6C6",
+  
+    "edgeR.sum(scalecpm)" = "#C6C6C6",
     
-    "limma-trend.sum(cpm)" = "#336A7C",
-    "limma-trend.sum(normcounts)" = "#3BB3B7",
-    "limma-trend.sum(logcpm)" = "#00E3DD",
-    
-    "limma-trend.mean(normcounts)" = "#A7D131",
     "limma-trend.mean(logcounts)" = "#007700",
     "limma-trend.mean(vstcounts)" = "#00B161",
-    
+
     "limma-trend.median(scalecpm)" = "#FFD700",
     
     "MAST.logcounts"    = "#A06A50",
-    "MAST.logcounts_dr" = "#CBA28F",
     "MAST.vstcounts"    = "#735D00",
-    "MAST.vstcounts_dr" = "#A18F5C",
     
     "AD-gid.logcounts" = "#B03060",
     "AD-gid.vstcounts" = "#FFABD3",
@@ -27,12 +21,9 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
     "scDD.logcounts" = "royalblue",
     "scDD.vstcounts" = "cornflowerblue",
     
-    "MM-dream"              = mm[1],
-    "MM-dream_dr"           = mm[2],
-    "MM-vst.DESeq2"         = mm[3],
-    "MM-vst.DESeq2_dr"      = mm[4],
-    "MM-vst.sctransform"    = mm[5],
-    "MM-vst.sctransform_dr" = mm[6]
+    "MM-dream"   = "#336A7C",
+    "MM-vst"     = "#3BB3B7",
+    "MM-poisson" = "#00E3DD",
 )
 
 #cols <- .meth_cols
