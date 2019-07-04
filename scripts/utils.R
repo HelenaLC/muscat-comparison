@@ -68,10 +68,10 @@ mm <- RColorBrewer::brewer.pal(6, "Pastel1")
     geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 
     geom_point(size = 1, alpha = 0.8) + 
     geom_line(size = 0.4, alpha = 0.4, show.legend = FALSE) +
-    scale_color_manual(values = .meth_cols) +
+    scale_color_manual(NULL, values = .meth_cols) +
     scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
         labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
     scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
-    guides(col = guide_legend(nrow = 5,
+    guides(col = guide_legend(ncol = 4,
         override.aes = list(size = 2, alpha = 1))) +
     .prettify(theme = "bw", legend.position = "bottom")
