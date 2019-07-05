@@ -9,10 +9,11 @@ suppressPackageStartupMessages({
 })
 
 x <- snakemake@wildcards$x
-#fns <- list.files("results/magl", "ds10_nc;", full.names = TRUE)
-res <- lapply(snakemake@input$res, readRDS) %>% 
-    map("tbl") %>% bind_rows %>% 
-    setDT %>% split(by = "j", flatten = FALSE)
+#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_nc;", full.names = TRUE)
+res <- lapply(snakemake@input$res, readRDS) %>% map("tbl")
+rmv <- vapply(res, inherits, what = "error", logical(1))
+res <- map(res[!rmv], mutate_if, is.factor, as.character) %>% 
+    bind_rows %>% setDT %>% split(by = "j", flatten = FALSE)
 
 cd <- lapply(seq_along(res), function(i) {
     res2 <- group_by(res[[i]], mid) %>% 
