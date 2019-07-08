@@ -21,7 +21,8 @@ sce <- .filter_sce(sce,
     kids = sample(kids, sim_pars$nk),
     sids = sample(sids, sim_pars$ns))
 
-sim <- simData(sce, nrow(sce), sim_pars$nc, p_dd = sim_pars$p_dd)
+sim <- simData(sce, nrow(sce), sim_pars$nc, 
+    p_dd = sim_pars$p_dd, probs = sim_pars$probs)
 sim <- sim[rowSums(counts(sim) > 0) >= 10, ]
 sim <- sim[sample(nrow(sim), min(nrow(sim), sim_pars$ng)), ]
 

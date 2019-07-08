@@ -9,19 +9,24 @@ suppressPackageStartupMessages({
 })
 
 x <- snakemake@wildcards$x
-#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_nc;", full.names = TRUE)
-res <- lapply(snakemake@input$res, readRDS) %>% map("tbl")
+#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_ns;", full.names = TRUE)
+res <- lapply(fns, readRDS) %>% map("tbl")
 rmv <- vapply(res, inherits, what = "error", logical(1))
 res <- map(res[!rmv], mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% setDT %>% split(by = "j", flatten = FALSE)
+    bind_rows %>% setDT %>% split(by = "j", flatten = FALSE) %>% 
+    map(group_by, mid) %>% map(function(u) 
+        set_names(group_split(u), group_keys(u)[[1]]))
 
 cd <- lapply(seq_along(res), function(i) {
-    res2 <- group_by(res[[i]], mid) %>% 
-        {set_names(group_split(.), group_keys(.)[[1]])}
-    dfs <- c(
-        lapply(c("p_val", "p_adj.loc"), map, .x = res2),
-        list(truth = res2[[1]][, c("is_de", x)])) %>% 
+    map(res[[i]][[1]], select, c(x, "is_de")) %>% 
+        bind_rows
+    truth <- lapply(c(x, "is_de"), map, .x = res[[i]]) %>% 
+        map(unlist) %>% set_names(c(x, "is_de")) %>% 
+        data.frame(row.names = NULL, check.names = FALSE)
+    pvals <- lapply(c("p_val", "p_adj.loc"), map, .x = res[[i]]) %>% 
         map(data.frame, check.names = FALSE)
+    dfs <- c(list(truth), pvals)
+    names(dfs) <- c("truth", "pval", "padj")
     do.call(COBRAData, dfs)
 })
 

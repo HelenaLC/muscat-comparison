@@ -13,9 +13,22 @@ sim_pars <- list(
     ds10_ns = list(nr = 5, nk = 2, ns = 5, seed = 60)
 )
 
+ss_ns <- 3
+ss <- lapply(seq_len(4), function(i) {
+    ss <- rep(1, ss_ns) / seq(1, i, length = ss_ns)
+    ss / sum(ss)
+})
+
+for (i in seq_along(ss)) {
+    id <- paste0("ds10_ss", i)
+    sim_pars[[id]] <- list(
+        nr = 3, nk = 2, ns = ss_ns, seed = 70+10*(i-1), 
+        p_dd = ds10, probs = list(NULL, ss[[i]], NULL))
+}
+
 def_pars <- list(nr = 1, nk = 3, ns = 3, 
     ng = 4e3, nc = function(nk, ns) 2*nk*ns*200, 
-    p_dd = ds10, seed = 1)
+    p_dd = ds10, probs = NULL, seed = 1)
 
 sim_pars <- lapply(sim_pars, function(u) {
     v <- !names(def_pars) %in% names(u)

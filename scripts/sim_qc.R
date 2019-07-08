@@ -7,7 +7,7 @@ suppressMessages({
 })
 
 # load data
-sce <- readRDS(snakemake@input$sce)
+sce <- readRDS('/Volumes/HelenaLC/home/muscat-comparison/data/raw_data/kang.rds')
 probs <- list(
     table(sce$cluster_id) / ncol(sce),
     table(sce$sample_id)  / ncol(sce),
@@ -37,7 +37,7 @@ dds_list <- list(
 
 countsimQCReport(
     ddsList = dds_list,
-    outputFile = snakemake@output$html,
+    outputFile = '/users/helena/desktop/kang_qc.html',
     outputDir = ".",
     outputFormat = "html_document",
     maxNForCorr = 400,
