@@ -18,8 +18,6 @@ res <- map(res[!rmv], mutate_if, is.factor, as.character) %>%
         set_names(group_split(u), group_keys(u)[[1]]))
 
 cd <- lapply(seq_along(res), function(i) {
-    map(res[[i]][[1]], dplyr::select, c(x, "is_de")) %>% 
-        bind_rows
     truth <- lapply(c(x, "is_de"), map, .x = res[[i]]) %>% 
         map(unlist) %>% set_names(c(x, "is_de")) %>% 
         data.frame(row.names = NULL, check.names = FALSE)
