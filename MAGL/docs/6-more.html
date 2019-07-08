@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Exploration of the LPS DEA</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MAGL</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Contents</a>
+</li>
+<li>
+  <a href="0-preprocessing.html">Preprocessing</a>
+</li>
+<li>
+  <a href="1-clustering.html">Clustering</a>
+</li>
+<li>
+  <a href="2-annotation.html">Annotation</a>
+</li>
+<li>
+  <a href="3-differential.html">DS analysis</a>
+</li>
+<li>
+  <a href="4-geneset.html">Geneset analysis</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://robinsonlabuzh.github.io">Robinson Lab</a>
+</li>
+<li>
+  <a href="https://github.com/HelenaLC/muscat-comparison">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploration of the LPS DEA</h1>
+<h4 class="author">Pierre-Luc Germain</h4>
+<h4 class="date">Juli 08, 2019</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-07-08
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+</p>
+<p>
+<strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.3.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190311code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190311)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190311code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190311)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+</p>
+</div>
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div class="panel-body">
+The following chunks had caches available:
+<ul>
+<li>
+session-info-chunk-inserted-by-workflowr
+</li>
+<li>
+unnamed-chunk-1
+</li>
+<li>
+unnamed-chunk-10
+</li>
+<li>
+unnamed-chunk-11
+</li>
+<li>
+unnamed-chunk-12
+</li>
+<li>
+unnamed-chunk-13
+</li>
+<li>
+unnamed-chunk-14
+</li>
+<li>
+unnamed-chunk-15
+</li>
+<li>
+unnamed-chunk-2
+</li>
+<li>
+unnamed-chunk-3
+</li>
+<li>
+unnamed-chunk-4
+</li>
+<li>
+unnamed-chunk-5
+</li>
+<li>
+unnamed-chunk-6
+</li>
+<li>
+unnamed-chunk-7
+</li>
+<li>
+unnamed-chunk-8
+</li>
+<li>
+unnamed-chunk-9
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory <code>6-more_cache</code> and re-run the analysis. To have workflowr automatically delete the cache directory prior to building the file, set <code>delete_cache = TRUE</code> when running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree6bdee2fb55daa7ce71da0a0bd95b6761473f95b5targetblank6bdee2fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/6bdee2fb55daa7ce71da0a0bd95b6761473f95b5" target="_blank">6bdee2f</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree6bdee2fb55daa7ce71da0a0bd95b6761473f95b5targetblank6bdee2fa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    MAGL/.Rhistory
+    Ignored:    MAGL/.Rproj.user/
+    Ignored:    MAGL/analysis/5-genesetb_cache/
+    Ignored:    MAGL/analysis/5-more_cache/
+    Ignored:    MAGL/analysis/6-more_cache/
+    Ignored:    MAGL/analysis/output
+    Ignored:    MAGL/output/
+
+Untracked files:
+    Untracked:  MAGL/analysis/5-genesetb.Rmd
+    Untracked:  MAGL/docs/figure/5-genesetb.Rmd/
+    Untracked:  MAGL/docs/figure/5-more.Rmd/
+    Untracked:  MAGL/docs/figure/6-more.Rmd/
+
+Unstaged changes:
+    Modified:   .gitignore
+    Modified:   MAGL/analysis/6-more.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/6bdee2fb55daa7ce71da0a0bd95b6761473f95b5/MAGL/analysis/6-more.Rmd" target="_blank">6bdee2f</a>
+</td>
+<td>
+Pierre-Luc Germain
+</td>
+<td>
+2019-07-08
+</td>
+<td>
+some further analysis on the LPS dataset…
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(cowplot)
+library(dplyr)
+library(ggplot2)
+library(muscat)
+library(purrr)
+library(SingleCellExperiment)
+library(edgeR)
+library(SEtools)
+library(BiocParallel)
+library(topGO)
+library(org.Mm.eg.db)
+library(M3C)
+library(msigdbr)
+
+options(future.globals.maxSize = 2e3*1024^2)
+
+sym2rn &lt;- function(x, rn){
+  p &lt;- paste(paste0(&quot;\\.&quot;,x,&quot;$&quot;), collapse=&quot;|&quot;)
+  grep(p, rn, value=TRUE)
+}</code></pre>
+<div id="load-data-results" class="section level1">
+<h1>Load data &amp; results</h1>
+<pre class="r"><code>sce &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))
+pb &lt;- aggregateData(sce, &quot;counts&quot;, fun=&quot;sum&quot;)
+pb$group_id &lt;- factor(rep(c(&quot;WT&quot;,&quot;LPS&quot;), each=4),levels=c(&quot;WT&quot;,&quot;LPS&quot;))
+# mm &lt;- model.matrix(~0+pb$group_id)
+# dimnames(mm) &lt;- list(colnames(pb), levels(pb$group_id))
+# res &lt;- pbDS(sce, pb, mm, limma::makeContrasts(&quot;LPS-WT&quot;, levels=mm), method=&quot;edgeR&quot;)
+# saveRDS(res, file=&quot;output/MAGL-DS_res.rds&quot;)
+res &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-DS_res.rds&quot;))</code></pre>
+</div>
+<div id="comparison-across-cell-types" class="section level1">
+<h1>Comparison across cell types</h1>
+<p><strong>Q1: To what extent are the changes shared or cell-type specific?</strong></p>
+<p>In order to be able to asses the overlap and magnitude of changes across cell types independent of variations in the significance, we plot a heatmap of the logFC, in each cell type, of the union of differentially-expressed genes:</p>
+<pre class="r"><code># get pseudo-bulk SEs of logFC
+lcpm &lt;- lapply(res$data, FUN=function(x) log1p(cpm(x)))
+lfc &lt;- lapply(lcpm, w=which(pb$group_id==&quot;LPS&quot;), FUN=function(x,w) x-rowMeans(x[,-w]))
+lfc &lt;- lfc[order(names(lfc))[c(2,1,12:14,3:11)]]
+lfc2 &lt;- lapply(lfc, function(x) SummarizedExperiment(x, colData=colData(pb)))
+
+degs &lt;- lapply(res$table$`LPS-WT`, FUN=function(x){ x$gene[which(x$p_adj.loc &lt;0.01 &amp; abs(x$logFC)&gt;1)] })
+alldegs &lt;- unique(unlist(degs))
+
+# we merge the SEs
+SE &lt;- mergeSEs(lfc2, do.scale=FALSE, use.assays = 1)
+SE$type &lt;- &quot;Glia&quot;
+SE$type[grep(&quot;neuron&quot;, SE$Dataset)] &lt;- &quot;Neuron&quot;
+SE$type[grep(&quot;Endothelial&quot;, SE$Dataset)] &lt;- &quot;Endothelial&quot;
+SE$subtype &lt;- as.factor(SE$Dataset)
+levels(SE$subtype) &lt;- gsub(&quot;[0-9]&quot;,&quot;&quot;,levels(SE$subtype))
+SE$nbCells &lt;- as.numeric(t(table(sce$cluster_id, sce$sample_id)[unique(SE$subtype),]))
+rowData(SE) &lt;- sapply(lcpm[names(lfc2)], FUN=function(x){ rowMeans(x[row.names(SE),]) })
+sehm(SE, alldegs, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;nbCells&quot;,&quot;subtype&quot;,&quot;type&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>saveRDS(SE, file=&quot;output/pbSE.rds&quot;)</code></pre>
+<p>The pattern is very similar across cell subtypes of a given class, but there is also a striking similarity across all cell types, although neurons react much more mildly.</p>
+<div id="characterization-of-the-common-response-genes" class="section level2">
+<h2>Characterization of the common response genes</h2>
+<p>Consensus clustering of the genes:</p>
+<p>(since I’m not doing anything anymore with the other clusters, it would probably be simpler and more or less equivalent to just take genes DE in at least 6 cell types…)</p>
+<pre class="r"><code>alldegs2 &lt;- intersect(alldegs,row.names(SE))
+layout(matrix(1:4,nrow=2))
+cc &lt;- M3C(t(assay(SE)[alldegs2,]), method = 2)</code></pre>
+<pre><code>***M3C: Monte Carlo Reference-based Consensus Clustering***</code></pre>
+<pre><code>method: penalised stability</code></pre>
+<pre><code>clustering algorithm: pam</code></pre>
+<pre><code>annotation: none</code></pre>
+<pre><code>running consensus cluster algorithm for real data...</code></pre>
+<pre><code>finished</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/6-more.Rmd/unnamed-chunk-4-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/6-more.Rmd/unnamed-chunk-4-3.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cc2 &lt;- cc$realdataresults[[3]]$assignments
+rowData(SE)$cluster &lt;- as.character(cc2[row.names(SE)])
+sehm(SE, alldegs, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;type&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8), toporder = cc2, anno_rows = c(&quot;cluster&quot;))</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-4-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p>GO over-representation analysis of the clusters:</p>
+<pre class="r"><code>allg &lt;- unique(sapply(strsplit(row.names(SE),&quot;.&quot;,fixed=TRUE), FUN=function(x) x[2]))
+go &lt;- lapply(split(names(cc2), cc2), FUN=function(cg){
+  cg &lt;- unique(sapply(strsplit(cg,&quot;.&quot;,fixed=TRUE), FUN=function(x) x[2]))
+  g &lt;- as.numeric(allg %in% cg)+1
+  names(g) &lt;- allg
+  go &lt;- new(&quot;topGOdata&quot;, ontology=&quot;BP&quot;, allGenes=g, annot=annFUN.org, geneSel=function(x) x&gt;1, mapping=&quot;org.Mm.eg.db&quot;, ID=&quot;symbol&quot;)
+  res &lt;- runTest(go, algorithm = &quot;classic&quot;, statistic = &quot;fisher&quot;)
+  GenTable(go, classicFisher=res, orderBy = &quot;classicFisher&quot;, topNodes=10)
+})</code></pre>
+<p>Conserved cluster across cell types:</p>
+<pre class="r"><code>go[[3]]</code></pre>
+<pre><code>        GO.ID                                   Term Annotated Significant
+1  GO:0006952                       defense response       620          60
+2  GO:0034097                   response to cytokine       444          49
+3  GO:0002376                  immune system process      1131          67
+4  GO:0009607            response to biotic stimulus       393          46
+5  GO:0006955                        immune response       565          52
+6  GO:0051707             response to other organism       374          45
+7  GO:0043207   response to external biotic stimulus       375          45
+8  GO:0009605          response to external stimulus      1099          64
+9  GO:0071345 cellular response to cytokine stimulus       401          43
+10 GO:0009617                  response to bacterium       241          36
+   Expected classicFisher
+1      6.71        &lt;1e-30
+2      4.80        &lt;1e-30
+3     12.24        &lt;1e-30
+4      4.25        &lt;1e-30
+5      6.11        &lt;1e-30
+6      4.05        &lt;1e-30
+7      4.06        &lt;1e-30
+8     11.89        &lt;1e-30
+9      4.34        &lt;1e-30
+10     2.61        &lt;1e-30</code></pre>
+<p>So the core response across all cell types is an upregulation of defense response genes, in particular genes related to the response to cytokine and bacterium. We look specifically at the ‘response to bacterium’ genes:</p>
+<pre class="r"><code>rbg &lt;- AnnotationDbi::mget(&quot;GO:0009617&quot;,org.Mm.egGO2ALLEGS)[[1]]
+rbg &lt;- unique(as.character(unlist(AnnotationDbi::mget(rbg, org.Mm.egSYMBOL))))
+rbg &lt;- unlist(lapply(paste0(&quot;\\.&quot;,rbg,&quot;$&quot;), function(x) grep(x,row.names(SE), value=TRUE)))
+rbg &lt;- intersect(rbg, alldegs)
+sehm(SE, rbg, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;nbCells&quot;,&quot;type&quot;,&quot;subtype&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Finally, a fairly specific GO term that comes up regularly in the camera analysis:</p>
+<pre class="r"><code>gset &lt;- msigdbr(species = &quot;Mus musculus&quot;) %&gt;%
+    dplyr::filter(gs_name==&quot;GO_CHEMOKINE_RECEPTOR_BINDING&quot;)
+gset &lt;- sym2rn(gset$gene_symbol, alldegs)
+sehm(SE, gset, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;subtype&quot;), 
+     breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8), 
+     main=&quot;DEGs related to chemokine receptor binding&quot;)</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-8-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="cell-level" class="section level1">
+<h1>Cell-level</h1>
+<p><strong>Q2: Are the changes homogeneous across cells of a given type, or do they affect a subset of the cells?</strong></p>
+<p>To understand whether alterations homogeneously affect all cells, or a subset of the cells, we plot, for each cell type, the distribution of the cells’ position on the first component of a PCA based on the DEGs.</p>
+<p>Since neurons have few DEGs, we use the union of DEGs of the cell type (e.g. all excitatory neurons):</p>
+<pre class="r"><code>i &lt;- split(1:ncol(sce), sce$cluster_id)
+
+# # method 1: PCA on the DEGs
+# pca &lt;- lapply(names(i), FUN=function(x){
+#   g &lt;- unique(unlist(degs[grep(gsub(&quot;[0-9]&quot;,&quot;&quot;,x),names(degs))]))
+#   a &lt;- sce[g,i[[x]]]
+#   a &lt;- a[apply(logcounts(a),1,FUN=sd)&gt;0,]
+#   pca &lt;- Seurat::RunPCA(as.matrix(logcounts(a)), assay=&quot;RNA&quot;, npcs=2, verbose=FALSE, approx=FALSE)@cell.embeddings[,1]
+#   if(mean(pca[a$group_id==&quot;LPS&quot;]) &lt; mean(pca[a$group_id!=&quot;LPS&quot;])) pca &lt;- -1*pca
+#   pca
+# })
+# sce$pc1.ct &lt;- unlist(pca)[order(unlist(i))]
+# ggplot(as.data.frame(colData(sce)), aes(sample_id, pc1.ct, fill=group_id)) + 
+#     geom_violin() + geom_boxplot(width=.1) + facet_wrap(~cluster_id, scales=&quot;free_y&quot;) +
+#     theme_void() + ylab(&quot;PC1 - cell-type-specific DEGs&quot;)
+
+## method 2: linear decomposition:
+ld &lt;- lapply(names(i), FUN=function(x){
+  # select DEGs from cluster of this family
+  g &lt;- unique(unlist(degs[grep(gsub(&quot;[0-9]&quot;,&quot;&quot;,x),names(degs))]))
+  # extract pseudo-bulk intercepts and logFCs
+  dea &lt;- res$table[[1]][[x]]
+  row.names(dea) &lt;- dea$gene
+  dea &lt;- as.matrix(dea[g,&quot;logFC&quot;])
+  a &lt;- sce[g,i[[x]]]
+  # decompose values as a linear combination of the group&#39;s log-foldchange vector:
+  b &lt;- (t(logcounts(a)) %*% dea)[,1]
+  # to make sure it&#39;s roughly comparable across clusters:
+  b/max(b)
+})
+sce$sig.ld &lt;- unlist(ld)[order(unlist(i))]
+ggplot(as.data.frame(colData(sce)), aes(sample_id, sig.ld, fill=group_id)) + 
+    geom_violin() + geom_boxplot(width=.1, outlier.size=0.5) + 
+    facet_wrap(~cluster_id, scales=&quot;free&quot;) + ylab(&quot;Effect coefficient&quot;) + 
+    theme( axis.text=element_blank(), axis.title.x=element_blank(), 
+           axis.line=element_blank(), axis.ticks=element_blank() )</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>For endothelial and most glial cells, virtually all cells appear to react similarly, with a clear separation between groups, although the larger spread of LPS-treated populations suggests that some cells are more affected than others. Instead, in neurons it appears that a fairly large proportion of the cells are hardly affected.</p>
+<pre class="r"><code>d &lt;- data.frame(reducedDim(sce, &quot;UMAP&quot;), reducedDim(sce, &quot;TSNE&quot;), colData(sce))
+ggplot(d, aes(tSNE_1, tSNE_2, colour=sig.ld)) + geom_point(size=1) + facet_wrap(~sample_id) + theme_void()</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-10-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>As a proxy for citotoxicity, we check whether there is a relationship of the effect coefficient with the proportion of mitochondrial RNA:</p>
+<pre class="r"><code>ggplot(d, aes(sig.ld, pct_counts_Mt, colour=group_id)) + geom_point() + facet_wrap(~cluster_id, scale=&quot;free&quot;)</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(d[which(d$group_id==&quot;LPS&quot;),], aes(sig.ld, pct_counts_Mt)) + geom_point() + 
+  geom_density_2d() + facet_wrap(~cluster_id, scales=&quot;free&quot;) + xlab(&quot;Effect coefficient&quot;) +
+  ggtitle(&quot;Treated samples only&quot;) + theme(axis.text=element_blank(), axis.ticks=element_blank())</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-11-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>There isn’t much correlation, but in excitatory neurons (6) there might be a rough association between the amount of mitochondrial RNA and the degree to which a cell is affected - in the others if anything it’s the opposite.</p>
+<p>The relationship with library size is worrying:</p>
+<pre class="r"><code>ggplot(d[which(d$group_id==&quot;LPS&quot;),], aes(sig.ld, log10_total_counts)) + geom_point() + 
+  geom_density_2d() + facet_wrap(~cluster_id, scales=&quot;free&quot;) + xlab(&quot;Effect coefficient&quot;) +
+  ggtitle(&quot;Treated samples only&quot;) + theme(axis.text=element_blank(), axis.ticks=element_blank())</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-12-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>In neurons, when a cell has more reads it tends to be less affected by the treatment. A possible explanation for this would be that other cell types secrete a lot of RNA which is catched in droplets along with the cells, and when a cell is small their presence is larger… So perhaps the global signature we see is in fact an artefact?</p>
+<hr />
+</div>
+<div id="expression-of-the-lps-response-genes" class="section level1">
+<h1>Expression of the LPS response genes</h1>
+<p>The LPS receptor Cd14, various chemokine receptors and interferon regulatory factors, as well as the primiary transcriptional response genes Cxcl2 and Tnf, are all upregulated across cell types, suggesting that all cells sense threat. Tnf, which mediates the cytotoxic effect of LPS, is upregulated in a statistically-significant manner only in microglia (where it is also more abundant), but there is a trend in across all cell types, and the low detection rate prevents us from drawing clear conclusions. Various members of the interferon response and Nf-kb pathways are similarly upregulated across cell types. However, notable differences suggest distinct modalities of response orchestrated across cell types. While endothelial and glial cells upregulate several components of the Nf-<span class="math inline">\(\kappa K\)</span>b (Rela, Relb) and Stat pathways (Stat1, Stat2, Stat3), only part of this response (chiefly Stat3 and to a lower extent Stat1) is visible in neurons. Only astrocytes (and possibly OPCs) show an upregulation of Tirap, involved in the the signal transduction of the Toll-like receptors, while only microglia upregulate Traf3 and Traf6. The LPS-induced TNF Factor (Litaf) and the early response gene Ptgs1 are upregulated only in endothelial cells. Endothelial cells and microglia upregulate Dusp1 and Dusp16, which are expected to dephosphorylate the MAPK1/10. Finally, while the immediate early stress response genes Fos, Jun and Junb are strongly upregulated in astrocytes, endothelial cells and OPCs, they show no such trend in neurons – in fact, Fos suprisingly appears downregulated by neurons upon LPS exposure, along with another important immediate early gene, Egr1.</p>
+<pre class="r"><code>myg &lt;- sym2rn(strsplit(&quot;Tirap, Jun, Fos, Cd83, Traf6, Traf3, Sp3, Litaf, Egr1, Rela, Ptgs2, Junb, Relb, Cxcl2, Tnf, Cd14, Cxcl10, Irf7, Irf1, Ccl5, Tlr2, Irf9, Stat9, Stat3, Nbkbia, Stat1, Stat2, Fkbp5, Gpx1, Abca1, Tnfrsf1a, Dusp1, Dusp16&quot;, &quot;, &quot;)[[1]], row.names(SE))
+sehm(SE, myg, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;subtype&quot;, &quot;type&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-13-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(meltSE(sce, &quot;ENSMUSG00000024401.Tnf&quot;), aes(sample_id, logcounts, fill=group_id)) + 
+  geom_violin() + theme(axis.text.x=element_blank()) + facet_wrap(~cluster_id) + ggtitle(&quot;Tnf&quot;)</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="some-notes" class="section level1">
+<h1>Some notes</h1>
+<ul>
+<li>There seems to be hardly any difference between the different clusters of inhibitory and excitatory neurons; therefore, after having shown this (e.g. through the first heatmap here), we could proceed with the rest using only the 7 main cell types.</li>
+<li>The molecular pathways from the receptors to TNF-alpha activity are protein signaling pathways, not transcriptional pathways (though downstream it gets transcriptional, and there’s a transcriptional feed-forward loop at different steps). One should therefore remain cautious of drawing conclusions from RNA levels.</li>
+<li>With this caveat in mind, I was personally surprised to see much of the canonical response across all cell types, since I thought that most of it was happening in cells of the hematopoietic system and a few other cell types here and there. Of course, it could still be that this is non-cell-autonomous (secondary response mediated by other cell types), but as mentioned earlier it might also be contamination from floating RNA. It might be worth having a quick input of an immunologist on this (I’d know someone in case): perhaps the response in neurons is normal, but if it’s unexpected then I guess one would need to investigate the possibility of contamination (going back to excluded droplets, and doing something like SoupX)…</li>
+</ul>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.2 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=de_CH.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=de_CH.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=de_CH.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=de_CH.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] msigdbr_6.2.1               tibble_2.1.1               
+ [3] M3C_1.6.0                   org.Mm.eg.db_3.8.2         
+ [5] topGO_2.36.0                SparseM_1.77               
+ [7] GO.db_3.8.2                 AnnotationDbi_1.46.0       
+ [9] graph_1.62.0                SEtools_0.1.1              
+[11] edgeR_3.26.0                limma_3.40.0               
+[13] SingleCellExperiment_1.6.0  SummarizedExperiment_1.14.0
+[15] DelayedArray_0.10.0         BiocParallel_1.18.0        
+[17] matrixStats_0.54.0          Biobase_2.44.0             
+[19] GenomicRanges_1.36.0        GenomeInfoDb_1.20.0        
+[21] IRanges_2.18.0              S4Vectors_0.22.0           
+[23] BiocGenerics_0.30.0         purrr_0.3.2                
+[25] muscat_0.99.9               dplyr_0.8.0.1              
+[27] cowplot_0.9.4               ggplot2_3.1.1              
+[29] BiocStyle_2.12.0           
+
+loaded via a namespace (and not attached):
+  [1] tidyselect_0.2.5         lme4_1.1-21             
+  [3] RSQLite_2.1.1            htmlwidgets_1.3         
+  [5] trimcluster_0.1-2.1      grid_3.6.0              
+  [7] TSP_1.1-6                Rtsne_0.15              
+  [9] munsell_0.5.0            codetools_0.2-16        
+ [11] statmod_1.4.30           scran_1.12.0            
+ [13] future_1.13.0            withr_2.1.2             
+ [15] colorspace_1.4-1         knitr_1.22              
+ [17] rstudioapi_0.10          robustbase_0.93-4       
+ [19] NMF_0.21.0               listenv_0.7.0           
+ [21] labeling_0.3             sigclust_1.1.0          
+ [23] git2r_0.25.2             GenomeInfoDbData_1.2.1  
+ [25] bit64_0.9-7              pheatmap_1.0.12         
+ [27] glmmTMB_0.2.3            rprojroot_1.3-2         
+ [29] Matrix.utils_0.9.7       xfun_0.6                
+ [31] gclus_1.3.2              diptest_0.75-7          
+ [33] R6_2.4.0                 doParallel_1.0.14       
+ [35] ggbeeswarm_0.6.0         clue_0.3-57             
+ [37] rsvd_1.0.1               seriation_1.2-3         
+ [39] locfit_1.5-9.1           flexmix_2.3-15          
+ [41] bitops_1.0-6             assertthat_0.2.1        
+ [43] scales_1.0.0             nnet_7.3-12             
+ [45] beeswarm_0.2.3           gtable_0.3.0            
+ [47] globals_0.12.4           workflowr_1.3.0         
+ [49] rlang_0.3.4              genefilter_1.66.0       
+ [51] GlobalOptions_0.1.0      splines_3.6.0           
+ [53] TMB_1.7.15               lazyeval_0.2.2          
+ [55] acepack_1.4.1            checkmate_1.9.3         
+ [57] BiocManager_1.30.4       yaml_2.2.0              
+ [59] reshape2_1.4.3           backports_1.1.4         
+ [61] Hmisc_4.2-0              tools_3.6.0             
+ [63] gridBase_0.4-7           gplots_3.0.1.1          
+ [65] RColorBrewer_1.1-2       dynamicTreeCut_1.63-1   
+ [67] Rcpp_1.0.1               plyr_1.8.4              
+ [69] base64enc_0.1-3          progress_1.2.0          
+ [71] zlibbioc_1.30.0          RCurl_1.95-4.12         
+ [73] prettyunits_1.0.2        rpart_4.1-15            
+ [75] GetoptLong_0.1.7         viridis_0.5.1           
+ [77] grr_0.9.5                cluster_2.0.8           
+ [79] colorRamps_2.3           fs_1.3.1                
+ [81] variancePartition_1.14.0 magrittr_1.5            
+ [83] data.table_1.12.2        lmerTest_3.1-0          
+ [85] circlize_0.4.6           matrixcalc_1.0-3        
+ [87] mvtnorm_1.0-10           whisker_0.3-2           
+ [89] hms_0.4.2                evaluate_0.13           
+ [91] xtable_1.8-4             pbkrtest_0.4-7          
+ [93] XML_3.98-1.19            mclust_5.4.3            
+ [95] gridExtra_2.3            shape_1.4.4             
+ [97] compiler_3.6.0           scater_1.12.0           
+ [99] KernSmooth_2.23-15       crayon_1.3.4            
+[101] minqa_1.2.4              htmltools_0.3.6         
+[103] corpcor_1.6.9            snow_0.4-3              
+[105] Formula_1.2-3            geneplotter_1.62.0      
+[107] DBI_1.0.0                ComplexHeatmap_2.0.0    
+[109] MASS_7.3-51.1            fpc_2.1-11.2            
+[111] boot_1.3-20              Matrix_1.2-17           
+[113] gdata_2.18.0             igraph_1.2.4.1          
+[115] pkgconfig_2.0.2          registry_0.5-1          
+[117] numDeriv_2016.8-1        foreign_0.8-71          
+[119] foreach_1.4.4            annotate_1.62.0         
+[121] vipor_0.4.5              rngtools_1.3.1.1        
+[123] dqrng_0.2.0              blme_1.0-4              
+[125] pkgmaker_0.27            XVector_0.24.0          
+[127] bibtex_0.4.2             stringr_1.4.0           
+[129] digest_0.6.18            sctransform_0.2.0       
+[131] rmarkdown_1.12           htmlTable_1.13.1        
+[133] dendextend_1.10.0        DelayedMatrixStats_1.6.0
+[135] kernlab_0.9-27           gtools_3.8.1            
+[137] modeltools_0.2-22        rjson_0.2.20            
+[139] nloptr_1.2.1             nlme_3.1-140            
+[141] BiocNeighbors_1.2.0      viridisLite_0.3.0       
+[143] pillar_1.3.1             lattice_0.20-38         
+[145] DEoptimR_1.0-8           survival_2.44-1.1       
+[147] glue_1.3.1               png_0.1-7               
+[149] prabclus_2.2-7           iterators_1.0.10        
+[151] bit_1.1-14               class_7.3-15            
+[153] stringi_1.4.3            blob_1.1.1              
+[155] DESeq2_1.24.0            BiocSingular_1.0.0      
+[157] doSNOW_1.0.16            latticeExtra_0.6-28     
+[159] caTools_1.17.1.2         memoise_1.1.0           
+[161] irlba_2.3.3              future.apply_1.2.0      </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
