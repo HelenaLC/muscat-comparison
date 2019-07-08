@@ -8,8 +8,11 @@ suppressPackageStartupMessages({
     library(purrr)
 })
 
+#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "d[a-z][0-9]+;", full.names = TRUE)
 res <- lapply(snakemake@input$res, readRDS) %>% 
-    map("tbl") %>% bind_rows %>% setDT %>% 
+    map("tbl") %>% 
+    map(mutate_if, is.factor, as.character) %>% 
+    bind_rows %>% setDT %>% 
     split(by = c("i", "sid", "mid"), flatten = FALSE)
 
 p_adj <- paste0("p_adj.", snakemake@wildcards$padj)
@@ -41,7 +44,7 @@ df <- map(perf, function(u)
     summarise_at(c("FDR", "TPR"), mean) 
 
 p <- .plot_perf_points(df)
-p$facet$params$ncol <- 4
+p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, p,
