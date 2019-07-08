@@ -9,12 +9,7 @@ suppressPackageStartupMessages({
     library(purrr)
 })
 
-fns <- list.files("/users/helena/dropbox/portmac/sim_data/magl/", "ds10_ss", full.names = TRUE)
-sims <- lapply(fns, readRDS)
-u <- sims[[2]]
-table(u$cluster_id, u$sample_id)
-
-fns <- list.files("meta/sim_pars", "ss", full.names = TRUE)
+fns <- list.files(snakemake@config$sim_pars, "ds10_ss[0-9]+;", full.names = TRUE)
 sim_pars <- lapply(fns, yaml::read_yaml)
 n <- sapply(c("nk", "ns", "nc"), function(u) unlist(map(sim_pars, u)))
 n <- with(as.data.frame(n), nc / (2 * nk * ns))
@@ -43,8 +38,8 @@ hists <- ggplot(gg_df, aes(x = sample_id, y = n, fill = sample_id)) +
         panel.grid.major.x = element_blank(),
         plot.margin = unit(c(1,0,0,2), "mm"))
 
-fns <- list.files("/users/helena/dropbox/portmac/kang", "ds10_ss[0-9];", full.names = TRUE)
-res <- map(lapply(fns, readRDS), "tbl")
+#fns <- list.files("/users/helena/dropbox/portmac/kang", "ds10_ss[0-9];", full.names = TRUE)
+res <- map(lapply(snakemake@input$res, readRDS), "tbl")
 rmv <- vapply(res, is.null, logical(1))
 res <- map(res[!rmv], mutate_if, is.factor, as.character) %>% 
     bind_rows %>% 
@@ -77,11 +72,11 @@ p <- .plot_perf_points(gg_df, facet = "sid") +
     theme(plot.margin = unit(c(-1,0,0,2), "mm"))
 p$facet$params$ncol <- nlevels(factor(gg_df$sid))
 
-cowplot::plot_grid(hists, p, 
+p <- cowplot::plot_grid(hists, p, 
     ncol = 1, axis = "lr", align = "v",
     rel_heights = c(1, 3))
 
-ggsave("/users/helena/Desktop/perf_by_ss.pdf", 
+ggsave(snakemake@output$fig, 
     width = 15, height = 7.1, units = "cm",
     dpi = 300, useDingbats = FALSE)
 
