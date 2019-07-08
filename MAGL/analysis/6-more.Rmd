@@ -1,0 +1,256 @@
+---
+title: "Exploration of the LPS DEA"
+author: 
+- name: Pierre-Luc Germain
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  workflowr::wflow_html:
+    toc: true
+    code_folding: hide
+---
+
+```{r setup, include = FALSE}
+library(BiocStyle)
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+```
+
+```{r collapse = FALSE, message = FALSE, warning = FALSE}
+library(cowplot)
+library(dplyr)
+library(ggplot2)
+library(muscat)
+library(purrr)
+library(SingleCellExperiment)
+library(edgeR)
+library(SEtools)
+library(BiocParallel)
+library(topGO)
+library(org.Mm.eg.db)
+library(M3C)
+library(msigdbr)
+
+options(future.globals.maxSize = 2e3*1024^2)
+
+sym2rn <- function(x, rn){
+  p <- paste(paste0("\\.",x,"$"), collapse="|")
+  grep(p, rn, value=TRUE)
+}
+```
+
+# Load data & results
+
+```{r collapse = FALSE}
+sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
+pb <- aggregateData(sce, "counts", fun="sum")
+pb$group_id <- factor(rep(c("WT","LPS"), each=4),levels=c("WT","LPS"))
+# mm <- model.matrix(~0+pb$group_id)
+# dimnames(mm) <- list(colnames(pb), levels(pb$group_id))
+# res <- pbDS(sce, pb, mm, limma::makeContrasts("LPS-WT", levels=mm), method="edgeR")
+# saveRDS(res, file="output/MAGL-DS_res.rds")
+res <- readRDS(file.path("output", "MAGL-DS_res.rds"))
+```
+
+# Comparison across cell types
+
+**Q1: To what extent are the changes shared or cell-type specific?**
+
+In order to be able to asses the overlap and magnitude of changes across cell types independent of variations in the significance, we plot a heatmap of the logFC, in each cell type, of the union of differentially-expressed genes:
+
+```{r, fig.width=12}
+# get pseudo-bulk SEs of logFC
+lcpm <- lapply(res$data, FUN=function(x) log1p(cpm(x)))
+lfc <- lapply(lcpm, w=which(pb$group_id=="LPS"), FUN=function(x,w) x-rowMeans(x[,-w]))
+lfc <- lfc[order(names(lfc))[c(2,1,12:14,3:11)]]
+lfc2 <- lapply(lfc, function(x) SummarizedExperiment(x, colData=colData(pb)))
+
+degs <- lapply(res$table$`LPS-WT`, FUN=function(x){ x$gene[which(x$p_adj.loc <0.01 & abs(x$logFC)>1)] })
+alldegs <- unique(unlist(degs))
+
+# we merge the SEs
+SE <- mergeSEs(lfc2, do.scale=FALSE, use.assays = 1)
+SE$type <- "Glia"
+SE$type[grep("neuron", SE$Dataset)] <- "Neuron"
+SE$type[grep("Endothelial", SE$Dataset)] <- "Endothelial"
+SE$subtype <- as.factor(SE$Dataset)
+levels(SE$subtype) <- gsub("[0-9]","",levels(SE$subtype))
+SE$nbCells <- as.numeric(t(table(sce$cluster_id, sce$sample_id)[unique(SE$subtype),]))
+rowData(SE) <- sapply(lcpm[names(lfc2)], FUN=function(x){ rowMeans(x[row.names(SE),]) })
+sehm(SE, alldegs, do.scale = FALSE, gaps_at="Dataset", anno_columns=c("group_id","nbCells","subtype","type"), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))
+saveRDS(SE, file="output/pbSE.rds")
+```
+
+The pattern is very similar across cell subtypes of a given class, but there is also a striking similarity across all cell types, although neurons react much more mildly.
+
+## Characterization of the common response genes
+
+Consensus clustering of the genes:
+
+(since I'm not doing anything anymore with the other clusters, it would probably be simpler and more
+or less equivalent to just take genes DE in at least 6 cell types...)
+
+```{r, fig.width=10}
+alldegs2 <- intersect(alldegs,row.names(SE))
+layout(matrix(1:4,nrow=2))
+cc <- M3C(t(assay(SE)[alldegs2,]), method = 2)
+cc2 <- cc$realdataresults[[3]]$assignments
+rowData(SE)$cluster <- as.character(cc2[row.names(SE)])
+sehm(SE, alldegs, do.scale = FALSE, gaps_at="Dataset", anno_columns=c("group_id","type"), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8), toporder = cc2, anno_rows = c("cluster"))
+```
+
+GO over-representation analysis of the clusters:
+```{r, collapse = FALSE, message = FALSE, warning = FALSE}
+allg <- unique(sapply(strsplit(row.names(SE),".",fixed=TRUE), FUN=function(x) x[2]))
+go <- lapply(split(names(cc2), cc2), FUN=function(cg){
+  cg <- unique(sapply(strsplit(cg,".",fixed=TRUE), FUN=function(x) x[2]))
+  g <- as.numeric(allg %in% cg)+1
+  names(g) <- allg
+  go <- new("topGOdata", ontology="BP", allGenes=g, annot=annFUN.org, geneSel=function(x) x>1, mapping="org.Mm.eg.db", ID="symbol")
+  res <- runTest(go, algorithm = "classic", statistic = "fisher")
+  GenTable(go, classicFisher=res, orderBy = "classicFisher", topNodes=10)
+})
+```
+
+Conserved cluster across cell types:
+```{r}
+go[[3]]
+```
+
+So the core response across all cell types is an upregulation of defense response genes, in particular genes related to the response to cytokine and bacterium. We look specifically at the 'response to bacterium' genes:
+
+```{r}
+rbg <- AnnotationDbi::mget("GO:0009617",org.Mm.egGO2ALLEGS)[[1]]
+rbg <- unique(as.character(unlist(AnnotationDbi::mget(rbg, org.Mm.egSYMBOL))))
+rbg <- unlist(lapply(paste0("\\.",rbg,"$"), function(x) grep(x,row.names(SE), value=TRUE)))
+rbg <- intersect(rbg, alldegs)
+sehm(SE, rbg, do.scale = FALSE, gaps_at="Dataset", anno_columns=c("group_id","nbCells","type","subtype"), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))
+```
+
+Finally, a fairly specific GO term that comes up regularly in the camera analysis:
+
+```{r, fig.width=10, fig.height=4}
+gset <- msigdbr(species = "Mus musculus") %>%
+    dplyr::filter(gs_name=="GO_CHEMOKINE_RECEPTOR_BINDING")
+gset <- sym2rn(gset$gene_symbol, alldegs)
+sehm(SE, gset, do.scale = FALSE, gaps_at="Dataset", anno_columns=c("group_id","subtype"), 
+     breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8), 
+     main="DEGs related to chemokine receptor binding")
+```
+
+
+# Cell-level
+
+**Q2: Are the changes homogeneous across cells of a given type, or do they affect a subset of the cells?**
+
+To understand whether alterations homogeneously affect all cells, or a subset of the cells, we plot, for each cell type,
+the distribution of the cells' position on the first component of a PCA based on the DEGs.
+
+Since neurons have few DEGs, we use the union of DEGs of the cell type (e.g. all excitatory neurons):
+```{r, fig.width=10, fig.height=8}
+i <- split(1:ncol(sce), sce$cluster_id)
+
+# # method 1: PCA on the DEGs
+# pca <- lapply(names(i), FUN=function(x){
+#   g <- unique(unlist(degs[grep(gsub("[0-9]","",x),names(degs))]))
+#   a <- sce[g,i[[x]]]
+#   a <- a[apply(logcounts(a),1,FUN=sd)>0,]
+#   pca <- Seurat::RunPCA(as.matrix(logcounts(a)), assay="RNA", npcs=2, verbose=FALSE, approx=FALSE)@cell.embeddings[,1]
+#   if(mean(pca[a$group_id=="LPS"]) < mean(pca[a$group_id!="LPS"])) pca <- -1*pca
+#   pca
+# })
+# sce$pc1.ct <- unlist(pca)[order(unlist(i))]
+# ggplot(as.data.frame(colData(sce)), aes(sample_id, pc1.ct, fill=group_id)) + 
+#     geom_violin() + geom_boxplot(width=.1) + facet_wrap(~cluster_id, scales="free_y") +
+#     theme_void() + ylab("PC1 - cell-type-specific DEGs")
+
+## method 2: linear decomposition:
+ld <- lapply(names(i), FUN=function(x){
+  # select DEGs from cluster of this family
+  g <- unique(unlist(degs[grep(gsub("[0-9]","",x),names(degs))]))
+  # extract pseudo-bulk intercepts and logFCs
+  dea <- res$table[[1]][[x]]
+  row.names(dea) <- dea$gene
+  dea <- as.matrix(dea[g,"logFC"])
+  a <- sce[g,i[[x]]]
+  # decompose values as a linear combination of the group's log-foldchange vector:
+  b <- (t(logcounts(a)) %*% dea)[,1]
+  # to make sure it's roughly comparable across clusters:
+  b/max(b)
+})
+sce$sig.ld <- unlist(ld)[order(unlist(i))]
+ggplot(as.data.frame(colData(sce)), aes(sample_id, sig.ld, fill=group_id)) + 
+    geom_violin() + geom_boxplot(width=.1, outlier.size=0.5) + 
+    facet_wrap(~cluster_id, scales="free") + ylab("Effect coefficient") + 
+    theme( axis.text=element_blank(), axis.title.x=element_blank(), 
+           axis.line=element_blank(), axis.ticks=element_blank() )
+```
+
+For endothelial and most glial cells, virtually all cells appear to react similarly, with a clear separation between groups, 
+although the larger spread of LPS-treated populations suggests that some cells are more affected than others. 
+Instead, in neurons it appears that a fairly large proportion of the cells are hardly affected.
+
+```{r, fig.width=10, fig.height=10}
+d <- data.frame(reducedDim(sce, "UMAP"), reducedDim(sce, "TSNE"), colData(sce))
+ggplot(d, aes(tSNE_1, tSNE_2, colour=sig.ld)) + geom_point(size=1) + facet_wrap(~sample_id) + theme_void()
+```
+
+As a proxy for citotoxicity, we check whether there is a relationship of the effect coefficient with the proportion of mitochondrial RNA:
+
+```{r, fig.width=10, fig.height=8}
+ggplot(d, aes(sig.ld, pct_counts_Mt, colour=group_id)) + geom_point() + facet_wrap(~cluster_id, scale="free")
+ggplot(d[which(d$group_id=="LPS"),], aes(sig.ld, pct_counts_Mt)) + geom_point() + 
+  geom_density_2d() + facet_wrap(~cluster_id, scales="free") + xlab("Effect coefficient") +
+  ggtitle("Treated samples only") + theme(axis.text=element_blank(), axis.ticks=element_blank())
+```
+
+There isn't much correlation, but in excitatory neurons (6) there might be a rough association between the amount of mitochondrial RNA and the degree to which a cell is affected - in the others if anything it's the opposite.
+
+The relationship with library size is worrying:
+
+```{r, fig.width=10, fig.height=8}
+ggplot(d[which(d$group_id=="LPS"),], aes(sig.ld, log10_total_counts)) + geom_point() + 
+  geom_density_2d() + facet_wrap(~cluster_id, scales="free") + xlab("Effect coefficient") +
+  ggtitle("Treated samples only") + theme(axis.text=element_blank(), axis.ticks=element_blank())
+```
+
+In neurons, when a cell has more reads it tends to be less affected by the treatment. A possible 
+explanation for this would be that other cell types secrete a lot of RNA which is catched in droplets along with
+the cells, and when a cell is small their presence is larger... So perhaps the global signature we see is in fact
+an artefact?
+
+***
+
+# Expression of the LPS response genes
+
+The LPS receptor Cd14, various chemokine receptors and interferon regulatory factors, as well as the primiary transcriptional response genes Cxcl2 and Tnf, are all upregulated across cell types, suggesting that all cells sense threat. Tnf, which mediates the cytotoxic effect of LPS, is upregulated in a statistically-significant manner only in microglia (where it is also more abundant), but there is a trend in across all cell types, and the low detection rate prevents us from drawing clear conclusions. Various members of the interferon response and Nf-kb pathways are similarly upregulated across cell types. However, notable differences suggest distinct modalities of response orchestrated across cell types. While endothelial and glial cells upregulate several components of the Nf-$\kappa K$b (Rela, Relb) and Stat pathways (Stat1, Stat2, Stat3), only part of this response (chiefly Stat3 and to a lower extent Stat1) is visible in neurons. Only astrocytes (and possibly OPCs) show an upregulation of Tirap, involved in the the signal transduction of the Toll-like receptors, while only microglia upregulate Traf3 and Traf6. The LPS-induced TNF Factor (Litaf) and the early response gene Ptgs1 are upregulated only in endothelial cells. Endothelial cells and microglia upregulate Dusp1 and Dusp16, which are expected to dephosphorylate the MAPK1/10. Finally, while the immediate early stress response genes Fos, Jun and Junb are strongly upregulated in astrocytes, endothelial cells and OPCs, they show no such trend in neurons -- in fact, Fos suprisingly appears downregulated by neurons upon LPS exposure, along with another important immediate early gene, Egr1.
+
+```{r, fig.width=12, fig.height=6}
+myg <- sym2rn(strsplit("Tirap, Jun, Fos, Cd83, Traf6, Traf3, Sp3, Litaf, Egr1, Rela, Ptgs2, Junb, Relb, Cxcl2, Tnf, Cd14, Cxcl10, Irf7, Irf1, Ccl5, Tlr2, Irf9, Stat9, Stat3, Nbkbia, Stat1, Stat2, Fkbp5, Gpx1, Abca1, Tnfrsf1a, Dusp1, Dusp16", ", ")[[1]], row.names(SE))
+sehm(SE, myg, do.scale = FALSE, gaps_at="Dataset", anno_columns=c("group_id","subtype", "type"), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))
+```
+
+
+```{r}
+ggplot(meltSE(sce, "ENSMUSG00000024401.Tnf"), aes(sample_id, logcounts, fill=group_id)) + 
+  geom_violin() + theme(axis.text.x=element_blank()) + facet_wrap(~cluster_id) + ggtitle("Tnf")
+```
+
+
+
+
+```{r, eval=FALSE, include=FALSE}
+# get unique targets - not run
+load("~/bioinfo/plg/plgINS/data/regulon.curated.mm.RData")
+regulon <- plgINS::regulon.filter(regulon.curated.mm, 0.8)
+targets <- lapply(regulon[c("Stat2","Nfkb1","Relb","Rela","Irf1","Stat3","Jund","Jun","Irf3","Irf9","Irf7")], FUN=function(x){ names(x$tfmode)})
+utargets <- lapply(1:length(targets), FUN=function(i) setdiff(targets[[i]], unlist(targets[-i])))
+utargets <- lapply(utargets, FUN=function(x) sym2rn(x, row.names(SE)))
+utargets <- utargets[which(sapply(utargets, length)>0)]
+SEtools::sehm(SE, unlist(utargets), sortRowsOn = NULL, cluster_rows = FALSE, do.scale = FALSE, gaps_at="subtype", gaps_row=1+cumsum(sapply(utargets,length)[-length(utargets)]),anno_columns=c("group_id","subtype","type"), breaks=TRUE)
+```
+
+
+# Some notes
+
+* There seems to be hardly any difference between the different clusters of inhibitory and excitatory neurons; therefore, after having shown this (e.g. through the first heatmap here), we could proceed with the rest using only the 7 main cell types.
+* The molecular pathways from the receptors to TNF-alpha activity are protein signaling pathways, not transcriptional pathways (though downstream it gets transcriptional, and there's a transcriptional feed-forward loop at different steps). One should therefore remain cautious of drawing conclusions from RNA levels.
+* With this caveat in mind, I was personally surprised to see much of the canonical response across all cell types, since I thought that most of it was happening in cells of the hematopoietic system and a few other cell types here and there. Of course, it could still be that this is non-cell-autonomous (secondary response mediated by other cell types), but as mentioned earlier it might also be contamination from floating RNA. It might be worth having a quick input of an immunologist on this (I'd know someone in case): perhaps the response in neurons is normal, but if it's unexpected then I guess one would need to investigate the possibility of contamination (going back to excluded droplets, and doing something like SoupX)...
