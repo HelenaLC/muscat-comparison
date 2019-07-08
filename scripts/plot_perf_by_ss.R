@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
 
 fns <- list.files(snakemake@config$sim_pars, "ds10_ss[0-9]+;", full.names = TRUE)
 sim_pars <- lapply(fns, yaml::read_yaml)
+print(sim_pars)
 n <- sapply(c("nk", "ns", "nc"), function(u) unlist(map(sim_pars, u)))
 n <- with(as.data.frame(n), nc / (2 * nk * ns))
 ss <- map(map(sim_pars, "probs"), 2) 
