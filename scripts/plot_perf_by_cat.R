@@ -8,11 +8,14 @@ suppressPackageStartupMessages({
     library(purrr)
 })
 
-#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "d[a-z][0-9]+;", full.names = TRUE)
-res <- lapply(snakemake@input$res, readRDS) %>% 
+fns <- list.files("/users/helena/dropbox/portmac/results/kang", "d[a-z][0-9]+;", full.names = TRUE)
+res <- lapply(fns, readRDS) %>% 
     map("tbl") %>% 
     map(mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% setDT %>% 
+    bind_rows %>% 
+    mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
+    dplyr::filter(E > 0.1) %>% 
+    setDT %>% 
     split(by = c("i", "sid", "mid"), flatten = FALSE)
 
 p_adj <- paste0("p_adj.", snakemake@wildcards$padj)
