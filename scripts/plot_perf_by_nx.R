@@ -18,7 +18,7 @@ res <- map(res[!rmv], mutate_if, is.factor, as.character) %>%
         set_names(group_split(u), group_keys(u)[[1]]))
 
 cd <- lapply(seq_along(res), function(i) {
-    map(res[[i]][[1]], select, c(x, "is_de")) %>% 
+    map(res[[i]][[1]], dplyr::select, c(x, "is_de")) %>% 
         bind_rows
     truth <- lapply(c(x, "is_de"), map, .x = res[[i]]) %>% 
         map(unlist) %>% set_names(c(x, "is_de")) %>% 
@@ -37,7 +37,7 @@ perf <- lapply(cd, calculate_performance,
 
 df <- map(perf, "fdrtpr") %>% 
     bind_rows(.id = "j") %>% 
-    select(splitval, thr, method, TPR, FDR) %>% 
+    dplyr::select(splitval, thr, method, TPR, FDR) %>% 
     dplyr::filter(splitval != "overall") %>%
     mutate_at("thr", function(u) 
         as.numeric(gsub("thr", "", u))) %>%  
