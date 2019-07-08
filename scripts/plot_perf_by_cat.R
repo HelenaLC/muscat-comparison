@@ -8,8 +8,8 @@ suppressPackageStartupMessages({
     library(purrr)
 })
 
-fns <- list.files("/users/helena/dropbox/portmac/results/kang", "d[a-z][0-9]+;", full.names = TRUE)
-res <- lapply(fns, readRDS) %>% 
+#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "d[a-z][0-9]+;", full.names = TRUE)
+res <- lapply(snakemake@input$res, readRDS) %>% 
     map("tbl") %>% 
     map(mutate_if, is.factor, as.character) %>% 
     bind_rows %>% 

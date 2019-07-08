@@ -2,12 +2,12 @@
 suppressMessages({
     library(countsimQC)
     library(DESeq2)
-    library(muscat)
     library(SummarizedExperiment)
 })
 
 # load data
-sce <- readRDS('/Volumes/HelenaLC/home/muscat-comparison/data/raw_data/kang.rds')
+devtools::load_all('../muscat')
+sce <- readRDS('data/raw_data/magl.rds')
 probs <- list(
     table(sce$cluster_id) / ncol(sce),
     table(sce$sample_id)  / ncol(sce),
@@ -37,9 +37,9 @@ dds_list <- list(
 
 countsimQCReport(
     ddsList = dds_list,
-    outputFile = '/users/helena/desktop/kang_qc.html',
+    outputFile = '/users/helena/Desktop/countsimQC-LPS.html',
     outputDir = ".",
     outputFormat = "html_document",
-    maxNForCorr = 400,
-    maxNForDisp = 1000,
+    maxNForCorr = 200,
+    maxNForDisp = 500,
     forceOverwrite = TRUE)

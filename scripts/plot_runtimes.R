@@ -1,6 +1,6 @@
 source(snakemake@config$utils)
 
-suppressPackageStartupMessages({
+suppressMessages({
     library(dplyr)
     library(ggplot2)
     library(purrr)
@@ -8,17 +8,18 @@ suppressPackageStartupMessages({
 
 fns <- list.files("/Users/helena/Dropbox/portmac/results/kang", "ds10_nc;", full.names = TRUE)
 res <- lapply(fns, readRDS)
-
 tbl <- map(res, "tbl")
 rmv <- vapply(tbl, inherits, what = "error", logical(1))
-rts <- vapply(map(res, "rt"), sum, numeric(1))[!rmv]
-df <- tbl[!rmv] %>%  
-    map(mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% 
-    group_by(mid, sid, j, c) %>% 
-    slice(1) %>% 
-    ungroup %>% 
-    select(mid, sid, j, c) %>% 
+nms <- basename(fns)[!rmv]
+
+rts <- map(res[!rmv], "rt") %>% 
+    vapply(sum, numeric(1)) %>% 
+    set_names(nms)
+
+df <- map(tbl[!rmv], mutate_if, is.factor, as.character) %>% 
+    set_names(nms) %>% bind_rows(.id = "id")
+
+df <- df[match(nms, df$id), ] %>% 
     mutate(t = rts) %>% 
     mutate(id = paste(mid, c, sep = "--")) %>% 
     mutate_at("c", as.numeric)
