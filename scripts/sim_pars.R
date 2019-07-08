@@ -51,7 +51,7 @@ for (id in sim_ids) {
     new <- sim_pars[[id]]
     if (file.exists(fns[id])) {
         old <- jsonlite::fromJSON(fns[id])
-        if (!isTRUE(all.equal(old, new, tolerance = 1e-6)))
+        if (!isTRUE(all.equal(old, new, tolerance = 1e-3)))
             write(jsonlite::toJSON(new, null = "null"), fns[id])
     } else {
         write(jsonlite::toJSON(new, null = "null"), fns[id])
