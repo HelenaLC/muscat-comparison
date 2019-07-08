@@ -55,7 +55,7 @@ fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 
 rule all: 
 	input:	sim_dirs, res_dirs, fig_dirs,
-			expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
+			#expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
 				nms = ["null", "pb_mean_disp", "sim_vs_est_lfc", "perf_by_cat"]),
 			expand(join(config["figures"], "{did}", "upset.pdf"), did = config["dids"]),
