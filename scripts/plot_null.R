@@ -20,7 +20,7 @@ df <- lapply(snakemake@input$res, readRDS) %>%
 
 p <- ggplot(df, aes(x = p_val, y = ..ndensity.., 
     col = method, fill = method, lty = replicate)) +
-    facet_wrap(~ method, nrow = 4) + 
+    facet_wrap(~ method, nrow = 5) + 
     geom_density(adjust = 0.2, size = 0.3, alpha = 0.1) +
     scale_color_manual(values = .meth_cols) +
     scale_fill_manual(values = .meth_cols) +
@@ -38,6 +38,6 @@ p <- ggplot(df, aes(x = p_val, y = ..ndensity..,
         axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
 
 ggsave(snakemake@output$fig, p,
-    units = "cm", width = 15, height = 12,
+    units = "cm", width = 15, height = 10,
     dpi = 300, useDingbats = FALSE)
 
