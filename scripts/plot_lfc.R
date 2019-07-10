@@ -4,6 +4,7 @@ suppressPackageStartupMessages({
     library(cowplot)
     library(dplyr)
     library(ggplot2)
+    library(ggrastr)
     library(purrr)
 })
 
@@ -16,8 +17,8 @@ df <- lapply(snakemake@input$res, readRDS) %>%
 
 ps <- group_by(df, sid) %>% {set_names(group_split(.), group_keys(.)[[1]])} %>% lapply(function(u) 
     ggplot(u, aes(x = sim_lfc, y = est_lfc, col = as.logical(is_de))) +
-        facet_wrap(~ method, ncol = 5) +
-        geom_point(size = 0.2, alpha = 0.2) +
+        facet_wrap(~ method, ncol = 3) +
+        geom_point_rast(size = 0.1, alpha = 0.1) +
         scale_color_manual(values = c("FALSE" = "royalblue", "TRUE" = "tomato")) +
         guides(color = guide_legend("DD", override.aes = list(size = 3, alpha = 1))) +
         scale_x_continuous(limits = c(-7, 7), breaks = seq(-6, 6, 3), expand = c(0, 0)) +
@@ -42,5 +43,5 @@ p <- plot_grid(
     label_fontface = "bold")
 
 ggsave(snakemake@output$fig, p,
-    width = 15, height = 28, units = "cm",
+    width = 15, height = 24, units = "cm",
     dpi = 300, useDingbats = FALSE)

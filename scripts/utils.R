@@ -1,26 +1,21 @@
 .meth_cols <- c(
     "edgeR.sum(counts)" = "#000000",
     "edgeR.sum(scalecpm)" = "#C6C6C6",
-  
     "limma-voom.sum(counts)" = "#5E5E5E",
-    
     "limma-trend.mean(logcounts)"    = "#007700",
     "limma-trend.mean(vstresiduals)" = "#00B161",
     
     "MM-dream"  = "#336A7C",
     "MM-nbinom" = "#00E3DD",
     "MM-vst"    = "#3BB3B7",
-  
+    "scDD.logcounts"    = "royalblue",
+    "scDD.vstresiduals" = "cornflowerblue", 
+    
     "AD-gid.logcounts"    = "#B03060",
     "AD-gid.vstresiduals" = "#FFABD3",
     "AD-sid.logcounts"    = "#9E6A92",
     "AD-sid.vstresiduals" = "#E29CF2",
-    
-    "MAST.logcounts"    = "#A06A50",
-  
-    "scDD.logcounts"    = "royalblue",
-    "scDD.vstresiduals" = "cornflowerblue")
-
+    "MAST.logcounts"    = "#A06A50")
 
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
@@ -72,7 +67,7 @@
             scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
                 labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
             scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
-            guides(col = guide_legend(ncol = 4,
+            guides(col = guide_legend(ncol = 3,
                 override.aes = list(size = 2, alpha = 1))) +
             .prettify(theme = "bw", legend.position = "bottom"))
 
