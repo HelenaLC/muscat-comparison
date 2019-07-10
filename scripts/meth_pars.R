@@ -45,11 +45,10 @@ scdd <- data.frame(
 scdd$id <- with(scdd, sprintf("scDD.%s", assay))
 
 # MAST -------------------------------------------------------------------------
-mast <- expand.grid(
-    KEEP.OUT.ATTRS = FALSE,
+mast <- data.frame(
     stringsAsFactors = FALSE,
-    assay = c("logcounts", "vstresiduals"))
-mast$id <- paste("MAST", mast$assay, sep = ".")
+    assay = "logcounts",
+    id = "MAST.logcounts")
 
 # write method IDs to .csv -----------------------------------------------------
 for (id in ids) {

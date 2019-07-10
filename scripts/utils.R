@@ -1,24 +1,23 @@
-mm <- RColorBrewer::brewer.pal(6, "Pastel1")
 .meth_cols <- c(
     "edgeR.sum(counts)" = "#000000",
     "edgeR.sum(scalecpm)" = "#C6C6C6",
+  
     "limma-voom.sum(counts)" = "#5E5E5E",
     
     "limma-trend.mean(logcounts)"    = "#007700",
     "limma-trend.mean(vstresiduals)" = "#00B161",
     
     "MM-dream"  = "#336A7C",
-    "MM-vst"    = "#3BB3B7",
     "MM-nbinom" = "#00E3DD",
+    "MM-vst"    = "#3BB3B7",
   
-    "MAST.logcounts"    = "#A06A50",
-    "MAST.vstresiduals" = "#735D00",
-    
     "AD-gid.logcounts"    = "#B03060",
     "AD-gid.vstresiduals" = "#FFABD3",
     "AD-sid.logcounts"    = "#9E6A92",
     "AD-sid.vstresiduals" = "#E29CF2",
     
+    "MAST.logcounts"    = "#A06A50",
+  
     "scDD.logcounts"    = "royalblue",
     "scDD.vstresiduals" = "cornflowerblue")
 
