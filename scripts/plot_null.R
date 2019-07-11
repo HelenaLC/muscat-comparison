@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
 })
 
 #fns <- list.files("~/documents/kang", "nill", full.names = TRUE)
-df <- .read_res(snakemake@intput$res) %>% 
+df <- .read_res(snakemake@input$res) %>% 
     dplyr::filter(!is.na(p_val)) %>% 
     dplyr::rename(method = mid, replicate = i)
 
