@@ -16,7 +16,8 @@ df <- lapply(snakemake@input$res, readRDS) %>%
     bind_rows %>% 
     mutate_at("i", factor) %>% 
     mutate_at("mid", factor, levels = names(.meth_cols)) %>% 
-    dplyr::rename(method = mid, replicate = i)
+    dplyr::rename(method = mid, replicate = i) %>% 
+    mutate_at("method", factor, levels = names(.meth_cols))
 
 p <- ggplot(df, aes(x = p_val, y = ..ndensity.., 
     col = method, fill = method, lty = replicate)) +
