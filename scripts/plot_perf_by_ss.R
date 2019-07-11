@@ -73,6 +73,7 @@ p <- cowplot::plot_grid(hists, p,
     ncol = 1, axis = "lr", align = "v",
     rel_heights = c(1, 3))
 
+saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, 
     width = 15, height = 7.1, units = "cm",
     dpi = 300, useDingbats = FALSE)
