@@ -44,6 +44,7 @@ p <- ggplot(sub, aes(x = sim_lfc, y = est_lfc, col = as.logical(is_de))) +
         panel.spacing = unit(1, "mm"),
         legend.position = "bottom")
 
+saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, p,
     width = 15, height = 11, units = "cm",
     dpi = 300, useDingbats = FALSE)
