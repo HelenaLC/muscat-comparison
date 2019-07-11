@@ -62,7 +62,7 @@ rule all:
 			expand(join(config["figures"], "{did}", "perf_by_cat_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "{nms}.{ext}"), did = config["dids"],\
-				nms = ["nill", "sim_vs_est_lfc"], ext = ["rds", "pdf"]),
+				nms = ["null", "sim_vs_est_lfc"], ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
 				did = config["dids"], x = "c", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
@@ -108,7 +108,8 @@ rule plot_null:
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
 				"/nill;.*").search, res_dirs)
-	output: fig = join(config["figures"], "{did}", "null.pdf")
+	output: ggp = join(config["figures"], "{did}", "null.rds"), 
+			fig = join(config["figures"], "{did}", "null.pdf")
 	script: "{input.script}"
 
 rule plot_tprfdr:
