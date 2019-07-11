@@ -11,11 +11,11 @@
     "scDD.logcounts"    = "royalblue",
     "scDD.vstresiduals" = "cornflowerblue", 
     
+    "MAST.logcounts"    = "#A06A50",
     "AD-gid.logcounts"    = "#B03060",
     "AD-gid.vstresiduals" = "#FFABD3",
     "AD-sid.logcounts"    = "#9E6A92",
-    "AD-sid.vstresiduals" = "#E29CF2",
-    "MAST.logcounts"    = "#A06A50")
+    "AD-sid.vstresiduals" = "#E29CF2")
 
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
@@ -51,9 +51,11 @@
         panel.grid.major = element_line(size = 0.2, color = "lightgrey"),
         plot.title = element_text(face = "bold", hjust = 0),
         axis.text = element_text(color = "black"),
-        legend.key.size = unit(0.2, "cm"),
+        legend.key.size = unit(2, "mm"),
         strip.background = element_rect(fill = NA),
-        panel.spacing = unit(0, "cm"),
+        plot.margin = unit(rep(1, 4), "mm"),
+        panel.spacing = unit(0, "mm"),
+        legend.margin = margin(0,0,1,0,"mm"),
         ...)}
 
 .plot_perf_points <- function(df, color_by = "method", facet = "splitval")
