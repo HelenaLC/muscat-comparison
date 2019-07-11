@@ -9,11 +9,12 @@ suppressPackageStartupMessages({
     library(reshape2)
 })
 
-#fns <- list.files("results/kang", "nill", full.names = TRUE)
+#fns <- list.files("~/documents/kang", "nill", full.names = TRUE)
 df <- lapply(snakemake@input$res, readRDS) %>% 
     map("tbl") %>% 
     map(mutate_if, is.factor, as.character) %>% 
     bind_rows %>% 
+    dplyr::filter(!is.na(p_val)) %>% 
     mutate_at("i", factor) %>% 
     mutate_at("mid", factor, levels = names(.meth_cols)) %>% 
     dplyr::rename(method = mid, replicate = i) %>% 
@@ -29,14 +30,16 @@ p <- ggplot(df, aes(x = p_val, y = ..ndensity..,
         lty = guide_legend(ncol = 1, order = 2),
         fill = guide_legend(ncol = 3, order = 1,
             override.aes = list(alpha = 1, col = NA))) +
-    scale_x_continuous("p-value", breaks = seq(0, 1, 0.2), expand = c(0, 0.04)) +
-    scale_y_continuous("normalized density", breaks = seq(0, 1, 0.2), expand = c(0, 0.06)) +
+    scale_x_continuous("p-value", breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
+    scale_y_continuous("normalized density", breaks = c(0, 1), expand = c(0, 0.1)) +
     .prettify("bw") + theme(aspect.ratio = 1/2,
         legend.position = "bottom",
+        legend.box.just = "left",
         panel.grid = element_blank(),
-        #panel.spacing = unit(0.1, "cm"),
+        panel.spacing = unit(1, "mm"),
+        panel.border = element_rect(color = "grey"),
         strip.text = element_text(size = 5),
-        axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 
 ggsave(snakemake@output$fig, p,
     units = "cm", width = 15, height = 8,
