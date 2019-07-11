@@ -19,18 +19,21 @@ output:
 knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
 ```
 
-```{r setup, message = FALSE, warning = FALSE}
-library(cowplot)
-library(Seurat)
-library(SingleCellExperiment)
-
+```{r setup}
 # increase future's maximum allowed size of objects
 # to be exported from default of 500 MB to 2 GB
 options(future.globals.maxSize = 2048 * 1024 ^ 2)
 ```
 
-# Load data
-```{r data}
+### Load packages
+```{r load-libs, message = FALSE, warning = FALSE}
+library(cowplot)
+library(Seurat)
+library(SingleCellExperiment)
+```
+
+### Load data
+```{r load-data}
 sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 ```
 
@@ -55,8 +58,7 @@ so <- lapply(so, ScaleData, verbose = FALSE)
 
 # find anchors & integrate
 as <- FindIntegrationAnchors(so, verbose = FALSE)
-so <- IntegrateData(anchorset = as, dims = seq_len(30),
-    features.to.integrate = rownames(sce), verbose = FALSE)
+so <- IntegrateData(anchorset = as, dims = seq_len(30), verbose = FALSE)
 
 # scale integrated data
 DefaultAssay(so) <- "integrated"

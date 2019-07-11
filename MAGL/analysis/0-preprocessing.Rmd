@@ -18,21 +18,23 @@ output:
 knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
 ```
 
-```{r message = FALSE, warning = FALSE}
+### Load packages
+```{r load-libs, message = FALSE, warning = FALSE}
 library(cowplot)
 library(ggplot2)
 library(scater)
+library(scds)
 library(SingleCellExperiment)
 ```
 
 # Load & reformat data
-```{r message = FALSE}
+```{r load-data, message = FALSE}
 # load raw counts
 fastq_dirs <- list.dirs("data", recursive = FALSE, full.names = TRUE)
 names(fastq_dirs) <- basename(fastq_dirs)
 sce <- DropletUtils::read10xCounts(fastq_dirs)
 
-# rename row/colData & dimnames
+# rename row/colData colnames & SCE dimnames
 names(rowData(sce)) <- c("ENSEMBL", "SYMBOL")
 names(colData(sce)) <- c("sample_id", "barcode")
 sce$sample_id <- factor(basename(sce$sample_id))
@@ -49,6 +51,29 @@ sce$group_id <- md$Characteristics[m]
 # remove undetected genes
 sce <- sce[Matrix::rowSums(counts(sce) > 0) > 0, ]
 dim(sce)
+```
+
+# Doublet removal
+```{r doublet-removal, results = "hide"}
+# split SCE by sample
+cs_by_s <- split(colnames(sce), sce$sample_id)
+sce_by_s <- lapply(cs_by_s, function(cs) sce[, cs])
+
+# run 'scds'
+sce_by_s <- lapply(sce_by_s, function(u) 
+    cxds_bcds_hybrid(bcds(cxds(u))))
+
+# remove doublets
+sce_by_s <- lapply(sce_by_s, function(u) {
+    # compute expected nb. of doublets (10x)
+    n_dbl <- ceiling(0.01 * ncol(u)^2 / 1e3)
+    # remove 'n_dbl' cells w/ highest doublet score
+    o <- order(u$hybrid_score, decreasing = TRUE)
+    u[, -o[seq_len(n_dbl)]]
+})
+
+# merge back into single SCE
+sce <- do.call(cbind, sce_by_s)
 ```
 
 # Calculate QC Metrics

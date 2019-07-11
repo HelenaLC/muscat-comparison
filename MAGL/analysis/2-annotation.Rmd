@@ -12,11 +12,15 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
     toc: true
+    code_folding: hide
 ---
 
-```{r message = FALSE, warning = FALSE}
+### Load packages
+```{r load-libs, message = FALSE, warning = FALSE}
 library(ComplexHeatmap)
 library(cowplot)
+library(dplyr)
+library(purrr)
 library(RColorBrewer)
 library(viridis)
 library(scran)
@@ -25,9 +29,12 @@ library(SingleCellExperiment)
 ```
 
 # Load data & convert to SCE
-```{r}
+```{r load-data}
 so <- readRDS(file.path("output", "MAGL-SeuratObject.rds"))
 sce <- as.SingleCellExperiment(so, assay = "RNA")
+colData(sce) <- as.data.frame(colData(sce)) %>% 
+    mutate_if(is.character, as.factor) %>% 
+    DataFrame(row.names = colnames(sce))
 ```
 
 # Nb. of clusters by resolution
@@ -39,13 +46,28 @@ sapply(colData(sce)[cluster_cols], nlevels)
 # Cluster-sample counts
 ```{r}
 # set cluster IDs to resolution 0.2 clustering
-sce$cluster_id <- sce$integrated_snn_res.0.2
-(n_cells_by_cluster_sample <- table(sce$cluster_id, sce$sample_id))
+so <- SetIdent(so, value = "integrated_snn_res.0.1")
+
+so@meta.data$cluster_id <- Idents(so)
+sce$cluster_id <- Idents(so)
+(n_cells <- table(sce$cluster_id, sce$sample_id))
+```
+
+```{r}
+nk <- length(kids <- set_names(levels(sce$cluster_id)))
+ns <- length(sids <- set_names(levels(sce$sample_id)))
+ng <- length(gids <- set_names(levels(sce$group_id)))
+
+# color palettes for cluster, sample, group IDs, and # cells
+pal <- CATALYST:::.cluster_cols
+cluster_id_pal <- set_names(pal[seq_len(nk)], kids)
+sample_id_pal <- set_names(pal[seq_len(ns) + nk], sids)
+group_id_pal <- set_names(c("royalblue", "orange"), gids)
 ```
 
 # Relative cluster-abundances
 ```{r fig.width = 6, fig.height = 5}
-fqs <- prop.table(n_cells_by_cluster_sample, margin = 2)
+fqs <- prop.table(n_cells, margin = 2)
 mat <- as.matrix(unclass(fqs))
 Heatmap(mat,
     col = rev(brewer.pal(11, "RdGy")[-6]),
@@ -62,22 +84,28 @@ Heatmap(mat,
             gp = gpar(col = "white", fontsize = 8)))
 ```
 
-# DR colored by cluster ID
-```{r fig.width = 12, fig.height = 5}
-make_dr_plot <- function(so, dr)
-    DimPlot(so, 
-        cells = sample(colnames(so), 5e3), 
-        group.by = "integrated_snn_res.0.2",
-        reduction = dr, pt.size = 0.4) +
-    scale_color_manual(values = muscat:::cluster_colors) +
-    theme(aspect.ratio = 1)
-lgd <- get_legend(p1 <- make_dr_plot(so, "tsne"))
-p1 <- p1 + theme(legend.position = "none")
-p2 <- make_dr_plot(so, "umap") + theme(legend.position = "none")
+# DR colored by cluster ID {.tabset}
+```{r dim-red, results = "asis", fig.width = 12}
+cs <- sample(colnames(so), 5e3)
+.plot_dr <- function(so, dr, id)
+    DimPlot(so, cells = cs, group.by = id, reduction = dr, pt.size = 0.4) +
+        scale_color_manual(id, values = get(paste0(id, "_pal"))) + 
+        guides(col = guide_legend(nrow = 10, 
+            override.aes = list(size = 3, alpha = 1))) +
+        theme_void() + theme(aspect.ratio = 1)
 
-# arrange plots & legend
-ps <- plot_grid(plotlist = list(p1, p2), nrow = 1)
-plot_grid(ps, lgd, nrow = 1, rel_widths = c(1, 0.2))
+ids <- c("cluster_id", "group_id", "sample_id")
+for (id in ids) {
+    cat("## ", id, "\n")
+    p1 <- .plot_dr(so, "tsne", id)
+    lgd <- get_legend(p1)
+    p1 <- p1 + theme(legend.position = "none")
+    p2 <- .plot_dr(so, "umap", id) + theme(legend.position = "none")
+    ps <- plot_grid(plotlist = list(p1, p2), nrow = 1)
+    p <- plot_grid(ps, lgd, nrow = 1, rel_widths = c(1, 0.2))
+    print(p)
+    cat("\n\n")
+}
 ```
 
 # Known marker genes
@@ -103,11 +131,11 @@ labs <- sprintf("%s(%s)", gs, ks)
 ## Heatmap of mean marker-exprs. by cluster
 ```{r fig.width = 8, fig.height = 4}
 # split cells by cluster
-cells_by_cluster <- split(colnames(sce), sce$cluster_id)
+cs_by_k <- split(colnames(sce), sce$cluster_id)
 
 # compute cluster-marker means
 means_by_cluster <- lapply(known_markers, function(gs)
-    vapply(cells_by_cluster, function(i)
+    vapply(cs_by_k, function(i)
         Matrix::rowMeans(logcounts(sce)[gs, i, drop = FALSE]), 
         numeric(length(gs))))
 
@@ -122,7 +150,7 @@ row_anno <- rowAnnotation(
     df = data.frame(label = ks),
     col = list(label = cols),
     gp = gpar(col = "white")) 
-hm <- Heatmap(mat,
+Heatmap(mat,
     name = "scaled avg.\nexpression",
     col = viridis(10),
     cluster_rows = FALSE,
@@ -130,8 +158,8 @@ hm <- Heatmap(mat,
     row_names_side = "left",
     column_title = "cluster_id",
     column_title_side = "bottom",
-    rect_gp = gpar(col = "white"))
-row_anno + hm
+    rect_gp = gpar(col = "white"),
+    left_annotation = row_anno)
 ```
 
 ## DR colored by marker expr.
@@ -139,17 +167,15 @@ row_anno + hm
 # downsample to 2000 cells
 cs <- sample(colnames(sce), 2e3)
 gs <- unlist(known_markers)
+sub <- subset(so, cells = cs)
 
 # t-SNE colored by marker-expression
-ps <- FeaturePlot(so, 
-    cells = cs, features = gs, 
-    reduction = "tsne", combine = FALSE, pt.size = 0.4)
-ps <- lapply(seq_along(ps), function(i) {
-    ps[[i]] <- ps[[i]] + theme(aspect.ratio = 1,
-        legend.position = "none") + 
-        ggtitle(labs[i])
-    return(ps[[i]])
+ps <- lapply(seq_along(gs), function(i) {
+    if (!gs[i] %in% rownames(so)) return(NULL)
+    FeaturePlot(sub, features = gs[i], reduction = "umap", pt.size = 0.4) +
+        ggtitle(labs[i]) + theme_void() + theme(aspect.ratio = 1, legend.position = "none")
 })
+ps <- ps[!sapply(ps, is.null)]
 
 # arrange plots
 plot_grid(plotlist = ps, ncol = 4, label_size = 10)
@@ -171,5 +197,5 @@ muscat::plotMarkerGenes(sce, gs)
 
 # Save SCE to .rds
 ```{r}
-saveRDS(sce, file.path("output", "MAGL-SCE_tmp.rds"))
+saveRDS(sce, file.path("output", "MAGL-SCE.rds"))
 ```

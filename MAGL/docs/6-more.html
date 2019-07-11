@@ -10,6 +10,7 @@
 
 
 
+<meta name="date" content="2019-07-10" />
 
 <title>Exploration of the LPS DEA</title>
 
@@ -23,6 +24,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -262,6 +264,14 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 
@@ -339,8 +349,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -427,11 +435,22 @@ div.section {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Exploration of the LPS DEA</h1>
 <h4 class="author">Pierre-Luc Germain</h4>
-<h4 class="date">Juli 08, 2019</h4>
+<address class="author_afil">
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
+<address class="author_afil">
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 10, 2019</h4>
 
 </div>
 
@@ -456,22 +475,22 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-07-08
+<strong>Last updated:</strong> 2019-07-10
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.3.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
 <div id="checks" class="tab-pane fade">
-<div id="workflowr-checks" class="panel-group">
+<div class="panel-group" id="workflowr-checks">
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
@@ -487,12 +506,57 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Environment:</strong> objects present </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongobjectspresent" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+
+<p>
+The global environment had objects present when the code in the R Markdown file was run. These objects can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment. Use <code>wflow_publish</code> or <code>wflow_build</code> to ensure that the code is always run in an empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+data
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+env
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -523,96 +587,89 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
-<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-The following chunks had caches available:
-<ul>
-<li>
-session-info-chunk-inserted-by-workflowr
-</li>
-<li>
-unnamed-chunk-1
-</li>
-<li>
-unnamed-chunk-10
-</li>
-<li>
-unnamed-chunk-11
-</li>
-<li>
-unnamed-chunk-12
-</li>
-<li>
-unnamed-chunk-13
-</li>
-<li>
-unnamed-chunk-14
-</li>
-<li>
-unnamed-chunk-15
-</li>
-<li>
-unnamed-chunk-2
-</li>
-<li>
-unnamed-chunk-3
-</li>
-<li>
-unnamed-chunk-4
-</li>
-<li>
-unnamed-chunk-5
-</li>
-<li>
-unnamed-chunk-6
-</li>
-<li>
-unnamed-chunk-7
-</li>
-<li>
-unnamed-chunk-8
-</li>
-<li>
-unnamed-chunk-9
-</li>
-</ul>
-<p>To ensure reproducibility of the results, delete the cache directory <code>6-more_cache</code> and re-run the analysis. To have workflowr automatically delete the cache directory prior to building the file, set <code>delete_cache = TRUE</code> when running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree6bdee2fb55daa7ce71da0a0bd95b6761473f95b5targetblank6bdee2fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/6bdee2fb55daa7ce71da0a0bd95b6761473f95b5" target="_blank">6bdee2f</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree6bdee2fb55daa7ce71da0a0bd95b6761473f95b5targetblank6bdee2fa" class="panel-collapse collapse">
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5253b5f66ce58a2cd198fca0a243e6c250949dfatargetblank5253b5fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/5253b5f66ce58a2cd198fca0a243e6c250949dfa" target="_blank">5253b5f</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5253b5f66ce58a2cd198fca0a243e6c250949dfatargetblank5253b5fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    ._.Renviron
+    Ignored:    ._.gitignore
+    Ignored:    ._README.md
+    Ignored:    ._Snakefile
+    Ignored:    .snakemake/
+    Ignored:    MAGL/.DS_Store
+    Ignored:    MAGL/.RData
     Ignored:    MAGL/.Rhistory
-    Ignored:    MAGL/.Rproj.user/
-    Ignored:    MAGL/analysis/5-genesetb_cache/
-    Ignored:    MAGL/analysis/5-more_cache/
-    Ignored:    MAGL/analysis/6-more_cache/
-    Ignored:    MAGL/analysis/output
+    Ignored:    MAGL/._.DS_Store
+    Ignored:    MAGL/._.Rprofile
+    Ignored:    MAGL/._.gitignore
+    Ignored:    MAGL/._data
+    Ignored:    MAGL/analysis/._refs.bib
+    Ignored:    MAGL/analysis/0-preprocessing_cache/
+    Ignored:    MAGL/analysis/1-clustering_cache/
+    Ignored:    MAGL/analysis/3-differential_cache/
+    Ignored:    MAGL/analysis/4-visualization_cache/
+    Ignored:    MAGL/analysis/5-geneset_cache/
+    Ignored:    MAGL/data/
     Ignored:    MAGL/output/
+    Ignored:    data/sim_data/
+    Ignored:    figures/
+    Ignored:    meta/
+    Ignored:    results/
+    Ignored:    scripts/._apply_scdd.R
+    Ignored:    scripts/._fig_vehicle_vs_lps.R
+    Ignored:    scripts/._plot_perf_by_expr.R
+    Ignored:    scripts/._plot_perf_by_lfc.R
+    Ignored:    scripts/._plot_perf_by_ss.R
+    Ignored:    scripts/._plot_runtimes.R
+    Ignored:    scripts/._plot_sim_ex.R
+    Ignored:    scripts/._sim_qc.R
 
 Untracked files:
-    Untracked:  MAGL/analysis/5-genesetb.Rmd
-    Untracked:  MAGL/docs/figure/5-genesetb.Rmd/
-    Untracked:  MAGL/docs/figure/5-more.Rmd/
-    Untracked:  MAGL/docs/figure/6-more.Rmd/
+    Untracked:  .RData
+    Untracked:  .RDataTmp
+    Untracked:  .Rhistory
+    Untracked:  MAGL/current
+    Untracked:  scripts/fig_vehicle_vs_lps.R
 
 Unstaged changes:
-    Modified:   .gitignore
+    Modified:   MAGL/.Rprofile
+    Modified:   MAGL/analysis/0-preprocessing.Rmd
+    Modified:   MAGL/analysis/1-clustering.Rmd
+    Modified:   MAGL/analysis/2-annotation.Rmd
+    Modified:   MAGL/analysis/3-differential.Rmd
     Modified:   MAGL/analysis/6-more.Rmd
+    Modified:   scripts/utils.R
 
 </code></pre>
 <p>
@@ -653,6 +710,23 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/ada6ab00b911334f3439c00db58f1d6afa18cd3d/MAGL/docs/6-more.html" target="_blank">ada6ab0</a>
+</td>
+<td>
+Pierre-Luc Germain
+</td>
+<td>
+2019-07-08
+</td>
+<td>
+more analysis on LPS dataset…
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
@@ -675,203 +749,320 @@ some further analysis on the LPS dataset…
 </div>
 </div>
 </div>
-<pre class="r"><code>library(cowplot)
+<div id="load-packages" class="section level3">
+<h3>Load packages</h3>
+<pre class="r"><code>library(AnnotationDbi)
+library(circlize)
+library(ComplexHeatmap)
 library(dplyr)
-library(ggplot2)
-library(muscat)
-library(purrr)
-library(SingleCellExperiment)
 library(edgeR)
-library(SEtools)
-library(BiocParallel)
-library(topGO)
-library(org.Mm.eg.db)
+library(ggplot2)
 library(M3C)
 library(msigdbr)
-
-options(future.globals.maxSize = 2e3*1024^2)
-
-sym2rn &lt;- function(x, rn){
-  p &lt;- paste(paste0(&quot;\\.&quot;,x,&quot;$&quot;), collapse=&quot;|&quot;)
-  grep(p, rn, value=TRUE)
-}</code></pre>
+library(muscat)
+library(RColorBrewer)
+library(SingleCellExperiment)
+library(topGO)
+library(org.Mm.eg.db)
+library(purrr)</code></pre>
+</div>
 <div id="load-data-results" class="section level1">
 <h1>Load data &amp; results</h1>
 <pre class="r"><code>sce &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))
-pb &lt;- aggregateData(sce, &quot;counts&quot;, fun=&quot;sum&quot;)
-pb$group_id &lt;- factor(rep(c(&quot;WT&quot;,&quot;LPS&quot;), each=4),levels=c(&quot;WT&quot;,&quot;LPS&quot;))
-# mm &lt;- model.matrix(~0+pb$group_id)
-# dimnames(mm) &lt;- list(colnames(pb), levels(pb$group_id))
-# res &lt;- pbDS(sce, pb, mm, limma::makeContrasts(&quot;LPS-WT&quot;, levels=mm), method=&quot;edgeR&quot;)
-# saveRDS(res, file=&quot;output/MAGL-DS_res.rds&quot;)
-res &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-DS_res.rds&quot;))</code></pre>
+res &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-DS_res.rds&quot;))
+
+# store gene symbols &amp; feature names
+ss &lt;- strsplit(rownames(sce), &quot;.&quot;, fixed = TRUE)
+rowData(sce)$symbol &lt;- sapply(ss, .subset, 1)
+rowData(sce)$feature &lt;- sapply(ss, .subset, 2)</code></pre>
+<p>For easy accession, we store the character vectors of cluster and sample IDs, as well as the number of clusters and samples:</p>
+<pre class="r"><code>nk &lt;- length(kids &lt;- set_names(levels(sce$cluster_id)))
+ns &lt;- length(sids &lt;- set_names(levels(sce$sample_id)))
+ng &lt;- length(gids &lt;- set_names(levels(sce$group_id)))</code></pre>
+<pre class="r"><code># aggregation to pseudobulk sum-counts
+pb &lt;- aggregateData(sce, assay = &quot;counts&quot;, fun = &quot;sum&quot;)</code></pre>
+<pre class="r"><code># construct SCE containing logFCs for ea. cluster
+ref &lt;- pb$group_id == &quot;WT&quot;
+lfc &lt;- lapply(assays(pb), function(u) {
+    y &lt;- DGEList(u)
+    y &lt;- calcNormFactors(y)
+    lcpm &lt;- log1p(cpm.DGEList(y))
+    lfc &lt;- lcpm - rowMeans(lcpm[, ref])
+    SingleCellExperiment(lfc, colData = colData(pb))
+}) %&gt;% do.call(what = cbind)
+lfc$cluster_id &lt;- rep(assayNames(pb), each = ns)</code></pre>
+<pre class="r"><code># round limits of x to nearest n
+.get_brks &lt;- function(x, n) {
+    n &lt;- 1 / n
+    min &lt;- floor(min(x) * n) / n
+    max &lt;- ceiling(max(x) * n) / n
+    c(0, min, max)
+}
+
+# color palettes for heatmap, cluster, sample, group IDs, and # cells
+hm_cols &lt;- c(&quot;grey95&quot;, &quot;blue&quot;, &quot;red&quot;)
+kcols &lt;- set_names(CATALYST:::.cluster_cols[seq_len(nk)], kids)</code></pre>
+<pre><code>Registered S3 methods overwritten by &#39;car&#39;:
+  method                          from
+  influence.merMod                lme4
+  cooks.distance.influence.merMod lme4
+  dfbeta.influence.merMod         lme4
+  dfbetas.influence.merMod        lme4</code></pre>
+<pre class="r"><code>scols &lt;- set_names(CATALYST:::.cluster_cols[seq_len(ns) + nk], sids)
+gcols &lt;- set_names(c(&quot;royalblue&quot;, &quot;orange&quot;), gids)
+
+n_cells &lt;- c(t(metadata(pb)$n_cells))
+max &lt;- .get_brks(n_cells, 100)[3]
+ncols &lt;- colorRamp2(c(0, max), c(&quot;white&quot;, &quot;black&quot;))
+
+# column annoation 
+col_df &lt;- data.frame(n_cells, 
+    cluster_id = rep(kids, each = ns), 
+    group_id = rep(pb$group_id, nk))
+col_cols &lt;- list(
+    n_cells = ncols, cluster_id = kcols, 
+    sample_id = scols, group_id = gcols)
+col_anno &lt;- HeatmapAnnotation(
+    df = col_df, col = col_cols,
+    show_annotation_name = FALSE)
+
+# heatmap wrapper
+.plot_hm &lt;- function(sce, col, brks, col_anno = NULL, row_anno = NULL, 
+    row_split = NULL, row_nms = FALSE, col_title = NULL, ...)
+    Heatmap(assay(sce), col, name = &quot;logFC&quot;, 
+        column_title = col_title, cluster_columns = FALSE, 
+        show_row_names = row_nms, show_column_names = FALSE,
+        show_row_dend = FALSE, show_column_dend = FALSE,
+        row_split = row_split, column_split = sce$cluster_id,
+        top_annotation = col_anno, left_annotation = row_anno, 
+        heatmap_legend_param = list(at = brks), 
+        row_names_side = &quot;left&quot;, ...)</code></pre>
 </div>
 <div id="comparison-across-cell-types" class="section level1">
 <h1>Comparison across cell types</h1>
 <p><strong>Q1: To what extent are the changes shared or cell-type specific?</strong></p>
 <p>In order to be able to asses the overlap and magnitude of changes across cell types independent of variations in the significance, we plot a heatmap of the logFC, in each cell type, of the union of differentially-expressed genes:</p>
-<pre class="r"><code># get pseudo-bulk SEs of logFC
-lcpm &lt;- lapply(res$data, FUN=function(x) log1p(cpm(x)))
-lfc &lt;- lapply(lcpm, w=which(pb$group_id==&quot;LPS&quot;), FUN=function(x,w) x-rowMeans(x[,-w]))
-lfc &lt;- lfc[order(names(lfc))[c(2,1,12:14,3:11)]]
-lfc2 &lt;- lapply(lfc, function(x) SummarizedExperiment(x, colData=colData(pb)))
+<pre class="r"><code># get DE genes for ea. cluster
+tbl &lt;- res$table[[1]]
+tbl_fil &lt;- lapply(tbl, filter, p_adj.loc &lt; 0.01, abs(logFC) &gt; 1)
+de_gs_by_k &lt;- map(tbl_fil, pull, &quot;gene&quot;)
+de_gs &lt;- unique(unlist(de_gs_by_k))</code></pre>
+<div id="consensus-clustering-of-genes" class="section level2">
+<h2>Consensus clustering of genes</h2>
+<pre class="r"><code>cc &lt;- M3C(t(assay(lfc[de_gs, ])), method = 2)</code></pre>
+<p><img src="figure/6-more.Rmd/consensus-clustering-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/6-more.Rmd/consensus-clustering-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/6-more.Rmd/consensus-clustering-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cc_ids &lt;- cc$realdataresults[[3]]$assignments
+cc_cols &lt;- brewer.pal(length(unique(cc_ids)), &quot;Set2&quot;)
+names(cc_cols) &lt;- unique(cc_ids)</code></pre>
+<pre class="r"><code>row_anno &lt;- rowAnnotation(
+    show_annotation_name = FALSE,
+    df = data.frame(consensus_id = cc_ids),
+    col = list(consensus_id = cc_cols))
 
-degs &lt;- lapply(res$table$`LPS-WT`, FUN=function(x){ x$gene[which(x$p_adj.loc &lt;0.01 &amp; abs(x$logFC)&gt;1)] })
-alldegs &lt;- unique(unlist(degs))
-
-# we merge the SEs
-SE &lt;- mergeSEs(lfc2, do.scale=FALSE, use.assays = 1)
-SE$type &lt;- &quot;Glia&quot;
-SE$type[grep(&quot;neuron&quot;, SE$Dataset)] &lt;- &quot;Neuron&quot;
-SE$type[grep(&quot;Endothelial&quot;, SE$Dataset)] &lt;- &quot;Endothelial&quot;
-SE$subtype &lt;- as.factor(SE$Dataset)
-levels(SE$subtype) &lt;- gsub(&quot;[0-9]&quot;,&quot;&quot;,levels(SE$subtype))
-SE$nbCells &lt;- as.numeric(t(table(sce$cluster_id, sce$sample_id)[unique(SE$subtype),]))
-rowData(SE) &lt;- sapply(lcpm[names(lfc2)], FUN=function(x){ rowMeans(x[row.names(SE),]) })
-sehm(SE, alldegs, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;nbCells&quot;,&quot;subtype&quot;,&quot;type&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>saveRDS(SE, file=&quot;output/pbSE.rds&quot;)</code></pre>
+brks &lt;- .get_brks(assay(lfc[de_gs, ]), 0.5)
+cols &lt;- colorRamp2(brks, hm_cols)
+.plot_hm(lfc[de_gs, ], cols, brks, col_anno, row_anno, cc_ids, row_title = NULL)</code></pre>
+<p><img src="figure/6-more.Rmd/hm-DE-genes-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>The pattern is very similar across cell subtypes of a given class, but there is also a striking similarity across all cell types, although neurons react much more mildly.</p>
-<div id="characterization-of-the-common-response-genes" class="section level2">
-<h2>Characterization of the common response genes</h2>
-<p>Consensus clustering of the genes:</p>
-<p>(since I’m not doing anything anymore with the other clusters, it would probably be simpler and more or less equivalent to just take genes DE in at least 6 cell types…)</p>
-<pre class="r"><code>alldegs2 &lt;- intersect(alldegs,row.names(SE))
-layout(matrix(1:4,nrow=2))
-cc &lt;- M3C(t(assay(SE)[alldegs2,]), method = 2)</code></pre>
-<pre><code>***M3C: Monte Carlo Reference-based Consensus Clustering***</code></pre>
-<pre><code>method: penalised stability</code></pre>
-<pre><code>clustering algorithm: pam</code></pre>
-<pre><code>annotation: none</code></pre>
-<pre><code>running consensus cluster algorithm for real data...</code></pre>
-<pre><code>finished</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/6-more.Rmd/unnamed-chunk-4-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/6-more.Rmd/unnamed-chunk-4-3.png" width="960" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cc2 &lt;- cc$realdataresults[[3]]$assignments
-rowData(SE)$cluster &lt;- as.character(cc2[row.names(SE)])
-sehm(SE, alldegs, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;type&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8), toporder = cc2, anno_rows = c(&quot;cluster&quot;))</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-4-4.png" width="960" style="display: block; margin: auto;" /></p>
-<p>GO over-representation analysis of the clusters:</p>
-<pre class="r"><code>allg &lt;- unique(sapply(strsplit(row.names(SE),&quot;.&quot;,fixed=TRUE), FUN=function(x) x[2]))
-go &lt;- lapply(split(names(cc2), cc2), FUN=function(cg){
-  cg &lt;- unique(sapply(strsplit(cg,&quot;.&quot;,fixed=TRUE), FUN=function(x) x[2]))
-  g &lt;- as.numeric(allg %in% cg)+1
-  names(g) &lt;- allg
-  go &lt;- new(&quot;topGOdata&quot;, ontology=&quot;BP&quot;, allGenes=g, annot=annFUN.org, geneSel=function(x) x&gt;1, mapping=&quot;org.Mm.eg.db&quot;, ID=&quot;symbol&quot;)
-  res &lt;- runTest(go, algorithm = &quot;classic&quot;, statistic = &quot;fisher&quot;)
-  GenTable(go, classicFisher=res, orderBy = &quot;classicFisher&quot;, topNodes=10)
+</div>
+<div id="go-over-representation-analysis-of-clusters" class="section level2">
+<h2>GO over-representation analysis of clusters</h2>
+<pre class="r"><code>go &lt;- lapply(split(names(cc_ids), cc_ids), function(gs) {
+    ss &lt;- strsplit(gs, &quot;.&quot;, fixed = TRUE)
+    fs &lt;- unique(sapply(ss, .subset, 2))
+    l &lt;- as.numeric(rowData(sce)$feature %in% fs)
+    names(l) &lt;- rowData(sce)$feature
+    go &lt;- new(&quot;topGOdata&quot;, 
+        ontology = &quot;BP&quot;,
+        allGenes = l,
+        geneSel = function(u) u == 1,
+        annot = annFUN.org,
+        mapping = &quot;org.Mm.eg.db&quot;,
+        ID = &quot;symbol&quot;)
+    res &lt;- runTest(go, algorithm = &quot;classic&quot;, statistic = &quot;fisher&quot;)
+    GenTable(go, classicFisher = res, orderBy = &quot;classicFisher&quot;, topNodes = 10)
 })</code></pre>
-<p>Conserved cluster across cell types:</p>
+</div>
+</div>
+<div id="conserved-gene-cluster-across-cell-types" class="section level1">
+<h1>Conserved gene-cluster across cell types</h1>
 <pre class="r"><code>go[[3]]</code></pre>
-<pre><code>        GO.ID                                   Term Annotated Significant
-1  GO:0006952                       defense response       620          60
-2  GO:0034097                   response to cytokine       444          49
-3  GO:0002376                  immune system process      1131          67
-4  GO:0009607            response to biotic stimulus       393          46
-5  GO:0006955                        immune response       565          52
-6  GO:0051707             response to other organism       374          45
-7  GO:0043207   response to external biotic stimulus       375          45
-8  GO:0009605          response to external stimulus      1099          64
-9  GO:0071345 cellular response to cytokine stimulus       401          43
-10 GO:0009617                  response to bacterium       241          36
+<pre><code>        GO.ID                              Term Annotated Significant
+1  GO:0046942         carboxylic acid transport       164          15
+2  GO:0015849            organic acid transport       165          15
+3  GO:0015711           organic anion transport       221          17
+4  GO:0006820                   anion transport       295          19
+5  GO:0015721 bile acid and bile salt transport         3           3
+6  GO:0015718     monocarboxylic acid transport        71           9
+7  GO:0006811                     ion transport       918          37
+8  GO:0048856  anatomical structure development      3241          88
+9  GO:0010646  regulation of cell communication      1988          60
+10 GO:0007154                cell communication      3089          84
    Expected classicFisher
-1      6.71        &lt;1e-30
-2      4.80        &lt;1e-30
-3     12.24        &lt;1e-30
-4      4.25        &lt;1e-30
-5      6.11        &lt;1e-30
-6      4.05        &lt;1e-30
-7      4.06        &lt;1e-30
-8     11.89        &lt;1e-30
-9      4.34        &lt;1e-30
-10     2.61        &lt;1e-30</code></pre>
-<p>So the core response across all cell types is an upregulation of defense response genes, in particular genes related to the response to cytokine and bacterium. We look specifically at the ‘response to bacterium’ genes:</p>
-<pre class="r"><code>rbg &lt;- AnnotationDbi::mget(&quot;GO:0009617&quot;,org.Mm.egGO2ALLEGS)[[1]]
-rbg &lt;- unique(as.character(unlist(AnnotationDbi::mget(rbg, org.Mm.egSYMBOL))))
-rbg &lt;- unlist(lapply(paste0(&quot;\\.&quot;,rbg,&quot;$&quot;), function(x) grep(x,row.names(SE), value=TRUE)))
-rbg &lt;- intersect(rbg, alldegs)
-sehm(SE, rbg, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;nbCells&quot;,&quot;type&quot;,&quot;subtype&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+1      3.20       6.8e-07
+2      3.22       7.4e-07
+3      4.31       1.4e-06
+4      5.76       4.7e-06
+5      0.06       7.3e-06
+6      1.39       9.0e-06
+7     17.92       1.5e-05
+8     63.27       0.00012
+9     38.81       0.00018
+10    60.30       0.00019</code></pre>
+<p>The core response across all cell types is an upregulation of defense response genes, in particular, genes related to the response to cytokine and bacterium. We look specifically at the ‘response to bacterium’ genes:</p>
+<pre class="r"><code>rbg &lt;- mget(&quot;GO:0009617&quot;, org.Mm.egGO2ALLEGS)[[1]]
+rbg &lt;- unique(unlist(mget(rbg, org.Mm.egSYMBOL)))
+rbg &lt;- sapply(rbg, grep, rowData(sce)$feature)
+rbg &lt;- rownames(sce)[unlist(rbg)]
+rbg &lt;- intersect(rbg, de_gs)
+
+brks &lt;- .get_brks(assay(lfc[rbg, ]), 0.5)
+cols &lt;- colorRamp2(brks, hm_cols)
+.plot_hm(lfc[rbg, ], cols, brks, col_anno)</code></pre>
+<p><img src="figure/6-more.Rmd/bacteria-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>Finally, a fairly specific GO term that comes up regularly in the camera analysis:</p>
-<pre class="r"><code>gset &lt;- msigdbr(species = &quot;Mus musculus&quot;) %&gt;%
-    dplyr::filter(gs_name==&quot;GO_CHEMOKINE_RECEPTOR_BINDING&quot;)
-gset &lt;- sym2rn(gset$gene_symbol, alldegs)
-sehm(SE, gset, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;subtype&quot;), 
-     breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8), 
-     main=&quot;DEGs related to chemokine receptor binding&quot;)</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-8-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>set &lt;- msigdbr(species = &quot;Mus musculus&quot;)
+set &lt;- set[set$gs_name == &quot;GO_CHEMOKINE_RECEPTOR_BINDING&quot;, ]
+idx &lt;- match(set$gene_symbol, rowData(sce)$feature, nomatch = 0)
+
+brks &lt;- .get_brks(assay(lfc[idx, ]), 0.5)
+cols &lt;- colorRamp2(brks, hm_cols)
+.plot_hm(lfc[idx, ], cols, brks, col_anno, row_nms = TRUE, 
+    col_title = &quot;DE genes related to chemokine receptor binding&quot;)</code></pre>
+<p><img src="figure/6-more.Rmd/chemokine-1.png" width="1344" style="display: block; margin: auto;" /></p>
 </div>
-</div>
-<div id="cell-level" class="section level1">
-<h1>Cell-level</h1>
+<div id="cell-level-linear-decomposition" class="section level1">
+<h1>Cell-level linear decomposition</h1>
 <p><strong>Q2: Are the changes homogeneous across cells of a given type, or do they affect a subset of the cells?</strong></p>
 <p>To understand whether alterations homogeneously affect all cells, or a subset of the cells, we plot, for each cell type, the distribution of the cells’ position on the first component of a PCA based on the DEGs.</p>
 <p>Since neurons have few DEGs, we use the union of DEGs of the cell type (e.g. all excitatory neurons):</p>
-<pre class="r"><code>i &lt;- split(1:ncol(sce), sce$cluster_id)
+<pre class="r"><code>cs_by_k &lt;- split(colnames(sce), sce$cluster_id)
+ld &lt;- lapply(kids, function(k) {
+    # subset SCE to inlcude
+    # - genes that are DE in cluster k
+    # - cells that have been assigned to cluster k
+    gs &lt;- de_gs_by_k[[k]]
+    cs &lt;- cs_by_k[[k]]
+    es &lt;- logcounts(sce[gs, cs])
+    # decompose values as a linear combination of the group&#39;s logFCs
+    ld &lt;- t(es) %*% tbl_fil[[k]]$logFC
+    # assure values are comparable across clusters
+    ld[, 1] / max(ld)
+}) %&gt;% unlist %&gt;% set_names(unlist(cs_by_k))
 
-# # method 1: PCA on the DEGs
-# pca &lt;- lapply(names(i), FUN=function(x){
-#   g &lt;- unique(unlist(degs[grep(gsub(&quot;[0-9]&quot;,&quot;&quot;,x),names(degs))]))
-#   a &lt;- sce[g,i[[x]]]
-#   a &lt;- a[apply(logcounts(a),1,FUN=sd)&gt;0,]
-#   pca &lt;- Seurat::RunPCA(as.matrix(logcounts(a)), assay=&quot;RNA&quot;, npcs=2, verbose=FALSE, approx=FALSE)@cell.embeddings[,1]
-#   if(mean(pca[a$group_id==&quot;LPS&quot;]) &lt; mean(pca[a$group_id!=&quot;LPS&quot;])) pca &lt;- -1*pca
-#   pca
-# })
-# sce$pc1.ct &lt;- unlist(pca)[order(unlist(i))]
-# ggplot(as.data.frame(colData(sce)), aes(sample_id, pc1.ct, fill=group_id)) + 
-#     geom_violin() + geom_boxplot(width=.1) + facet_wrap(~cluster_id, scales=&quot;free_y&quot;) +
-#     theme_void() + ylab(&quot;PC1 - cell-type-specific DEGs&quot;)
-
-## method 2: linear decomposition:
-ld &lt;- lapply(names(i), FUN=function(x){
-  # select DEGs from cluster of this family
-  g &lt;- unique(unlist(degs[grep(gsub(&quot;[0-9]&quot;,&quot;&quot;,x),names(degs))]))
-  # extract pseudo-bulk intercepts and logFCs
-  dea &lt;- res$table[[1]][[x]]
-  row.names(dea) &lt;- dea$gene
-  dea &lt;- as.matrix(dea[g,&quot;logFC&quot;])
-  a &lt;- sce[g,i[[x]]]
-  # decompose values as a linear combination of the group&#39;s log-foldchange vector:
-  b &lt;- (t(logcounts(a)) %*% dea)[,1]
-  # to make sure it&#39;s roughly comparable across clusters:
-  b/max(b)
-})
-sce$sig.ld &lt;- unlist(ld)[order(unlist(i))]
-ggplot(as.data.frame(colData(sce)), aes(sample_id, sig.ld, fill=group_id)) + 
-    geom_violin() + geom_boxplot(width=.1, outlier.size=0.5) + 
-    facet_wrap(~cluster_id, scales=&quot;free&quot;) + ylab(&quot;Effect coefficient&quot;) + 
-    theme( axis.text=element_blank(), axis.title.x=element_blank(), 
-           axis.line=element_blank(), axis.ticks=element_blank() )</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
+dim_red &lt;- do.call(cbind, reducedDims(sce))
+gg_df &lt;- data.frame(colData(sce), ld = ld[colnames(sce)], dim_red)</code></pre>
+<div id="violins-by-cluster-sample" class="section level2">
+<h2>Violins by cluster-sample</h2>
+<pre class="r"><code>ggplot(gg_df, aes(x = sample_id, y = ld, fill = group_id)) +
+    facet_wrap(&quot;cluster_id&quot;, scales = &quot;free_y&quot;, ncol = 7) +
+    scale_fill_manual(values = gcols) + geom_violin() + 
+    geom_boxplot(width = 0.1, outlier.size = 0.5, show.legend = FALSE) +
+    labs(x = NULL, y = &quot;effect coefficient&quot;) + theme_light() + 
+    theme(aspect.ratio = 1, panel.grid.minor = element_blank(),
+        axis.ticks=element_blank(), axis.text.x = element_blank())</code></pre>
+<p><img src="figure/6-more.Rmd/LD-by-ks-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>For endothelial and most glial cells, virtually all cells appear to react similarly, with a clear separation between groups, although the larger spread of LPS-treated populations suggests that some cells are more affected than others. Instead, in neurons it appears that a fairly large proportion of the cells are hardly affected.</p>
-<pre class="r"><code>d &lt;- data.frame(reducedDim(sce, &quot;UMAP&quot;), reducedDim(sce, &quot;TSNE&quot;), colData(sce))
-ggplot(d, aes(tSNE_1, tSNE_2, colour=sig.ld)) + geom_point(size=1) + facet_wrap(~sample_id) + theme_void()</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-10-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="umap-cell-embeddings" class="section level2">
+<h2>UMAP cell embeddings</h2>
+<pre class="r"><code>ggplot(gg_df, aes(x = UMAP_1, y = UMAP_2, col = ld)) + 
+    geom_point(alpha = 0.4, size = 0.8) + 
+    facet_wrap(&quot;sample_id&quot;, ncol = 4) +
+    theme_void() + theme(aspect.ratio = 1)</code></pre>
+<p><img src="figure/6-more.Rmd/UMAPs-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>As a proxy for citotoxicity, we check whether there is a relationship of the effect coefficient with the proportion of mitochondrial RNA:</p>
-<pre class="r"><code>ggplot(d, aes(sig.ld, pct_counts_Mt, colour=group_id)) + geom_point() + facet_wrap(~cluster_id, scale=&quot;free&quot;)</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>ggplot(d[which(d$group_id==&quot;LPS&quot;),], aes(sig.ld, pct_counts_Mt)) + geom_point() + 
-  geom_density_2d() + facet_wrap(~cluster_id, scales=&quot;free&quot;) + xlab(&quot;Effect coefficient&quot;) +
-  ggtitle(&quot;Treated samples only&quot;) + theme(axis.text=element_blank(), axis.ticks=element_blank())</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-11-2.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="effect-coefs.-vs.-mitochondrial" class="section level2">
+<h2>Effect coefs. vs. % mitochondrial</h2>
+<pre class="r"><code>ggplot(gg_df, aes(x = ld, y = pct_counts_Mt, col = group_id)) + 
+    geom_point() + facet_wrap(&quot;cluster_id&quot;, scales = &quot;free&quot;, ncol = 7) +
+    theme(aspect.ratio = 1)</code></pre>
+<p><img src="figure/6-more.Rmd/LD-vs-pMT-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gg_df[gg_df$group_id == &quot;LPS&quot;, ] %&gt;% 
+    ggplot(aes(x = ld, y = pct_counts_Mt)) + 
+    geom_point() + geom_density_2d() + 
+    facet_wrap(&quot;cluster_id&quot;, scales = &quot;free&quot;, ncol = 7) +
+    xlab(&quot;effect coefficient&quot;) + ggtitle(&quot;Treated samples only&quot;) + 
+    theme(aspect.ratio = 1, axis.text = element_blank(), axis.ticks = element_blank())</code></pre>
+<p><img src="figure/6-more.Rmd/LD-vs-pMT-2.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>There isn’t much correlation, but in excitatory neurons (6) there might be a rough association between the amount of mitochondrial RNA and the degree to which a cell is affected - in the others if anything it’s the opposite.</p>
+</div>
+<div id="effect-coefs.-vs.library-sizes" class="section level2">
+<h2>Effect coefs. vs. library sizes</h2>
 <p>The relationship with library size is worrying:</p>
-<pre class="r"><code>ggplot(d[which(d$group_id==&quot;LPS&quot;),], aes(sig.ld, log10_total_counts)) + geom_point() + 
-  geom_density_2d() + facet_wrap(~cluster_id, scales=&quot;free&quot;) + xlab(&quot;Effect coefficient&quot;) +
-  ggtitle(&quot;Treated samples only&quot;) + theme(axis.text=element_blank(), axis.ticks=element_blank())</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-12-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>gg_df[gg_df$group_id == &quot;LPS&quot;, ] %&gt;%
+    ggplot(aes(x = ld, y = log10_total_counts)) + 
+    geom_point() + geom_density_2d() + 
+    facet_wrap(&quot;cluster_id&quot;, scales = &quot;free&quot;, ncol = 7) + 
+    xlab(&quot;effect coefficient&quot;) + ggtitle(&quot;Treated samples only&quot;) + 
+    theme(aspect.ratio = 1, axis.text = element_blank(), axis.ticks = element_blank())</code></pre>
+<p><img src="figure/6-more.Rmd/LD-vs-counts-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>In neurons, when a cell has more reads it tends to be less affected by the treatment. A possible explanation for this would be that other cell types secrete a lot of RNA which is catched in droplets along with the cells, and when a cell is small their presence is larger… So perhaps the global signature we see is in fact an artefact?</p>
 <hr />
 </div>
-<div id="expression-of-the-lps-response-genes" class="section level1">
-<h1>Expression of the LPS response genes</h1>
+</div>
+<div id="expression-of-lps-response-genes" class="section level1">
+<h1>Expression of LPS response genes</h1>
 <p>The LPS receptor Cd14, various chemokine receptors and interferon regulatory factors, as well as the primiary transcriptional response genes Cxcl2 and Tnf, are all upregulated across cell types, suggesting that all cells sense threat. Tnf, which mediates the cytotoxic effect of LPS, is upregulated in a statistically-significant manner only in microglia (where it is also more abundant), but there is a trend in across all cell types, and the low detection rate prevents us from drawing clear conclusions. Various members of the interferon response and Nf-kb pathways are similarly upregulated across cell types. However, notable differences suggest distinct modalities of response orchestrated across cell types. While endothelial and glial cells upregulate several components of the Nf-<span class="math inline">\(\kappa K\)</span>b (Rela, Relb) and Stat pathways (Stat1, Stat2, Stat3), only part of this response (chiefly Stat3 and to a lower extent Stat1) is visible in neurons. Only astrocytes (and possibly OPCs) show an upregulation of Tirap, involved in the the signal transduction of the Toll-like receptors, while only microglia upregulate Traf3 and Traf6. The LPS-induced TNF Factor (Litaf) and the early response gene Ptgs1 are upregulated only in endothelial cells. Endothelial cells and microglia upregulate Dusp1 and Dusp16, which are expected to dephosphorylate the MAPK1/10. Finally, while the immediate early stress response genes Fos, Jun and Junb are strongly upregulated in astrocytes, endothelial cells and OPCs, they show no such trend in neurons – in fact, Fos suprisingly appears downregulated by neurons upon LPS exposure, along with another important immediate early gene, Egr1.</p>
-<pre class="r"><code>myg &lt;- sym2rn(strsplit(&quot;Tirap, Jun, Fos, Cd83, Traf6, Traf3, Sp3, Litaf, Egr1, Rela, Ptgs2, Junb, Relb, Cxcl2, Tnf, Cd14, Cxcl10, Irf7, Irf1, Ccl5, Tlr2, Irf9, Stat9, Stat3, Nbkbia, Stat1, Stat2, Fkbp5, Gpx1, Abca1, Tnfrsf1a, Dusp1, Dusp16&quot;, &quot;, &quot;)[[1]], row.names(SE))
-sehm(SE, myg, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quot;group_id&quot;,&quot;subtype&quot;, &quot;type&quot;), breaks=c(-8:-6,seq(from=-5,to=5,length.out=23),6:8))</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-13-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>ggplot(meltSE(sce, &quot;ENSMUSG00000024401.Tnf&quot;), aes(sample_id, logcounts, fill=group_id)) + 
-  geom_violin() + theme(axis.text.x=element_blank()) + facet_wrap(~cluster_id) + ggtitle(&quot;Tnf&quot;)</code></pre>
-<p><img src="figure/6-more.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fs &lt;- c(&quot;Tirap&quot;, &quot;Jun&quot;, &quot;Fos&quot;, &quot;Cd83&quot;, &quot;Traf6&quot;, &quot;Traf3&quot;, &quot;Sp3&quot;, &quot;Litaf&quot;, &quot;Egr1&quot;, 
+    &quot;Rela&quot;, &quot;Ptgs2&quot;, &quot;Junb&quot;, &quot;Relb&quot;, &quot;Cxcl2&quot;, &quot;Tnf&quot;, &quot;Cd14&quot;, &quot;Cxcl10&quot;, &quot;Irf7&quot;, 
+    &quot;Irf1&quot;, &quot;Ccl5&quot;, &quot;Tlr2&quot;, &quot;Irf9&quot;, &quot;Stat9&quot;, &quot;Stat3&quot;, &quot;Nbkbia&quot;, &quot;Stat1&quot;, 
+    &quot;Stat2&quot;, &quot;Fkbp5&quot;, &quot;Gpx1&quot;, &quot;Abca1&quot;, &quot;Tnfrsf1a&quot;, &quot;Dusp1&quot;, &quot;Dusp16&quot;)
+m &lt;- sapply(fs, match, rowData(sce)$feature, nomatch = 0)
+
+brks &lt;- .get_brks(assay(lfc[m, ]), 0.5)
+cols &lt;- colorRamp2(brks, hm_cols)
+.plot_hm(lfc[m, ], cols, brks, col_anno, row_nms = TRUE)</code></pre>
+<p><img src="figure/6-more.Rmd/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/ada6ab00b911334f3439c00db58f1d6afa18cd3d/MAGL/docs/figure/6-more.Rmd/unnamed-chunk-4-1.png" target="_blank">ada6ab0</a>
+</td>
+<td>
+Pierre-Luc Germain
+</td>
+<td>
+2019-07-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="tnf" class="section level2">
+<h2>Tnf</h2>
+<pre class="r"><code>g &lt;- &quot;ENSMUSG00000024401.Tnf&quot;
+es &lt;- as.numeric(logcounts(sce[g, ]))
+gg_df &lt;- data.frame(colData(sce), expression = es)
+
+ggplot(gg_df, aes(x = sample_id, y = expression, fill = group_id)) +
+    facet_wrap(&quot;cluster_id&quot;, ncol = 7) + geom_violin() + 
+    theme(aspect.ratio = 1, axis.text.x = element_blank(), axis.ticks.x = element_blank())</code></pre>
+<p><img src="figure/6-more.Rmd/Tnf-1.png" width="1344" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="some-notes" class="section level1">
 <h1>Some notes</h1>
@@ -890,123 +1081,136 @@ sehm(SE, myg, do.scale = FALSE, gaps_at=&quot;Dataset&quot;, anno_columns=c(&quo
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 18.04.2 LTS
+Running under: Ubuntu 16.04.5 LTS
 
 Matrix products: default
-BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
-LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+BLAS:   /usr/local/R/R-3.6.0/lib/libRblas.so
+LAPACK: /usr/local/R/R-3.6.0/lib/libRlapack.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=de_CH.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=de_CH.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=de_CH.UTF-8       LC_NAME=C                 
+ [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8    
+ [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
+ [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                 
  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=de_CH.UTF-8 LC_IDENTIFICATION=C       
+[11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+ [1] grid      parallel  stats4    stats     graphics  grDevices utils    
+ [8] datasets  methods   base     
 
 other attached packages:
- [1] msigdbr_6.2.1               tibble_2.1.1               
- [3] M3C_1.6.0                   org.Mm.eg.db_3.8.2         
- [5] topGO_2.36.0                SparseM_1.77               
- [7] GO.db_3.8.2                 AnnotationDbi_1.46.0       
- [9] graph_1.62.0                SEtools_0.1.1              
-[11] edgeR_3.26.0                limma_3.40.0               
-[13] SingleCellExperiment_1.6.0  SummarizedExperiment_1.14.0
-[15] DelayedArray_0.10.0         BiocParallel_1.18.0        
-[17] matrixStats_0.54.0          Biobase_2.44.0             
-[19] GenomicRanges_1.36.0        GenomeInfoDb_1.20.0        
-[21] IRanges_2.18.0              S4Vectors_0.22.0           
-[23] BiocGenerics_0.30.0         purrr_0.3.2                
-[25] muscat_0.99.9               dplyr_0.8.0.1              
-[27] cowplot_0.9.4               ggplot2_3.1.1              
-[29] BiocStyle_2.12.0           
+ [1] purrr_0.3.2                 org.Mm.eg.db_3.8.2         
+ [3] topGO_2.36.0                SparseM_1.77               
+ [5] GO.db_3.8.2                 graph_1.62.0               
+ [7] SingleCellExperiment_1.6.0  SummarizedExperiment_1.14.0
+ [9] DelayedArray_0.10.0         BiocParallel_1.18.0        
+[11] matrixStats_0.54.0          GenomicRanges_1.36.0       
+[13] GenomeInfoDb_1.20.0         RColorBrewer_1.1-2         
+[15] muscat_0.99.10              msigdbr_6.2.1              
+[17] tibble_2.1.3                M3C_1.6.0                  
+[19] ggplot2_3.2.0               edgeR_3.26.5               
+[21] limma_3.40.2                dplyr_0.8.3                
+[23] ComplexHeatmap_2.0.0        circlize_0.4.6             
+[25] AnnotationDbi_1.46.0        IRanges_2.18.1             
+[27] S4Vectors_0.22.0            Biobase_2.44.0             
+[29] BiocGenerics_0.30.0         BiocStyle_2.12.0           
 
 loaded via a namespace (and not attached):
-  [1] tidyselect_0.2.5         lme4_1.1-21             
-  [3] RSQLite_2.1.1            htmlwidgets_1.3         
-  [5] trimcluster_0.1-2.1      grid_3.6.0              
-  [7] TSP_1.1-6                Rtsne_0.15              
-  [9] munsell_0.5.0            codetools_0.2-16        
- [11] statmod_1.4.30           scran_1.12.0            
- [13] future_1.13.0            withr_2.1.2             
- [15] colorspace_1.4-1         knitr_1.22              
- [17] rstudioapi_0.10          robustbase_0.93-4       
- [19] NMF_0.21.0               listenv_0.7.0           
- [21] labeling_0.3             sigclust_1.1.0          
- [23] git2r_0.25.2             GenomeInfoDbData_1.2.1  
- [25] bit64_0.9-7              pheatmap_1.0.12         
- [27] glmmTMB_0.2.3            rprojroot_1.3-2         
- [29] Matrix.utils_0.9.7       xfun_0.6                
- [31] gclus_1.3.2              diptest_0.75-7          
- [33] R6_2.4.0                 doParallel_1.0.14       
- [35] ggbeeswarm_0.6.0         clue_0.3-57             
- [37] rsvd_1.0.1               seriation_1.2-3         
- [39] locfit_1.5-9.1           flexmix_2.3-15          
- [41] bitops_1.0-6             assertthat_0.2.1        
- [43] scales_1.0.0             nnet_7.3-12             
- [45] beeswarm_0.2.3           gtable_0.3.0            
- [47] globals_0.12.4           workflowr_1.3.0         
- [49] rlang_0.3.4              genefilter_1.66.0       
- [51] GlobalOptions_0.1.0      splines_3.6.0           
- [53] TMB_1.7.15               lazyeval_0.2.2          
- [55] acepack_1.4.1            checkmate_1.9.3         
- [57] BiocManager_1.30.4       yaml_2.2.0              
- [59] reshape2_1.4.3           backports_1.1.4         
- [61] Hmisc_4.2-0              tools_3.6.0             
- [63] gridBase_0.4-7           gplots_3.0.1.1          
- [65] RColorBrewer_1.1-2       dynamicTreeCut_1.63-1   
- [67] Rcpp_1.0.1               plyr_1.8.4              
- [69] base64enc_0.1-3          progress_1.2.0          
- [71] zlibbioc_1.30.0          RCurl_1.95-4.12         
- [73] prettyunits_1.0.2        rpart_4.1-15            
- [75] GetoptLong_0.1.7         viridis_0.5.1           
- [77] grr_0.9.5                cluster_2.0.8           
- [79] colorRamps_2.3           fs_1.3.1                
- [81] variancePartition_1.14.0 magrittr_1.5            
- [83] data.table_1.12.2        lmerTest_3.1-0          
- [85] circlize_0.4.6           matrixcalc_1.0-3        
- [87] mvtnorm_1.0-10           whisker_0.3-2           
- [89] hms_0.4.2                evaluate_0.13           
- [91] xtable_1.8-4             pbkrtest_0.4-7          
- [93] XML_3.98-1.19            mclust_5.4.3            
- [95] gridExtra_2.3            shape_1.4.4             
- [97] compiler_3.6.0           scater_1.12.0           
- [99] KernSmooth_2.23-15       crayon_1.3.4            
-[101] minqa_1.2.4              htmltools_0.3.6         
-[103] corpcor_1.6.9            snow_0.4-3              
-[105] Formula_1.2-3            geneplotter_1.62.0      
-[107] DBI_1.0.0                ComplexHeatmap_2.0.0    
-[109] MASS_7.3-51.1            fpc_2.1-11.2            
-[111] boot_1.3-20              Matrix_1.2-17           
-[113] gdata_2.18.0             igraph_1.2.4.1          
-[115] pkgconfig_2.0.2          registry_0.5-1          
-[117] numDeriv_2016.8-1        foreign_0.8-71          
-[119] foreach_1.4.4            annotate_1.62.0         
-[121] vipor_0.4.5              rngtools_1.3.1.1        
-[123] dqrng_0.2.0              blme_1.0-4              
-[125] pkgmaker_0.27            XVector_0.24.0          
-[127] bibtex_0.4.2             stringr_1.4.0           
-[129] digest_0.6.18            sctransform_0.2.0       
-[131] rmarkdown_1.12           htmlTable_1.13.1        
-[133] dendextend_1.10.0        DelayedMatrixStats_1.6.0
-[135] kernlab_0.9-27           gtools_3.8.1            
-[137] modeltools_0.2-22        rjson_0.2.20            
-[139] nloptr_1.2.1             nlme_3.1-140            
-[141] BiocNeighbors_1.2.0      viridisLite_0.3.0       
-[143] pillar_1.3.1             lattice_0.20-38         
-[145] DEoptimR_1.0-8           survival_2.44-1.1       
-[147] glue_1.3.1               png_0.1-7               
-[149] prabclus_2.2-7           iterators_1.0.10        
-[151] bit_1.1-14               class_7.3-15            
-[153] stringi_1.4.3            blob_1.1.1              
-[155] DESeq2_1.24.0            BiocSingular_1.0.0      
-[157] doSNOW_1.0.16            latticeExtra_0.6-28     
-[159] caTools_1.17.1.2         memoise_1.1.0           
-[161] irlba_2.3.3              future.apply_1.2.0      </code></pre>
+  [1] tidyr_0.8.3                 pkgmaker_0.27              
+  [3] acepack_1.4.1               bit64_0.9-7                
+  [5] knitr_1.23                  multcomp_1.4-10            
+  [7] irlba_2.3.3                 data.table_1.12.2          
+  [9] rpart_4.1-15                RCurl_1.95-4.12            
+ [11] doParallel_1.0.14           flowCore_1.50.0            
+ [13] snow_0.4-3                  TH.data_1.0-10             
+ [15] RSQLite_2.1.1               future_1.14.0              
+ [17] bit_1.1-14                  httpuv_1.5.1               
+ [19] assertthat_0.2.1            viridis_0.5.1              
+ [21] xfun_0.8                    hms_0.5.0                  
+ [23] evaluate_0.14               promises_1.0.1             
+ [25] DEoptimR_1.0-8              progress_1.2.2             
+ [27] readxl_1.3.1                caTools_1.17.1.2           
+ [29] dendextend_1.12.0           igraph_1.2.4.1             
+ [31] DBI_1.0.0                   geneplotter_1.62.0         
+ [33] CATALYST_1.8.5              htmlwidgets_1.3            
+ [35] backports_1.1.4             annotate_1.62.0            
+ [37] gridBase_0.4-7              vctrs_0.2.0                
+ [39] abind_1.4-5                 withr_2.1.2                
+ [41] grr_0.9.5                   robustbase_0.93-5          
+ [43] checkmate_1.9.4             sctransform_0.2.0          
+ [45] prettyunits_1.0.2           scran_1.12.1               
+ [47] cluster_2.1.0               lazyeval_0.2.2             
+ [49] crayon_1.3.4                drc_3.0-1                  
+ [51] genefilter_1.66.0           labeling_0.3               
+ [53] pkgconfig_2.0.2             nlme_3.1-140               
+ [55] vipor_0.4.5                 blme_1.0-4                 
+ [57] nnet_7.3-12                 rlang_0.4.0                
+ [59] globals_0.12.4              sandwich_2.5-1             
+ [61] registry_0.5-1              doSNOW_1.0.16              
+ [63] rsvd_1.0.1                  cellranger_1.1.0           
+ [65] rprojroot_1.3-2             rngtools_1.4               
+ [67] Matrix_1.2-17               carData_3.0-2              
+ [69] zoo_1.8-6                   boot_1.3-23                
+ [71] Matrix.utils_0.9.7          base64enc_0.1-3            
+ [73] beeswarm_0.2.3              ggridges_0.5.1             
+ [75] whisker_0.3-2               GlobalOptions_0.1.0        
+ [77] png_0.1-7                   viridisLite_0.3.0          
+ [79] rjson_0.2.20                bitops_1.0-6               
+ [81] shinydashboard_0.7.1        ConsensusClusterPlus_1.48.0
+ [83] KernSmooth_2.23-15          blob_1.2.0                 
+ [85] DelayedMatrixStats_1.6.0    workflowr_1.4.0            
+ [87] shape_1.4.4                 stringr_1.4.0              
+ [89] scales_1.0.0                memoise_1.1.0              
+ [91] magrittr_1.5                plyr_1.8.4                 
+ [93] gplots_3.0.1.1              bibtex_0.4.2               
+ [95] gdata_2.18.0                zlibbioc_1.30.0            
+ [97] compiler_3.6.0              dqrng_0.2.1                
+ [99] plotrix_3.7-6               clue_0.3-57                
+[101] lme4_1.1-21                 DESeq2_1.24.0              
+[103] rrcov_1.4-7                 XVector_0.24.0             
+[105] lmerTest_3.1-0              listenv_0.7.0              
+[107] TMB_1.7.15                  htmlTable_1.13.1           
+[109] Formula_1.2-3               FlowSOM_1.16.0             
+[111] MASS_7.3-51.4               tidyselect_0.2.5           
+[113] forcats_0.4.0               stringi_1.4.3              
+[115] shinyBS_0.61                highr_0.8                  
+[117] yaml_2.2.0                  BiocSingular_1.0.0         
+[119] locfit_1.5-9.1              latticeExtra_0.6-28        
+[121] ggrepel_0.8.1               sigclust_1.1.0             
+[123] tools_3.6.0                 rio_0.5.16                 
+[125] future.apply_1.3.0          matrixcalc_1.0-3           
+[127] rstudioapi_0.10             foreach_1.4.4              
+[129] foreign_0.8-71              git2r_0.26.1               
+[131] gridExtra_2.3               Rtsne_0.15                 
+[133] digest_0.6.20               BiocManager_1.30.4         
+[135] shiny_1.3.2                 Rcpp_1.0.1                 
+[137] car_3.0-3                   later_0.8.0                
+[139] httr_1.4.0                  colorspace_1.4-1           
+[141] XML_3.98-1.20               fs_1.3.1                   
+[143] splines_3.6.0               statmod_1.4.32             
+[145] scater_1.12.2               plotly_4.9.0               
+[147] xtable_1.8-4                jsonlite_1.6               
+[149] nloptr_1.2.1                dynamicTreeCut_1.63-1      
+[151] corpcor_1.6.9               zeallot_0.1.0              
+[153] R6_2.4.0                    Hmisc_4.2-0                
+[155] mime_0.7                    pillar_1.4.2               
+[157] htmltools_0.3.6             NMF_0.21.0                 
+[159] nnls_1.4                    glue_1.3.1                 
+[161] minqa_1.2.4                 DT_0.7                     
+[163] BiocNeighbors_1.2.0         codetools_0.2-16           
+[165] tsne_0.1-3                  pcaPP_1.9-73               
+[167] mvtnorm_1.0-11              lattice_0.20-38            
+[169] numDeriv_2016.8-1.1         pbkrtest_0.4-7             
+[171] curl_3.3                    ggbeeswarm_0.6.0           
+[173] colorRamps_2.3              gtools_3.8.1               
+[175] shinyjs_1.0                 zip_2.0.3                  
+[177] openxlsx_4.1.0.1            survival_2.44-1.1          
+[179] glmmTMB_0.2.3               rmarkdown_1.13             
+[181] munsell_0.5.0               GetoptLong_0.1.7           
+[183] GenomeInfoDbData_1.2.1      iterators_1.0.10           
+[185] variancePartition_1.14.0    haven_2.1.1                
+[187] reshape2_1.4.3              gtable_0.3.0               </code></pre>
 </div>
 </div>
 

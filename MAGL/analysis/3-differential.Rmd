@@ -12,14 +12,14 @@ output:
     code_folding: hide
 ---
 
-```{r include = FALSE}
+```{r setup, include = FALSE}
 library(BiocStyle)
 knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
 options(width = 100)
 ```
 
 ### load packages
-```{r warning = FALSE, message = FALSE}
+```{r load-libs, warning = FALSE, message = FALSE}
 library(ComplexHeatmap)
 library(cowplot)
 library(limma)
@@ -35,23 +35,18 @@ library(SingleCellExperiment)
 
 ```{r prep-data}
 # load data
-sce0 <- readRDS(file.path("output", "MAGL-SCE_tmp.rds"))
+sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 
-# concat. sample & group ID
-sce0$id <- factor(paste(sce0$sample_id, sce0$group_id, sep = "_"))
 # make WT reference group
-sce0$group_id <- factor(sce0$group_id, levels = c("WT", "LPS"))
+sce$group_id <- factor(sce$group_id, levels = c("WT", "LPS"))
+
 # reorder sample levels
-o <- sapply(levels(sce0$group_id), grep, levels(sce0$id))
-sce0$id <- factor(sce0$id, levels = levels(sce0$id)[o])
+m <- match(levels(sce$sample_id), sce$sample_id)
+o <- order(sce$group_id[m])
+sce$sample_id <- factor(sce$sample_id, levels = levels(sce$sample_id)[o])
 
 # prep. SCE for `muscat`
-sce <- prepSCE(sce0,
-    group_id = "group_id",
-    sample_id = "id",
-    cluster_id = "integrated_snn_res.0.2",
-    drop = FALSE)
-
+sce <- prepSCE(sce, "cluster_id", "sample_id", "group_id")
 (ei <- metadata(sce)$experiment_info)
 ```
 
@@ -61,21 +56,14 @@ In consideration of the visualizations provided in the [Annotation](docs/2-annot
 
 ```{r cluster-anno, warning = FALSE}
 anno <- list(
-    "excit_neuron1" = c(0, 1, 4, 5, 16),
-    "excit_neuron2" = 7,
-    "excit_neuron3" = c(2, 20),
-    "excit_neuron4" = 9,
-    "excit_neuron5" = 14,
-    "excit_neuron6" = 8,
-    "inhib_neuron1" = c(10, 15),
-    "inhib_neuron2" = 11,
-    "inhib_neuron3" = 12,
     "Astrocytes" = 3,
-    "OPC" = 13,
-    "Oligodendrocytes" = 6,
-    "Endothelial" = 18,
-    "Microglia" = 19)
-# unassigned: 17, 21, 22, 23
+    "Endothelial" = 13,
+    "Microglia" = 17,
+    "Oligodendrocytes" = 4,
+    "OPC" = 12,
+    "Excit_Neuron" = c(0, 1, 2, 5, 6, 7, 10, 14, 16),
+    "Inhib_Neuron" = c(8, 9, 11, 15, 18))
+# unassigned: 19
 
 m <- match(sce$cluster_id, unlist(anno))
 ns <- vapply(anno, length, numeric(1))
@@ -95,14 +83,9 @@ sce <- normalize(sce)
 
 # Aggregation of single-cell to pseudo-bulk data
 
-```{r agg}
+```{r aggregation}
 system.time(pb <- aggregateData(sce))
-# SCE of dim. #(genes) x #(samples)
-pb 
-# one assay per cluster
-assayNames(pb) 
-# view 1st cluster
-head(assay(pb))
+pb
 ```
 
 ## Pseudobulk-level MDS plot
@@ -112,18 +95,13 @@ Prior to conducting any formal testing, we can compute a multi-dimensional scali
 In our MDS plot on pseudobulk counts (Fig. \@ref(fig:pb-mds)), we can observe that cell-populations (clusters) are separated quite well, while WT and stimulated samples (groups) are separated to a lesser (if any) extend.
 
 ```{r pb-mds, fig.wide = TRUE, fig.cap = "Pseudobulk-level MDS plot. Each point represent one cluster-sample instance;\npoints are colored by cluster ID and shaped by group ID."}
-pbMDS(pb)
+#pbMDS(pb)
 ```
 
 # DS analysis
 
 ```{r ds-analysis}
-# specify design & contrast matrix
-(design <- model.matrix(~ 0 + ei$group_id) %>% 
-    set_rownames(ei$sample_id) %>% 
-    set_colnames(levels(ei$group_id)))
-(contrast <- makeContrasts("LPS-WT", levels = design))
-system.time(res <- pbDS(sce, pb, design, contrast, verbose = FALSE))
+system.time(res <- pbDS(pb, verbose = FALSE))
 ```
 
 # Save SCE & unfiltered results

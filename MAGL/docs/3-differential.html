@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2019-05-15" />
+<meta name="date" content="2019-07-10" />
 
 <title>DS analysis</title>
 
@@ -340,8 +340,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -386,7 +384,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">Contents</a>
 </li>
 <li>
   <a href="0-preprocessing.html">Preprocessing</a>
@@ -399,6 +397,9 @@ div.tocify {
 </li>
 <li>
   <a href="3-differential.html">DS analysis</a>
+</li>
+<li>
+  <a href="4-geneset.html">Geneset analysis</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -430,7 +431,7 @@ div.section {
 <h1 class="title toc-ignore">DS analysis</h1>
 <h4 class="author">Helena L. Crowell</h4>
 <address class="author_afil">
-Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">May 15, 2019</h4>
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 10, 2019</h4>
 
 </div>
 
@@ -455,22 +456,22 @@ Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-05-15
+<strong>Last updated:</strong> 2019-07-10
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 3
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.3.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
 <div id="checks" class="tab-pane fade">
-<div id="workflowr-checks" class="panel-group">
+<div class="panel-group" id="workflowr-checks">
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
@@ -479,19 +480,64 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Environment:</strong> objects present </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongobjectspresent" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+
+<p>
+The global environment had objects present when the code in the R Markdown file was run. These objects can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment. Use <code>wflow_publish</code> or <code>wflow_build</code> to ensure that the code is always run in an empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+data
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+env
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -530,34 +576,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 The following chunks had caches available:
 <ul>
 <li>
-= FALSE
-</li>
-<li>
-agg
+aggregation
 </li>
 <li>
 cluster-anno
 </li>
 <li>
-data
-</li>
-<li>
-ds-analysis
-</li>
-<li>
-pb-mds
+load-libs
 </li>
 <li>
 prep-data
-</li>
-<li>
-unnamed-chunk-2
-</li>
-<li>
-unnamed-chunk-3
-</li>
-<li>
-violins
 </li>
 </ul>
 <p>To ensure reproducibility of the results, delete the cache directory <code>3-differential_cache</code> and re-run the analysis. To have workflowr automatically delete the cache directory prior to building the file, set <code>delete_cache = TRUE</code> when running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
@@ -567,10 +595,22 @@ violins
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree67f5a1b688156232aa3ee82b60730aecf6f7757etargetblank67f5a1ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/67f5a1b688156232aa3ee82b60730aecf6f7757e" target="_blank">67f5a1b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree67f5a1b688156232aa3ee82b60730aecf6f7757etargetblank67f5a1ba" class="panel-collapse collapse">
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5253b5f66ce58a2cd198fca0a243e6c250949dfatargetblank5253b5fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/5253b5f66ce58a2cd198fca0a243e6c250949dfa" target="_blank">5253b5f</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5253b5f66ce58a2cd198fca0a243e6c250949dfatargetblank5253b5fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -578,92 +618,54 @@ Great! You are using Git for version control. Tracking code development and conn
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    ._.Renviron
+    Ignored:    ._.gitignore
+    Ignored:    ._README.md
+    Ignored:    ._Snakefile
     Ignored:    .snakemake/
     Ignored:    MAGL/.DS_Store
     Ignored:    MAGL/.RData
     Ignored:    MAGL/.Rhistory
+    Ignored:    MAGL/._.DS_Store
+    Ignored:    MAGL/._.Rprofile
+    Ignored:    MAGL/._.gitignore
+    Ignored:    MAGL/._data
+    Ignored:    MAGL/analysis/._refs.bib
+    Ignored:    MAGL/analysis/0-preprocessing_cache/
+    Ignored:    MAGL/analysis/1-clustering_cache/
     Ignored:    MAGL/analysis/3-differential_cache/
-    Ignored:    MAGL/analysis/figure/
+    Ignored:    MAGL/analysis/4-visualization_cache/
+    Ignored:    MAGL/analysis/5-geneset_cache/
+    Ignored:    MAGL/analysis/6-more_cache/
     Ignored:    MAGL/data/
     Ignored:    MAGL/output/
-    Ignored:    config/
-    Ignored:    data/
+    Ignored:    data/sim_data/
     Ignored:    figures/
-    Ignored:    metadata/
+    Ignored:    meta/
     Ignored:    results/
+    Ignored:    scripts/._apply_scdd.R
+    Ignored:    scripts/._fig_vehicle_vs_lps.R
+    Ignored:    scripts/._plot_perf_by_expr.R
+    Ignored:    scripts/._plot_perf_by_lfc.R
+    Ignored:    scripts/._plot_perf_by_ss.R
+    Ignored:    scripts/._plot_runtimes.R
+    Ignored:    scripts/._plot_sim_ex.R
+    Ignored:    scripts/._sim_qc.R
 
 Untracked files:
     Untracked:  .RData
+    Untracked:  .RDataTmp
     Untracked:  .Rhistory
-    Untracked:  ._README.md
-    Untracked:  ._Snakefile
-    Untracked:  ._config.yaml
-    Untracked:  MAGL/._.DS_Store
-    Untracked:  MAGL/._.Rprofile
-    Untracked:  MAGL/._data
-    Untracked:  MAGL/analysis/._refs.bib
-    Untracked:  MAGL/analysis/3-differential.Rmd
-    Untracked:  MAGL/analysis/refs.bib
-    Untracked:  MAGL/docs/figure/3-differential.Rmd/
-    Untracked:  scripts/._apply_ad.R
-    Untracked:  scripts/._apply_mm.R
-    Untracked:  scripts/._apply_scdd.R
-    Untracked:  scripts/._calc_conc.R
-    Untracked:  scripts/._countsimQC.R
-    Untracked:  scripts/._data_sim.R
-    Untracked:  scripts/._meth_pars.R
-    Untracked:  scripts/._plot_conc.R
-    Untracked:  scripts/._plot_padj_local_vs_global.R
-    Untracked:  scripts/._plot_pbMDS.R
-    Untracked:  scripts/._plot_perf_combined.R
-    Untracked:  scripts/._plot_perf_split_by_cat.R
-    Untracked:  scripts/._plot_perf_split_by_lfc.R
-    Untracked:  scripts/._plot_perf_vs_ncells.R
-    Untracked:  scripts/._plot_sim_pars.R
-    Untracked:  scripts/._plot_summary.R
-    Untracked:  scripts/._plot_upsets.R
-    Untracked:  scripts/._run_method.R
-    Untracked:  scripts/._sim_data.R
-    Untracked:  scripts/._sim_pars.R
-    Untracked:  scripts/._utils.R
-    Untracked:  scripts/plot_padj_local_vs_global.R
-    Untracked:  scripts/plot_pbMDS.R
-    Untracked:  scripts/plot_perf_combined.R
-    Untracked:  scripts/plot_perf_split_by_cat.R
-    Untracked:  scripts/plot_perf_split_by_lfc.R
-    Untracked:  scripts/plot_sim_ex_hm.R
-    Untracked:  scripts/plot_sim_pars.R
-    Untracked:  scripts/plot_sim_vs_est_logFC.R
-    Untracked:  scripts/plot_summary.R
+    Untracked:  MAGL/current
+    Untracked:  scripts/fig_vehicle_vs_lps.R
 
 Unstaged changes:
+    Modified:   MAGL/.Rprofile
+    Modified:   MAGL/analysis/0-preprocessing.Rmd
+    Modified:   MAGL/analysis/1-clustering.Rmd
     Modified:   MAGL/analysis/2-annotation.Rmd
-    Modified:   MAGL/analysis/_site.yml
-    Deleted:    MAGL/analysis/about.Rmd
-    Modified:   MAGL/analysis/index.Rmd
-    Deleted:    MAGL/analysis/license.Rmd
-    Modified:   Snakefile
-    Modified:   config.yaml
-    Modified:   scripts/apply_ad.R
-    Modified:   scripts/apply_mast.R
-    Modified:   scripts/apply_mm.R
-    Modified:   scripts/apply_pb.R
-    Modified:   scripts/apply_scdd.R
-    Modified:   scripts/calc_conc.R
-    Modified:   scripts/countsimQC.R
-    Modified:   scripts/meth_pars.R
-    Modified:   scripts/plot_conc.R
-    Modified:   scripts/plot_null.R
-    Deleted:    scripts/plot_padj_loc_vs_glb.R
-    Modified:   scripts/plot_pb_mean_vs_disp.R
-    Modified:   scripts/plot_perf.R
-    Deleted:    scripts/plot_perf_split.R
-    Modified:   scripts/plot_perf_vs_ncells.R
-    Deleted:    scripts/plot_perf_vs_ncells_box.R
-    Modified:   scripts/plot_upsets.R
-    Modified:   scripts/run_method.R
-    Modified:   scripts/sim_data.R
-    Modified:   scripts/sim_pars.R
+    Modified:   MAGL/analysis/3-differential.Rmd
+    Modified:   MAGL/analysis/6-more.Rmd
     Modified:   scripts/utils.R
 
 </code></pre>
@@ -677,9 +679,120 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/analysis/3-differential.Rmd" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/3-differential.html" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/61c0b067f9144eecf49366d6d9bc4000c4d10986/MAGL/analysis/3-differential.Rmd" target="_blank">61c0b06</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-20
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/faf858d01b3ab307553b2e18a712af44215401d1/MAGL/analysis/3-differential.Rmd" target="_blank">faf858d</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-17
+</td>
+<td>
+add DS &amp; geneset analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/dde52009c9e2782782d2b03d2ab64539956c207b/MAGL/analysis/3-differential.Rmd" target="_blank">dde5200</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-15
+</td>
+<td>
+add ds analysis (in progress)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -698,53 +811,42 @@ library(SingleCellExperiment)</code></pre>
 <h1>Data preparation</h1>
 <div id="load-data-prep.-for-muscat" class="section level2">
 <h2>Load data &amp; prep. for <code>muscat</code></h2>
-<p><code>drop = FALSE</code> specifies that we wish to retain all available cell metadata columns besides those specified as <code>group/sample/cluster_id</code> columns.</p>
-<pre class="r"><code>sce0 &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))
+<pre class="r"><code># load data
+sce &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))
 
-# concat. sample &amp; group ID
-sce0$id &lt;- factor(paste(sce0$sample_id, sce0$group_id, sep = &quot;_&quot;))
 # make WT reference group
-sce0$group_id &lt;- factor(sce0$group_id, levels = c(&quot;WT&quot;, &quot;LPS&quot;))
+sce$group_id &lt;- factor(sce$group_id, levels = c(&quot;WT&quot;, &quot;LPS&quot;))
+
 # reorder sample levels
-o &lt;- sapply(levels(sce0$group_id), grep, levels(sce0$id))
-sce0$id &lt;- factor(sce0$id, levels = levels(sce0$id)[o])
+m &lt;- match(levels(sce$sample_id), sce$sample_id)
+o &lt;- order(sce$group_id[m])
+sce$sample_id &lt;- factor(sce$sample_id, levels = levels(sce$sample_id)[o])
 
-sce &lt;- prepSCE(sce0,
-    group_id = &quot;group_id&quot;,
-    sample_id = &quot;id&quot;,
-    cluster_id = &quot;integrated_snn_res.0.2&quot;,
-    drop = FALSE)
-
-metadata(sce)$experiment_info</code></pre>
+# prep. SCE for `muscat`
+sce &lt;- prepSCE(sce, &quot;cluster_id&quot;, &quot;sample_id&quot;, &quot;group_id&quot;)
+(ei &lt;- metadata(sce)$experiment_info)</code></pre>
 <pre><code>  sample_id group_id n_cells
-1  LC016_WT       WT    4084
-2  LC019_WT       WT    2415
-3  LC022_WT       WT    3408
-4  LC025_WT       WT    3010
-5 LC017_LPS      LPS    2124
-6 LC020_LPS      LPS    3547
-7 LC023_LPS      LPS    3264
-8 LC026_LPS      LPS    4755</code></pre>
+1     LC016       WT    3899
+2     LC017      LPS    2074
+3     LC019       WT    2342
+4     LC020      LPS    3375
+5     LC022       WT    3273
+6     LC023      LPS    3158
+7     LC025       WT    2926
+8     LC026      LPS    4510</code></pre>
 </div>
 <div id="cluster-annotation" class="section level2">
 <h2>Cluster annotation</h2>
-<p>In consideration of the visualizations provided in the <a href="docs/2-annotation.html">Annotation</a> tab and additional exploration with <em><a href="https://bioconductor.org/packages/3.8/iSEE">iSEE</a></em>, we arrive at the following cluster annotations:</p>
+<p>In consideration of the visualizations provided in the <a href="docs/2-annotation.html">Annotation</a> tab and additional exploration with <em><a href="https://bioconductor.org/packages/3.9/iSEE">iSEE</a></em>, we arrive at the following cluster annotations:</p>
 <pre class="r"><code>anno &lt;- list(
-    &quot;excit_neuron1&quot; = c(0, 1, 4, 5, 16),
-    &quot;excit_neuron2&quot; = 7,
-    &quot;excit_neuron3&quot; = c(2, 20),
-    &quot;excit_neuron4&quot; = 9,
-    &quot;excit_neuron5&quot; = 14,
-    &quot;excit_neuron6&quot; = 8,
-    &quot;inhib_neuron1&quot; = c(10, 15),
-    &quot;inhib_neuron2&quot; = 11,
-    &quot;inhib_neuron3&quot; = 12,
     &quot;Astrocytes&quot; = 3,
-    &quot;OPC&quot; = 13,
-    &quot;Oligodendrocytes&quot; = 6,
-    &quot;Endothelial&quot; = 18,
-    &quot;Microglia&quot; = 19)
-# unassigned: 17, 21, 22, 23
+    &quot;Endothelial&quot; = 13,
+    &quot;Microglia&quot; = 17,
+    &quot;Oligodendrocytes&quot; = 4,
+    &quot;OPC&quot; = 12,
+    &quot;Excit_Neuron&quot; = c(0, 1, 2, 5, 6, 7, 10, 14, 16),
+    &quot;Inhib_Neuron&quot; = c(8, 9, 11, 15, 18))
+# unassigned: 19
 
 m &lt;- match(sce$cluster_id, unlist(anno))
 ns &lt;- vapply(anno, length, numeric(1))
@@ -754,287 +856,57 @@ sce$cluster_id &lt;- lab[m]
 # remove unassigned cells
 sce &lt;- sce[, !is.na(sce$cluster_id)]
 sce$cluster_id &lt;- factor(sce$cluster_id)
-dim(sce)</code></pre>
-<pre><code>[1] 11309 25613</code></pre>
+
+# cluster-sample cell-counts
+table(sce$cluster_id, sce$sample_id)</code></pre>
+<pre><code>                  
+                   LC016 LC019 LC022 LC025 LC017 LC020 LC023 LC026
+  Astrocytes         138   225   255    91    96   297   189   341
+  Endothelial         51   102    64    53    43   171    77   192
+  Excit_Neuron      2887  1455  1948  1874  1456  1998  2132  2952
+  Inhib_Neuron       579   240   469   668   345   396   472   594
+  Microglia           20    31    47    35    30   111    34    98
+  Oligodendrocytes   130   202   344   114    61   291   128   168
+  OPC                 94    79   121    66    40    90   115   158</code></pre>
+<pre class="r"><code># normalize for visualization
+sce &lt;- normalize(sce)</code></pre>
 </div>
 </div>
 <div id="aggregation-of-single-cell-to-pseudo-bulk-data" class="section level1">
 <h1>Aggregation of single-cell to pseudo-bulk data</h1>
 <pre class="r"><code>system.time(pb &lt;- aggregateData(sce))</code></pre>
 <pre><code>   user  system elapsed 
- 24.804   1.416  15.274 </code></pre>
-<pre class="r"><code># SCE of dim. #(genes) x #(samples)
-pb </code></pre>
+ 13.992   0.112   8.458 </code></pre>
+<pre class="r"><code>pb</code></pre>
 <pre><code>class: SingleCellExperiment 
-dim: 11309 8 
-metadata(2): experiment_info agg_pars
-assays(14): Astrocytes Endothelial ... Oligodendrocytes OPC
-rownames(11309): ENSMUSG00000051951.Xkr4 ENSMUSG00000089699.Gm1992
-  ... ENSMUSG00000095041.PISD ENSMUSG00000063897.DHRSX
+dim: 11063 8 
+metadata(4): experiment_info log.exprs.offset agg_pars n_cells
+assays(7): Astrocytes Endothelial ... Oligodendrocytes OPC
+rownames(11063): ENSMUSG00000051951.Xkr4 ENSMUSG00000089699.Gm1992 ...
+  ENSMUSG00000095041.PISD ENSMUSG00000063897.DHRSX
 rowData names(0):
-colnames(8): LC016_WT LC019_WT ... LC023_LPS LC026_LPS
-colData names(0):
+colnames(8): LC016 LC019 ... LC023 LC026
+colData names(6): group_id orig.ident ... total_features_by_counts_drop
+  pct_counts_Mt_drop
 reducedDimNames(0):
 spikeNames(0):</code></pre>
-<pre class="r"><code># one assay per cluster
-assayNames(pb) </code></pre>
-<pre><code> [1] &quot;Astrocytes&quot;       &quot;Endothelial&quot;      &quot;excit_neuron1&quot;   
- [4] &quot;excit_neuron2&quot;    &quot;excit_neuron3&quot;    &quot;excit_neuron4&quot;   
- [7] &quot;excit_neuron5&quot;    &quot;excit_neuron6&quot;    &quot;inhib_neuron1&quot;   
-[10] &quot;inhib_neuron2&quot;    &quot;inhib_neuron3&quot;    &quot;Microglia&quot;       
-[13] &quot;Oligodendrocytes&quot; &quot;OPC&quot;             </code></pre>
-<pre class="r"><code># view 1st cluster
-head(assay(pb))</code></pre>
-<pre><code>                           LC016_WT LC019_WT LC022_WT LC025_WT LC017_LPS
-ENSMUSG00000051951.Xkr4           7       11       13       30         3
-ENSMUSG00000089699.Gm1992         2        2        2        3         0
-ENSMUSG00000033845.Mrpl15         5       18       21       16         1
-ENSMUSG00000033813.Tcea1          5       17       16       10         6
-ENSMUSG00000002459.Rgs20         33      275      219       94        82
-ENSMUSG00000033793.Atp6v1h        7       25       20       17         4
-                           LC020_LPS LC023_LPS LC026_LPS
-ENSMUSG00000051951.Xkr4            7         9        19
-ENSMUSG00000089699.Gm1992          0         1         2
-ENSMUSG00000033845.Mrpl15         13         5        25
-ENSMUSG00000033813.Tcea1          20         9        25
-ENSMUSG00000002459.Rgs20         344       217       413
-ENSMUSG00000033793.Atp6v1h        36        21        42</code></pre>
 <div id="pseudobulk-level-mds-plot" class="section level2">
 <h2>Pseudobulk-level MDS plot</h2>
 <p>Prior to conducting any formal testing, we can compute a multi-dimensional scaling (MDS) plot of aggregated signal to explore overall sample similarities. Ideally, such a represenation of the data should separate both clusters and groups from one another. Vice versa, samples from the same cluster/group should fall close to each other.</p>
 <p>In our MDS plot on pseudobulk counts (Fig. @ref(fig:pb-mds)), we can observe that cell-populations (clusters) are separated quite well, while WT and stimulated samples (groups) are separated to a lesser (if any) extend.</p>
-<pre class="r"><code>pbMDS(pb)</code></pre>
-<div class="figure" style="text-align: center">
-<img src="figure/3-differential.Rmd/pb-mds-1.png" alt="Pseudobulk-level MDS plot. Each point represent one cluster-sample instance; points are colored by cluster ID and shaped by group ID." width="672" />
-<p class="caption">
-Pseudobulk-level MDS plot. Each point represent one cluster-sample instance; points are colored by cluster ID and shaped by group ID.
-</p>
-</div>
+<pre class="r"><code>#pbMDS(pb)</code></pre>
 </div>
 </div>
 <div id="ds-analysis" class="section level1">
 <h1>DS analysis</h1>
-<pre class="r"><code># specify design &amp; contrast matrix
-ei &lt;- metadata(sce)$experiment_info
-(design &lt;- model.matrix(~ 0 + ei$group_id) %&gt;% 
-    set_rownames(levels(ei$sample_id)) %&gt;% 
-    set_colnames(levels(ei$group_id)))</code></pre>
-<pre><code>          WT LPS
-LC016_WT   1   0
-LC017_LPS  1   0
-LC019_WT   1   0
-LC020_LPS  1   0
-LC022_WT   0   1
-LC023_LPS  0   1
-LC025_WT   0   1
-LC026_LPS  0   1
-attr(,&quot;assign&quot;)
-[1] 1 1
-attr(,&quot;contrasts&quot;)
-attr(,&quot;contrasts&quot;)$`ei$group_id`
-[1] &quot;contr.treatment&quot;</code></pre>
-<pre class="r"><code>(contrast &lt;- makeContrasts(&quot;LPS-WT&quot;, levels = design))</code></pre>
-<pre><code>      Contrasts
-Levels LPS-WT
-   WT      -1
-   LPS      1</code></pre>
-<pre class="r"><code>system.time(res &lt;- pbDS(sce, pb, design, contrast, verbose = FALSE))</code></pre>
+<pre class="r"><code>system.time(res &lt;- pbDS(pb, verbose = FALSE))</code></pre>
 <pre><code>   user  system elapsed 
- 47.932   0.900  48.877 </code></pre>
-<div id="results-filtering-overview" class="section level2">
-<h2>Results filtering &amp; overview</h2>
-<p>To get a general overview of the differential testing results, we first filter them to retain hits with <span class="math inline">\(\text{FDR}&lt;5\%\)</span> and <span class="math inline">\(~|~logFC~|~&gt;1\)</span>, and view the number &amp; percentage of differential findings by cluster. Finally, we extract the top hits (lowest adj. p-value) in each cluster.</p>
-<pre class="r"><code>tbl0 &lt;- res$table$`LPS-WT`
-# filter abs(logFC) &gt; 1 &amp; FDR &lt; 0.05
-tbl &lt;- lapply(tbl0, dplyr::filter, abs(logFC) &gt; 1, p_adj.loc &lt; 0.05)
-# sort by FDR
-tbl &lt;- lapply(tbl, dplyr::arrange, p_adj.loc)
-
-# nb. &amp; % of hits by cluster
-n_de &lt;- vapply(tbl, nrow, numeric(1))
-cbind(n_de, perc = round(n_de / nrow(sce) * 100, 2))</code></pre>
-<pre><code>                 n_de perc
-Astrocytes          0 0.00
-Endothelial         0 0.00
-excit_neuron1       0 0.00
-excit_neuron2       3 0.03
-excit_neuron3       2 0.02
-excit_neuron4       0 0.00
-excit_neuron5       4 0.04
-excit_neuron6      18 0.16
-inhib_neuron1       0 0.00
-inhib_neuron2       2 0.02
-inhib_neuron3       6 0.05
-Microglia           0 0.00
-Oligodendrocytes    4 0.04
-OPC                 2 0.02</code></pre>
-<pre class="r"><code># get top-hits for ea. cluster
-top_gs &lt;- lapply(tbl, function(u) {
-    n &lt;- ifelse(nrow(u) &lt; 6, nrow(u), 6)
-    u$gene[seq_len(n)]
-})</code></pre>
+ 25.932   1.280  27.254 </code></pre>
 </div>
-</div>
-<div id="visualizing-results" class="section level1">
-<h1>Visualizing results</h1>
-<div id="cell-level-visualization" class="section level2">
-<h2>Cell-level visualization</h2>
-<p>The <em><a href="https://bioconductor.org/packages/3.8/scater">scater</a></em><span class="citation">(McCarthy et al. 2017)</span> packages provides a variety of visualizations for single-cell data. Here, we use <code>plotExpression</code> to render violin plots of the top differential genes identified for each cluster. We specify <code>x = &quot;sample_id&quot;</code> to obtain one violin per sample, and <code>colour_by = &quot;group_id&quot;</code> to signify the experimental condition each sample belongs to.</p>
-<pre class="r"><code># split cells by cluster
-cs_by_k &lt;- split(colnames(sce), sce$cluster_id)
-
-kids &lt;- levels(sce$cluster_id)
-names(kids) &lt;- kids
-
-ps &lt;- lapply(kids, function(k)
-    plotExpression(sce[, cs_by_k[[k]]], features = top_gs[[k]], 
-        x = &quot;sample_id&quot;, colour_by = &quot;group_id&quot;) +
-        guides(fill = guide_legend(override.aes = list(size = 2, alpha = 1))) +
-        theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))) </code></pre>
-<pre class="echo"><code>for (k in kids) {
-  cat(&quot;##### &quot;,k, &quot;\n&quot;)
-  print(ps[[k]])
-  cat(&quot;\n\n&quot;)
-}</code></pre>
-</div>
-<div id="sample-level-visualization" class="section level2">
-<h2>Sample-level visualization</h2>
-<pre class="r"><code># normalize &amp; compute cluster-sample expression-means
-sce &lt;- normalize(sce)
-ms &lt;- aggregateData(sce, assay = &quot;logcounts&quot;, fun = &quot;mean&quot;)
-
-# wrapper for z-normalization
-.z_norm &lt;- function(x, th = 2.5) {
-    x &lt;- as.matrix(x)
-    sds &lt;- rowSds(x, na.rm = TRUE)
-    sds[sds == 0] &lt;- 1
-    x &lt;- t(t(x - rowMeans(x, na.rm = TRUE)) / sds)
-    #x &lt;- (x - rowMeans(x, na.rm = TRUE)) / sds
-    x[x &gt;  th] &lt;-  th
-    x[x &lt; -th] &lt;- -th
-    return(x)
-}
-
-# wrapper to plot differential heatmap
-.plot_diff_hm &lt;- function(ms, k, gs, ei) {
-    mat &lt;- .z_norm(assays(ms)[[k]][gs, ])
-    m &lt;- match(colnames(mat), ei$sample_id)
-    cols &lt;- scales::hue_pal()(nlevels(ei$group_id))
-    names(cols) &lt;- levels(ei$group_id)
-    col_anno &lt;- columnAnnotation(
-        df = data.frame(group_id = ei$group_id[m]),
-        col = list(group_id = cols),
-        gp = gpar(col = &quot;white&quot;),
-        show_annotation_name = FALSE)
-    Heatmap(mat, 
-        column_title = k,
-        name = &quot;z-normalized\nexpression&quot;,
-        col = c(&quot;royalblue&quot;, &quot;cornflowerblue&quot;, &quot;white&quot;, &quot;gold&quot;, &quot;orange&quot;),
-        cluster_rows = FALSE,
-        cluster_columns = FALSE,
-        row_names_side = &quot;left&quot;,
-        row_names_gp = gpar(fontsize = 6),
-        rect_gp = gpar(col = &quot;white&quot;),
-        top_annotation = col_anno)
-}
-hms &lt;- lapply(kids, function(k) .plot_diff_hm(ms, k, tbl[[k]]$gene, ei))</code></pre>
-<div id="astrocytes" class="section level5">
-<h5>Astrocytes</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="endothelial" class="section level5">
-<h5>Endothelial</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="excit_neuron1" class="section level5">
-<h5>excit_neuron1</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="excit_neuron2" class="section level5">
-<h5>excit_neuron2</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="excit_neuron3" class="section level5">
-<h5>excit_neuron3</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="excit_neuron4" class="section level5">
-<h5>excit_neuron4</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="excit_neuron5" class="section level5">
-<h5>excit_neuron5</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="excit_neuron6" class="section level5">
-<h5>excit_neuron6</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-8.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="inhib_neuron1" class="section level5">
-<h5>inhib_neuron1</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-9.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="inhib_neuron2" class="section level5">
-<h5>inhib_neuron2</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-10.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="inhib_neuron3" class="section level5">
-<h5>inhib_neuron3</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-11.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="microglia" class="section level5">
-<h5>Microglia</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-12.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="oligodendrocytes" class="section level5">
-<h5>Oligodendrocytes</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-13.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="opc" class="section level5">
-<h5>OPC</h5>
-<p><img src="figure/3-differential.Rmd/unnamed-chunk-4-14.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="dimension-reduction" class="section level2">
-<h2>Dimension reduction</h2>
-<pre class="r"><code>ps &lt;- lapply(c(plotTSNE, plotUMAP), function(fun) 
-    fun(sce, colour_by = &quot;cluster_id&quot;, shape_by = &quot;group_id&quot;,
-        point_size = 0.8, point_alpha = 0.4) +
-        scale_shape_manual(values = c(2, 3)) +
-        guides(shape = guide_legend(title = &quot;group_id&quot;, ncol = 1,
-            override.aes = list(size = 3, alpha = 1)),
-            color = guide_legend(override.aes = list(size = 3, alpha = 1))) +
-    theme_bw() + theme(aspect.ratio = 1, panel.grid.minor = element_blank()))
-Warning: &#39;add_ticks&#39; is deprecated.
-Use &#39;+ geom_rug(...)&#39; instead.
-
-Warning: &#39;add_ticks&#39; is deprecated.
-Use &#39;+ geom_rug(...)&#39; instead.
-lgd &lt;- get_legend(ps[[1]] + theme(
-    legend.position = &quot;bottom&quot;,
-    legend.direction = &quot;horizontal&quot;))
-ps &lt;- lapply(ps, &quot;+&quot;, theme(legend.position = &quot;none&quot;))
-ps &lt;- plot_grid(plotlist = ps, nrow = 1, labels = &quot;auto&quot;) 
-plot_grid(ps, lgd, ncol = 1, rel_heights = c(1, 0.2))</code></pre>
-<div class="figure" style="text-align: center">
-<img src="figure/3-differential.Rmd/tsne-umap-1.png" alt="Dimension reduction plots: t-SNE (a) and UMAP (b). Cells are colored by cluster ID and shaped by group ID." width="672" />
-<p class="caption">
-Dimension reduction plots: t-SNE (a) and UMAP (b). Cells are colored by cluster ID and shaped by group ID.
-</p>
-</div>
-<div id="save-sce-results" class="section level3">
-<h3>Save SCE &amp; results</h3>
-<pre class="r"><code>saveRDS(sce, file.path(&quot;output&quot;, &quot;MAGL-SCE_final.rds&quot;))</code></pre>
-</div>
-</div>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
-<div id="refs">
-<div id="ref-McCarthy2017-scater">
-<p>McCarthy, Davis J, Kieran R Campbell, Quin F Wills, and Aaron T L Lun. 2017. “Scater: Pre-Processing, Quality Control, Normalization and Visualization of Single-Cell RNA-Seq Data in R.” <em>Bioinformatics</em> 33 (8):1179–86. <a href="https://doi.org/10.1093/bioinformatics/btw777" class="uri">https://doi.org/10.1093/bioinformatics/btw777</a>.</p>
-</div>
-</div>
+<div id="save-sce-unfiltered-results" class="section level1">
+<h1>Save SCE &amp; unfiltered results</h1>
+<pre class="r"><code>saveRDS(sce, file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))
+saveRDS(res, file.path(&quot;output&quot;, &quot;MAGL-DS_res.rds&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1043,103 +915,80 @@ Dimension reduction plots: t-SNE (a) and UMAP (b). Cells are colored by cluster 
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.1 (2018-07-02)
+<pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
 
 Matrix products: default
-BLAS: /usr/local/R/R-3.5.1/lib/libRblas.so
-LAPACK: /usr/local/R/R-3.5.1/lib/libRlapack.so
+BLAS:   /usr/local/R/R-3.6.0/lib/libRblas.so
+LAPACK: /usr/local/R/R-3.6.0/lib/libRlapack.so
 
 locale:
- [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8    
- [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
- [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C               LC_TIME=en_CA.UTF-8       
+ [4] LC_COLLATE=en_CA.UTF-8     LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
+ [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
+[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
- [1] grid      stats4    parallel  stats     graphics  grDevices utils    
- [8] datasets  methods   base     
+ [1] stats4    parallel  grid      stats     graphics  grDevices utils     datasets  methods  
+[10] base     
 
 other attached packages:
- [1] ComplexHeatmap_1.20.0       scater_1.10.1              
- [3] SingleCellExperiment_1.4.1  SummarizedExperiment_1.12.0
- [5] DelayedArray_0.8.0          BiocParallel_1.16.6        
- [7] matrixStats_0.54.0          Biobase_2.42.0             
- [9] GenomicRanges_1.34.0        GenomeInfoDb_1.18.2        
-[11] IRanges_2.16.0              S4Vectors_0.20.1           
-[13] BiocGenerics_0.28.0         muscat_0.99.8              
-[15] magrittr_1.5                limma_3.38.3               
-[17] cowplot_0.9.4               ggplot2_3.1.1              
-[19] BiocStyle_2.10.0           
+ [1] scater_1.12.2               SingleCellExperiment_1.6.0  SummarizedExperiment_1.14.0
+ [4] DelayedArray_0.10.0         BiocParallel_1.18.0         matrixStats_0.54.0         
+ [7] Biobase_2.44.0              GenomicRanges_1.36.0        GenomeInfoDb_1.20.0        
+[10] IRanges_2.18.1              S4Vectors_0.22.0            BiocGenerics_0.30.0        
+[13] muscat_0.99.10              magrittr_1.5                limma_3.40.2               
+[16] cowplot_0.9.4               ggplot2_3.2.0               ComplexHeatmap_2.0.0       
+[19] BiocStyle_2.12.0           
 
 loaded via a namespace (and not attached):
-  [1] backports_1.1.4          circlize_0.4.6          
-  [3] Hmisc_4.2-0              blme_1.0-4              
-  [5] workflowr_1.3.0          plyr_1.8.4              
-  [7] igraph_1.2.4.1           lazyeval_0.2.2          
-  [9] splines_3.5.1            listenv_0.7.0           
- [11] digest_0.6.18            foreach_1.4.4           
- [13] htmltools_0.3.6          viridis_0.5.1           
- [15] gdata_2.18.0             lmerTest_3.1-0          
- [17] checkmate_1.9.3          memoise_1.1.0           
- [19] cluster_2.0.8            doParallel_1.0.14       
- [21] globals_0.12.4           annotate_1.60.1         
- [23] prettyunits_1.0.2        colorspace_1.4-1        
- [25] blob_1.1.1               xfun_0.7                
- [27] dplyr_0.8.1              crayon_1.3.4            
- [29] RCurl_1.95-4.12          genefilter_1.64.0       
- [31] lme4_1.1-21              survival_2.44-1.1       
- [33] iterators_1.0.10         glue_1.3.1              
- [35] gtable_0.3.0             zlibbioc_1.28.0         
- [37] XVector_0.22.0           GetoptLong_0.1.7        
- [39] Rhdf5lib_1.4.3           future.apply_1.2.0      
- [41] shape_1.4.4              HDF5Array_1.10.1        
- [43] scales_1.0.0             DBI_1.0.0               
- [45] edgeR_3.24.3             Rcpp_1.0.1              
- [47] viridisLite_0.3.0        xtable_1.8-4            
- [49] progress_1.2.1           htmlTable_1.13.1        
- [51] foreign_0.8-71           bit_1.1-14              
- [53] Formula_1.2-3            htmlwidgets_1.3         
- [55] gplots_3.0.1.1           RColorBrewer_1.1-2      
- [57] acepack_1.4.1            pkgconfig_2.0.2         
- [59] XML_3.98-1.19            nnet_7.3-12             
- [61] locfit_1.5-9.1           dynamicTreeCut_1.63-1   
- [63] labeling_0.3             tidyselect_0.2.5        
- [65] rlang_0.3.4              reshape2_1.4.3          
- [67] AnnotationDbi_1.44.0     munsell_0.5.0           
- [69] tools_3.5.1              RSQLite_2.1.1           
- [71] evaluate_0.13            stringr_1.4.0           
- [73] yaml_2.2.0               knitr_1.22              
- [75] bit64_0.9-7              fs_1.2.7                
- [77] caTools_1.17.1.2         purrr_0.3.2             
- [79] future_1.12.0            nlme_3.1-139            
- [81] scran_1.10.2             pbkrtest_0.4-7          
- [83] compiler_3.5.1           rstudioapi_0.10         
- [85] beeswarm_0.2.3           variancePartition_1.12.3
- [87] tibble_2.1.1             statmod_1.4.30          
- [89] geneplotter_1.60.0       stringi_1.4.3           
- [91] highr_0.8                lattice_0.20-38         
- [93] Matrix_1.2-17            nloptr_1.2.1            
- [95] pillar_1.4.0             BiocManager_1.30.4      
- [97] GlobalOptions_0.1.0      BiocNeighbors_1.0.0     
- [99] data.table_1.12.2        bitops_1.0-6            
-[101] colorRamps_2.3           R6_2.4.0                
-[103] latticeExtra_0.6-28      KernSmooth_2.23-15      
-[105] gridExtra_2.3            vipor_0.4.5             
-[107] codetools_0.2-16         gtools_3.8.1            
-[109] boot_1.3-20              MASS_7.3-51.3           
-[111] assertthat_0.2.1         rhdf5_2.26.2            
-[113] DESeq2_1.22.2            rprojroot_1.3-2         
-[115] rjson_0.2.20             withr_2.1.2             
-[117] sctransform_0.2.0        GenomeInfoDbData_1.2.0  
-[119] hms_0.4.2                rpart_4.1-15            
-[121] minqa_1.2.4              rmarkdown_1.12          
-[123] DelayedMatrixStats_1.4.0 git2r_0.25.2            
-[125] numDeriv_2016.8-1        base64enc_0.1-3         
-[127] ggbeeswarm_0.6.0        </code></pre>
+  [1] backports_1.1.4          circlize_0.4.6           Hmisc_4.2-0             
+  [4] blme_1.0-4               workflowr_1.4.0          plyr_1.8.4              
+  [7] igraph_1.2.4.1           lazyeval_0.2.2           TMB_1.7.15              
+ [10] splines_3.6.0            listenv_0.7.0            digest_0.6.20           
+ [13] foreach_1.4.4            htmltools_0.3.6          viridis_0.5.1           
+ [16] gdata_2.18.0             lmerTest_3.1-0           checkmate_1.9.4         
+ [19] memoise_1.1.0            cluster_2.1.0            doParallel_1.0.14       
+ [22] globals_0.12.4           annotate_1.62.0          prettyunits_1.0.2       
+ [25] colorspace_1.4-1         blob_1.2.0               xfun_0.8                
+ [28] dplyr_0.8.3              crayon_1.3.4             RCurl_1.95-4.12         
+ [31] genefilter_1.66.0        lme4_1.1-21              zeallot_0.1.0           
+ [34] survival_2.44-1.1        iterators_1.0.10         glue_1.3.1              
+ [37] gtable_0.3.0             zlibbioc_1.30.0          XVector_0.24.0          
+ [40] GetoptLong_0.1.7         BiocSingular_1.0.0       future.apply_1.3.0      
+ [43] shape_1.4.4              scales_1.0.0             DBI_1.0.0               
+ [46] edgeR_3.26.5             Rcpp_1.0.1               viridisLite_0.3.0       
+ [49] xtable_1.8-4             progress_1.2.2           htmlTable_1.13.1        
+ [52] clue_0.3-57              dqrng_0.2.1              foreign_0.8-71          
+ [55] bit_1.1-14               rsvd_1.0.1               Formula_1.2-3           
+ [58] htmlwidgets_1.3          gplots_3.0.1.1           RColorBrewer_1.1-2      
+ [61] acepack_1.4.1            pkgconfig_2.0.2          XML_3.98-1.20           
+ [64] nnet_7.3-12              locfit_1.5-9.1           dynamicTreeCut_1.63-1   
+ [67] tidyselect_0.2.5         rlang_0.4.0              reshape2_1.4.3          
+ [70] AnnotationDbi_1.46.0     munsell_0.5.0            tools_3.6.0             
+ [73] RSQLite_2.1.1            evaluate_0.14            stringr_1.4.0           
+ [76] yaml_2.2.0               knitr_1.23               bit64_0.9-7             
+ [79] fs_1.3.1                 caTools_1.17.1.2         purrr_0.3.2             
+ [82] future_1.14.0            nlme_3.1-140             whisker_0.3-2           
+ [85] scran_1.12.1             grr_0.9.5                pbkrtest_0.4-7          
+ [88] compiler_3.6.0           rstudioapi_0.10          beeswarm_0.2.3          
+ [91] png_0.1-7                variancePartition_1.14.0 statmod_1.4.32          
+ [94] tibble_2.1.3             geneplotter_1.62.0       stringi_1.4.3           
+ [97] highr_0.8                lattice_0.20-38          Matrix_1.2-17           
+[100] nloptr_1.2.1             vctrs_0.2.0              pillar_1.4.2            
+[103] BiocManager_1.30.4       GlobalOptions_0.1.0      BiocNeighbors_1.2.0     
+[106] data.table_1.12.2        bitops_1.0-6             irlba_2.3.3             
+[109] Matrix.utils_0.9.7       colorRamps_2.3           R6_2.4.0                
+[112] latticeExtra_0.6-28      KernSmooth_2.23-15       gridExtra_2.3           
+[115] vipor_0.4.5              codetools_0.2-16         gtools_3.8.1            
+[118] boot_1.3-23              MASS_7.3-51.4            assertthat_0.2.1        
+[121] DESeq2_1.24.0            rprojroot_1.3-2          rjson_0.2.20            
+[124] withr_2.1.2              sctransform_0.2.0        GenomeInfoDbData_1.2.1  
+[127] hms_0.5.0                rpart_4.1-15             glmmTMB_0.2.3           
+[130] minqa_1.2.4              rmarkdown_1.13           DelayedMatrixStats_1.6.0
+[133] git2r_0.26.1             numDeriv_2016.8-1.1      base64enc_0.1-3         
+[136] ggbeeswarm_0.6.0        </code></pre>
 </div>
 </div>
 
