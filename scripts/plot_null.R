@@ -41,6 +41,7 @@ p <- ggplot(df, aes(x = p_val, y = ..ndensity..,
         strip.text = element_text(size = 5),
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 
+saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, p,
     units = "cm", width = 15, height = 8,
     dpi = 300, useDingbats = FALSE)
