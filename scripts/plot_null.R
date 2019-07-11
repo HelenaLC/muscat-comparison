@@ -20,13 +20,13 @@ df <- lapply(snakemake@input$res, readRDS) %>%
 
 p <- ggplot(df, aes(x = p_val, y = ..ndensity.., 
     col = method, fill = method, lty = replicate)) +
-    facet_wrap(~ method, nrow = 5) + 
+    facet_wrap(~ method, nrow = 3) + 
     geom_density(adjust = 0.2, size = 0.3, alpha = 0.1) +
     scale_color_manual(values = .meth_cols) +
     scale_fill_manual(values = .meth_cols) +
     guides(col = FALSE,
         lty = guide_legend(ncol = 1, order = 2),
-        fill = guide_legend(ncol = 2, order = 1,
+        fill = guide_legend(ncol = 3, order = 1,
             override.aes = list(alpha = 1, col = NA))) +
     scale_x_continuous("p-value", breaks = seq(0, 1, 0.2), expand = c(0, 0.04)) +
     scale_y_continuous("normalized density", breaks = seq(0, 1, 0.2), expand = c(0, 0.06)) +
