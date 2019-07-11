@@ -29,11 +29,16 @@ output:
     - Pseudobulk-level MDS plot
     - Cluster-level DE analysis with `edgeR`
     - Results filtering & overview
-    - Cell-level vis.: Violin plots
-    - Sample-level vis.: Heatmap of cluster-sample mean-expressions
     - Dimension reduction: t-SNE & UMAP
 
-- [Geneset analysis](4-geneset.html)
-    - Cluster-level geneset analysis using `camera`
+- [Visualization](5-visualization.html)
+    - Cluster-sample cell counts
+    - Cell-level vis.: Violin plots
+    - Sample-level vis.: Heatmap of cluster-sample mean-expressions
+    
+- [GSEA](5-geneset.html)
+    - Cluster-level GSEA using `camera`
     - Heatmap summary
     - Barcode plots
+    
+- [Downstream](6-more.html)

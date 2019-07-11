@@ -11,7 +11,7 @@
 
 
 
-<title>Home</title>
+<title>Contents</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -281,12 +281,12 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">MAGL</a>
+      <a class="navbar-brand" href="index.html">LPS</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">Contents</a>
 </li>
 <li>
   <a href="0-preprocessing.html">Preprocessing</a>
@@ -296,6 +296,18 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="2-annotation.html">Annotation</a>
+</li>
+<li>
+  <a href="3-differential.html">DS analysis</a>
+</li>
+<li>
+  <a href="4-geneset.html">Geneset analysis</a>
+</li>
+<li>
+  <a href="5-visualization.html">Visualization</a>
+</li>
+<li>
+  <a href="6-more.html">Downstream</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -324,7 +336,7 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">Contents</h1>
 
 </div>
 
@@ -349,7 +361,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-05-03
+<strong>Last updated:</strong> 2019-07-11
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -359,7 +371,7 @@ div.section {
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.3.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
@@ -380,10 +392,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree091c87e274f5e0106d13f37c6c46d4acd7e23051targetblank091c87ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/091c87e274f5e0106d13f37c6c46d4acd7e23051" target="_blank">091c87e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree244411f3466962bb727005a8b10b41349a588742targetblank244411fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/244411f3466962bb727005a8b10b41349a588742" target="_blank">244411f</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree091c87e274f5e0106d13f37c6c46d4acd7e23051targetblank091c87ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree244411f3466962bb727005a8b10b41349a588742targetblank244411fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -391,81 +403,62 @@ Great! You are using Git for version control. Tracking code development and conn
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    ._.Renviron
+    Ignored:    ._.gitignore
+    Ignored:    ._README.md
+    Ignored:    ._Snakefile
     Ignored:    .snakemake/
     Ignored:    MAGL/.DS_Store
     Ignored:    MAGL/.RData
     Ignored:    MAGL/.Rhistory
+    Ignored:    MAGL/._.DS_Store
+    Ignored:    MAGL/._.Rprofile
+    Ignored:    MAGL/._.gitignore
+    Ignored:    MAGL/._data
+    Ignored:    MAGL/analysis/._refs.bib
+    Ignored:    MAGL/analysis/0-preprocessing_cache/
+    Ignored:    MAGL/analysis/1-clustering_cache/
+    Ignored:    MAGL/analysis/3-differential_cache/
+    Ignored:    MAGL/analysis/4-visualization_cache/
+    Ignored:    MAGL/analysis/5-geneset_cache/
+    Ignored:    MAGL/analysis/6-more_cache/
     Ignored:    MAGL/data/
     Ignored:    MAGL/output/
-    Ignored:    config/
-    Ignored:    data/
+    Ignored:    data/sim_data/
     Ignored:    figures/
-    Ignored:    metadata/
+    Ignored:    meta/
     Ignored:    results/
+    Ignored:    scripts/._apply_scdd.R
+    Ignored:    scripts/._fig_vehicle_vs_lps.R
+    Ignored:    scripts/._plot_perf_by_expr.R
+    Ignored:    scripts/._plot_perf_by_lfc.R
+    Ignored:    scripts/._plot_perf_by_ss.R
+    Ignored:    scripts/._plot_runtimes.R
+    Ignored:    scripts/._plot_sim_ex.R
+    Ignored:    scripts/._sim_qc.R
 
 Untracked files:
     Untracked:  .RData
+    Untracked:  .RDataTmp
     Untracked:  .Rhistory
-    Untracked:  ._README.md
-    Untracked:  ._Snakefile
-    Untracked:  ._config.yaml
-    Untracked:  MAGL/._.DS_Store
-    Untracked:  MAGL/._.Rprofile
-    Untracked:  MAGL/._data
-    Untracked:  MAGL/docs/figure/1-clustering.Rmd/
-    Untracked:  MAGL/docs/figure/2-annotation.Rmd/
-    Untracked:  scripts/._apply_ad.R
-    Untracked:  scripts/._apply_mm.R
-    Untracked:  scripts/._apply_scdd.R
-    Untracked:  scripts/._calc_conc.R
-    Untracked:  scripts/._meth_pars.R
-    Untracked:  scripts/._plot_conc.R
-    Untracked:  scripts/._plot_padj_local_vs_global.R
-    Untracked:  scripts/._plot_perf_combined.R
-    Untracked:  scripts/._plot_perf_split_by_cat.R
-    Untracked:  scripts/._plot_perf_split_by_lfc.R
-    Untracked:  scripts/._plot_perf_vs_ncells.R
-    Untracked:  scripts/._plot_upsets.R
-    Untracked:  scripts/._run_method.R
-    Untracked:  scripts/._sim_data.R
-    Untracked:  scripts/._sim_pars.R
-    Untracked:  scripts/._utils.R
-    Untracked:  scripts/plot_padj_local_vs_global.R
-    Untracked:  scripts/plot_perf_combined.R
-    Untracked:  scripts/plot_perf_split_by_cat.R
-    Untracked:  scripts/plot_perf_split_by_lfc.R
-    Untracked:  scripts/plot_sim_ex_hm.R
-    Untracked:  scripts/plot_sim_vs_est_logFC.R
+    Untracked:  scripts/fig_vehicle_vs_lps.R
 
 Unstaged changes:
+    Modified:   MAGL/.Rprofile
+    Modified:   MAGL/MAGL.Rproj
+    Modified:   MAGL/README.md
+    Modified:   MAGL/_workflowr.yml
     Modified:   MAGL/analysis/0-preprocessing.Rmd
     Modified:   MAGL/analysis/1-clustering.Rmd
-    Modified:   MAGL/analysis/2-annotation.Rmd
+    Modified:   MAGL/analysis/3-differential.Rmd
+    Modified:   MAGL/analysis/4-visualization.Rmd
+    Modified:   MAGL/analysis/6-more.Rmd
     Modified:   MAGL/analysis/_site.yml
-    Deleted:    MAGL/analysis/about.Rmd
     Modified:   MAGL/analysis/index.Rmd
-    Deleted:    MAGL/analysis/license.Rmd
-    Modified:   Snakefile
-    Modified:   config.yaml
-    Modified:   scripts/apply_ad.R
-    Modified:   scripts/apply_mast.R
-    Modified:   scripts/apply_mm.R
-    Modified:   scripts/apply_pb.R
-    Modified:   scripts/apply_scdd.R
-    Modified:   scripts/calc_conc.R
-    Modified:   scripts/meth_pars.R
-    Modified:   scripts/plot_conc.R
-    Modified:   scripts/plot_null.R
-    Deleted:    scripts/plot_padj_loc_vs_glb.R
-    Modified:   scripts/plot_perf.R
-    Deleted:    scripts/plot_perf_split.R
-    Modified:   scripts/plot_perf_vs_ncells.R
-    Deleted:    scripts/plot_perf_vs_ncells_box.R
-    Modified:   scripts/plot_upsets.R
-    Modified:   scripts/run_method.R
-    Modified:   scripts/sim_data.R
-    Modified:   scripts/sim_pars.R
-    Modified:   scripts/utils.R
+    Modified:   MAGL/code/README.md
+    Modified:   MAGL/docs/.nojekyll
+    Modified:   README.md
+    Modified:   scripts/plot_lfc.R
 
 </code></pre>
 <p>
@@ -504,6 +497,91 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/2e6c8b3806844891512f07ab4b2682ec7e65325f/MAGL/analysis/index.Rmd" target="_blank">2e6c8b3</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-20
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/61c0b067f9144eecf49366d6d9bc4000c4d10986/MAGL/analysis/index.Rmd" target="_blank">61c0b06</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-20
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/faf858d01b3ab307553b2e18a712af44215401d1/MAGL/analysis/index.Rmd" target="_blank">faf858d</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-17
+</td>
+<td>
+add DS &amp; geneset analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/d2021f019d89a6f24c5e436cb1d766751c36a1f9/MAGL/analysis/index.Rmd" target="_blank">d2021f0</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+<td>
+update landing page
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/d2021f019d89a6f24c5e436cb1d766751c36a1f9/MAGL/docs/index.html" target="_blank">d2021f0</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+<td>
+update landing page
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -549,6 +627,28 @@ initial commit
 <li>Identification of cluster-markers using <code>scran</code></li>
 <li>Hetamap of mean <code>scran</code> marker-gene expressions by cluster</li>
 </ul></li>
+<li><a href="3-differential.html">DS analysis</a>
+<ul>
+<li>Cluster annoation</li>
+<li>Aggregation to pseudobulk counts</li>
+<li>Pseudobulk-level MDS plot</li>
+<li>Cluster-level DE analysis with <code>edgeR</code></li>
+<li>Results filtering &amp; overview</li>
+<li>Dimension reduction: t-SNE &amp; UMAP</li>
+</ul></li>
+<li><a href="5-visualization.html">Visualization</a>
+<ul>
+<li>Cluster-sample cell counts</li>
+<li>Cell-level vis.: Violin plots</li>
+<li>Sample-level vis.: Heatmap of cluster-sample mean-expressions</li>
+</ul></li>
+<li><a href="5-geneset.html">GSEA</a>
+<ul>
+<li>Cluster-level GSEA using <code>camera</code></li>
+<li>Heatmap summary</li>
+<li>Barcode plots</li>
+</ul></li>
+<li><a href="6-more.html">Downstream</a></li>
 </ul>
 
 
