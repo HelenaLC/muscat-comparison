@@ -38,6 +38,6 @@ p <- ggplot(df, aes(x = p_val, y = ..ndensity..,
         axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
 
 ggsave(snakemake@output$fig, p,
-    units = "cm", width = 15, height = 10,
+    units = "cm", width = 15, height = 8,
     dpi = 300, useDingbats = FALSE)
 
