@@ -20,6 +20,21 @@
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
+.read_res <- function(fns, slot = "tbl") {
+    res <- map(lapply(fns, readRDS), slot)
+    rmv <- vapply(res, function(u) 
+        is.null(u) | inherits(u, "error"), 
+        logical(1))
+    res <- res[!rmv] %>% 
+        map(mutate_if, is.factor, as.character) %>% 
+        bind_rows 
+    if (slot == "tbl")
+        res <- res %>% 
+            mutate_if(is.character, as.factor) %>% 
+            mutate_at("mid", factor, levels = names(.meth_cols))
+    return(res)
+}
+
 .filter_sce <- function(sce, kids, sids) {
     cs1 <- sce$cluster_id %in% kids
     cs2 <- sce$sample_id %in% sids

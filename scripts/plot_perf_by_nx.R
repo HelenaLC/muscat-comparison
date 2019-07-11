@@ -10,10 +10,8 @@ suppressPackageStartupMessages({
 
 x <- snakemake@wildcards$x
 #fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_ns;", full.names = TRUE)
-res <- lapply(snakemake@input$res, readRDS) %>% map("tbl")
-rmv <- vapply(res, inherits, what = "error", logical(1))
-res <- map(res[!rmv], mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% setDT %>% split(by = "j", flatten = FALSE) %>% 
+res <- .read_res(snakemake@input$res) %>% 
+    setDT %>% split(by = "j", flatten = FALSE) %>% 
     map(group_by, mid) %>% map(function(u) 
         set_names(group_split(u), group_keys(u)[[1]]))
 

@@ -10,15 +10,9 @@ suppressPackageStartupMessages({
 })
 
 #fns <- list.files("~/documents/kang", "nill", full.names = TRUE)
-df <- lapply(snakemake@input$res, readRDS) %>% 
-    map("tbl") %>% 
-    map(mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% 
+df <- .read_res(snakemake@intput$res) %>% 
     dplyr::filter(!is.na(p_val)) %>% 
-    mutate_at("i", factor) %>% 
-    mutate_at("mid", factor, levels = names(.meth_cols)) %>% 
-    dplyr::rename(method = mid, replicate = i) %>% 
-    mutate_at("method", factor, levels = names(.meth_cols))
+    dplyr::rename(method = mid, replicate = i)
 
 p <- ggplot(df, aes(x = p_val, y = ..ndensity.., 
     col = method, fill = method, lty = replicate)) +

@@ -9,14 +9,10 @@ suppressPackageStartupMessages({
 })
 
 #fns <- list.files("~/documents/kang", "d[a-z][0-9]+;", full.names = TRUE)
-df <- lapply(snakemake@input$res, readRDS) %>% 
-    map("tbl") %>% 
-    map(mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% 
-    dplyr::filter(!is.na(sim_lfc) & !is.na(est_lfc)) %>% 
-    rename(method = mid) %>% 
-    mutate_at("method", function(u) droplevels(
-        factor(u, levels = names(.meth_cols)))) %>% 
+df <- .read_res(snakemake@input$res) %>% 
+    rename(method = mid) %>%
+    dplyr::filter(!is.na(vars(matches("lfc")))) %>% 
+    mutate_at("method", droplevels) %>% 
     mutate_at("sid", factor, 
         levels = paste0(c("ds", "dp", "dm", "db"), "10"),
         labels = c("DS", "DP", "DM", "DB"))

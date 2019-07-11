@@ -39,13 +39,10 @@ hists <- ggplot(gg_df, aes(x = sample_id, y = n, fill = sample_id)) +
         plot.margin = unit(c(1,0,0,2), "mm"))
 
 #fns <- list.files("/users/helena/dropbox/portmac/kang", "ds10_ss[0-9];", full.names = TRUE)
-res <- map(lapply(snakemake@input$res, readRDS), "tbl")
-rmv <- vapply(res, is.null, logical(1))
-res <- map(res[!rmv], mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% 
+res <- .read_res(snakemake@input$res) %>% 
     mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
-    dplyr::filter(E > 0.1) %>% 
-    setDT %>% split(by = c("sid", "i", "mid"), flatten = FALSE)
+    dplyr::filter(E > 0.1) %>% setDT %>% 
+    split(by = c("sid", "i", "mid"), flatten = FALSE)
 
 cd <- map_depth(res, 2, function(u) {sapply(u, nrow)
     truth <- setDF(select(u[[1]], c("sid", "i", "is_de")))
