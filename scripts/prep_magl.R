@@ -1,6 +1,7 @@
 # load packages
 suppressMessages({
     library(muscat)
+    library(S4Vectors)
     library(SingleCellExperiment)
 })
 
@@ -24,4 +25,4 @@ assays(sce) <- SimpleList(counts = counts(sce))
 reducedDims(sce) <- NULL
 
 # write SCE to .rds
-saveRDS(sce, snakemake@output$res)
+saveRDS(sce, snakemake@output$sce)

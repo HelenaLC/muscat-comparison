@@ -1,3 +1,10 @@
+# load packages
+suppressMessages({
+    library(muscat)
+    library(S4Vectors)
+    library(SingleCellExperiment)
+})
+
 # load data
 sce <- readRDS(snakemake@input$sce)
 
@@ -11,17 +18,17 @@ sce <- sce[, sce$stim == "ctrl"]
 sce$sample_id <- factor(paste0(sce$stim, sce$ind))
 
 # prep. SCE for 'muscat'
-sce <- muscat::prepSCE(sce, 
+sce <- prepSCE(sce, 
     cluster_id = "cell",
     sample_id = "sample_id",
     group_id = "stim",
     drop = TRUE)
 
 # remove slots other than counts
-assays(sce) <- S4Vectors::SimpleList(counts = counts(sce))
+assays(sce) <- SimpleList(counts = counts(sce))
 
 # remove dimension reductions
 reducedDims(sce) <- NULL
 
 # write SCE to .rds
-saveRDS(sce, snakemake@output$res)
+saveRDS(sce, snakemake@output$sce)
