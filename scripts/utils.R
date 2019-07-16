@@ -62,7 +62,7 @@
     # update colData
     cd <- as.data.frame(colData(sce))
     cd <- mutate_if(cd, is.factor, droplevels) 
-    colData(sce) <- DataFrame(cd)
+    colData(sce) <- DataFrame(cd, row.names = colnames(sce))
     # update metadata
     ei <- metadata(sce)$experiment_info
     ei <- ei[ei$sample_id %in% levels(sce$sample_id), ]
