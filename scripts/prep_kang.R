@@ -1,9 +1,3 @@
-# load packages
-suppressMessages({
-    library(ExperimentHub)
-    library(muscat)
-})
-
 # load data
 sce <- readRDS(snakemake@input$sce)
 
@@ -17,7 +11,7 @@ sce <- sce[, sce$stim == "ctrl"]
 sce$sample_id <- factor(paste0(sce$stim, sce$ind))
 
 # prep. SCE for 'muscat'
-sce <- prepSCE(sce, 
+sce <- muscat::prepSCE(sce, 
     cluster_id = "cell",
     sample_id = "sample_id",
     group_id = "stim",
