@@ -24,4 +24,4 @@ assays(sce) <- S4Vectors::SimpleList(counts = counts(sce))
 reducedDims(sce) <- NULL
 
 # write SCE to .rds
-saveRDS(sce, "/Users/helena/Desktop/sce0_kang.rds")
+saveRDS(sce, snakemake@output$res)
