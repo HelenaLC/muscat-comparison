@@ -73,25 +73,28 @@ rule all:
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"])
 
 rule prep_sce:
+	priority: 100
 	input:	script = lambda wc: join(config["scripts"], "prep_" + wc.did + ".R"),
 			sce = lambda wc: join(config["raw_data"], "sce0_" + wc.did + ".R")
 	output:	sce = join(config["raw_data"], "sce_{did}.rds")
 	script:	"{input.script}"
 
 rule prep_sim:
+	priority: 99
 	input:	script = lambda wc: join(config["scripts"], "prep_sim.R"),
 			sce = lambda wc: join(config["raw_data"], "sce_" + wc.did + ".rds")
 	output:	sce = join(config["raw_data"], "ref_{did}.rds")
 	script:	"{input.script}"
 
 rule sim_qc:
+	priority: 98
 	input:	script = join(config["scripts"], "sim_qc.R"),
 			sce = lambda wc: join(config["raw_data"], "ref_" + wc.did + ".rds")
 	output: html = join(config["figures"], "{did}_qc.html")
 	script:	"{input.script}"
 
 rule sim_data:
-	priority: 100
+	priority: 97
 	input:  script = join(config["scripts"], "sim_data.R"),
 			sce = lambda wc: join(config["raw_data"], "ref_", wc.did + ".rds"),
 			sim_pars = join(config["sim_pars"], "{sid}.json")
@@ -99,7 +102,7 @@ rule sim_data:
 	script: "{input.script}"
 
 rule run_meth:
-	priority: 99
+	priority: 96
 	input:	script = join(config["scripts"], "run_meth.R"),
 			sim = join(config["sim_data"], "{did}", "{sid};{i}.rds"),
 			run_pars = join(config["run_pars"], "{did};{sid}.json"),
