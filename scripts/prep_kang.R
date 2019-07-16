@@ -18,7 +18,7 @@ sce <- muscat::prepSCE(sce,
     drop = TRUE)
 
 # remove slots other than counts
-assays(sce) <- SimpleList(counts = counts(sce))
+assays(sce) <- S4Vectors::SimpleList(counts = counts(sce))
 
 # remove dimension reductions
 reducedDims(sce) <- NULL
