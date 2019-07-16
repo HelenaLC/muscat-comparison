@@ -5,7 +5,7 @@ suppressMessages({
 })
 
 # load data
-sce <- readRDS(file.path(snakemake@config$raw_data, "ref_magl.rds"))
+sce <- readRDS(file.path(snakemake@config$raw_data, "sce0_magl.rds"))
 
 # keep reference samples only
 sce <- sce[, sce$group_id == "WT"]
