@@ -66,7 +66,7 @@ gg_df <- map_depth(perf, 2, fdrtpr) %>%
     mutate_at("method", factor, levels = names(.meth_cols))
 
 p <- .plot_perf_points(gg_df, facet = "sid") +
-    theme(plot.margin = unit(c(-1,0,0,2), "mm"))
+    theme(plot.margin = unit(c(-2,0,0,2), "mm"))
 p$facet$params$ncol <- nlevels(factor(gg_df$sid))
 
 p <- cowplot::plot_grid(hists, p, 
@@ -74,7 +74,7 @@ p <- cowplot::plot_grid(hists, p,
     rel_heights = c(1, 3))
 
 saveRDS(p, snakemake@output$ggp)
-ggsave(snakemake@output$fig, 
-    width = 15, height = 7.1, units = "cm",
+ggsave(snakemake@output$fig, p,
+    width = 15, height = 7.25, units = "cm",
     dpi = 300, useDingbats = FALSE)
 
