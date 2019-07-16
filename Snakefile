@@ -75,7 +75,7 @@ rule all:
 rule prep_sce:
 	priority: 100
 	input:	script = lambda wc: join(config["scripts"], "prep_" + wc.did + ".R"),
-			sce = lambda wc: join(config["raw_data"], "sce0_" + wc.did + ".R")
+			sce = lambda wc: join(config["raw_data"], "sce0_" + wc.did + ".rds")
 	output:	sce = join(config["raw_data"], "sce_{did}.rds")
 	script:	"{input.script}"
 
