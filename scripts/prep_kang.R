@@ -5,8 +5,7 @@ suppressMessages({
 })
 
 # load data
-eh <- ExperimentHub()
-sce <- eh[["EH2259"]]
+sce <- readRDS(snakemake@input$sce)
 
 # remove multiplets & unassignet cells
 sce <- sce[, sce$multiplets == "singlet" & !is.na(sce$cell)]

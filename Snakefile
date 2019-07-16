@@ -73,7 +73,8 @@ rule all:
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"])
 
 rule prep_sce:
-	input:	script = lambda wc: join(config["scripts"], "prep_" + wc.did + ".R")
+	input:	script = lambda wc: join(config["scripts"], "prep_" + wc.did + ".R"),
+			sce = lambda wc: join(config["raw_data"], "sce0_" + wc.did + ".R")
 	output:	sce = join(config["raw_data"], "sce_{did}.rds")
 	script:	"{input.script}"
 
