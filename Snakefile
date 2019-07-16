@@ -96,7 +96,7 @@ rule sim_qc:
 rule sim_data:
 	priority: 97
 	input:  script = join(config["scripts"], "sim_data.R"),
-			sce = lambda wc: join(config["raw_data"], "ref_", wc.did + ".rds"),
+			sce = lambda wc: join(config["raw_data"], "ref_" + wc.did + ".rds"),
 			sim_pars = join(config["sim_pars"], "{sid}.json")
 	output: sim = join(config["sim_data"], "{did}", "{sid};{i}.rds")
 	script: "{input.script}"
@@ -114,7 +114,7 @@ rule run_meth:
 rule plot_pb_mean_disp:
 	input:	config["utils"],
 			script = join(config["scripts"], "plot_pb_mean_disp.R"),
-			sce = lambda wc: join(config["raw_data"], "ref_", wc.did + ".rds"),
+			sce = lambda wc: join(config["raw_data"], "ref_" + wc.did + ".rds"),
 	output: ggp = join(config["figures"], "{did}", "pb_mean_disp.rds"),
 			fig = join(config["figures"], "{did}", "pb_mean_disp.pdf")
 	script: "{input.script}"
