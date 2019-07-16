@@ -15,7 +15,7 @@ sce <- sce[, sce$group_id == "WT"]
 sce <- prepSCE(sce, 
     cluster_id = "cluster_id",
     sample_id = "sample_id",
-    group_id = "group_Id",
+    group_id = "group_id",
     drop = TRUE)
 
 # remove slots other than counts
