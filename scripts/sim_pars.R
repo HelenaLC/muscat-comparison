@@ -4,13 +4,13 @@ ds10 <- c(0.9, 0, 0.1, 0, 0, 0)
 
 sim_pars <- list(
     nill = list(nr = 3, p_dd = diag(6)[1, ], seed = 1),
-    ds10 = list(nr = 10, p_dd = c(0.9, 0, 0.1, 0, 0, 0), seed = 10),
-    dp10 = list(nr = 10, p_dd = c(0.9, 0, 0, 0.1, 0, 0), seed = 30),
-    dm10 = list(nr = 10, p_dd = c(0.9, 0, 0, 0, 0.1, 0), seed = 50),
-    db10 = list(nr = 10, p_dd = c(0.9, 0, 0, 0, 0, 0.1), seed = 70),
+    ds10 = list(nr = 5, p_dd = c(0.9, 0, 0.1, 0, 0, 0), seed = 10),
+    dp10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0.1, 0, 0), seed = 30),
+    dm10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0, 0.1, 0), seed = 50),
+    db10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0, 0, 0.1), seed = 70),
     
-    ds10_nc = list(nr = 10, nk = 2, ns = 3, seed = 90, nc = 2*2*3*500),
-    ds10_ns = list(nr = 10, nk = 2, ns = 5, seed = 110)
+    ds10_nc = list(nr = 5, nk = 2, ns = 3, seed = 90, nc = 2*2*3*500),
+    ds10_ns = list(nr = 5, nk = 2, ns = 5, seed = 110)
 )
 
 ss_ns <- 3
