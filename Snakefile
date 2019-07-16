@@ -86,7 +86,7 @@ rule prep_sim:
 
 rule sim_qc:
 	input:	script = join(config["scripts"], "sim_qc.R"),
-			sce = lambda wc: join(config["raw_data"], wc.did + ".rds")
+			sce = lambda wc: join(config["raw_data"], "ref_" + wc.did + ".rds")
 	output: html = join(config["figures"], "{did}_qc.html")
 	script:	"{input.script}"
 
