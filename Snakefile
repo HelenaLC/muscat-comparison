@@ -54,8 +54,8 @@ fig_dirs = sum(fig_dirs, [])
 fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 
 rule all: 
-	input:	expand(join(config["raw_data"], "{pre}_{did}.rds"),\
-				pre = ["sce0", "sce"], did = config["dids"]),
+	input:	expand(join(config["raw_data"], "{pre}_{did}.rds"), \
+				pre = ["sce", "ref"], did = config["dids"]),
 			sim_dirs, res_dirs, fig_dirs,
 			#expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
@@ -74,13 +74,13 @@ rule all:
 
 rule prep_sce:
 	input:	script = lambda wc: join(config["scripts"], "prep_" + wc.did + ".R")
-	output:	sce = join(config["raw_data"], "sce0_{did}.rds")
+	output:	sce = join(config["raw_data"], "sce_{did}.rds")
 	script:	"{input.script}"
 
 rule prep_sim:
 	input:	script = lambda wc: join(config["scripts"], "prep_sim.R"),
-			sce = lambda wc: join(config["raw_data"], "sce0_" + wc.did + ".rds")
-	output:	sce = join(config["raw_data"], "sce_{did}.rds")
+			sce = lambda wc: join(config["raw_data"], "sce_" + wc.did + ".rds")
+	output:	sce = join(config["raw_data"], "ref_{did}.rds")
 	script:	"{input.script}"
 
 rule sim_qc:
@@ -92,7 +92,7 @@ rule sim_qc:
 rule sim_data:
 	priority: 100
 	input:  script = join(config["scripts"], "sim_data.R"),
-			sce = lambda wc: join(config["raw_data"], wc.did + ".rds"),
+			sce = lambda wc: join(config["raw_data"], "ref_", wc.did + ".rds"),
 			sim_pars = join(config["sim_pars"], "{sid}.json")
 	output: sim = join(config["sim_data"], "{did}", "{sid};{i}.rds")
 	script: "{input.script}"
@@ -110,7 +110,7 @@ rule run_meth:
 rule plot_pb_mean_disp:
 	input:	config["utils"],
 			script = join(config["scripts"], "plot_pb_mean_disp.R"),
-			sce = lambda wc: join(config["raw_data"], wc.did + ".rds"),
+			sce = lambda wc: join(config["raw_data"], "ref_", wc.did + ".rds"),
 	output: ggp = join(config["figures"], "{did}", "pb_mean_disp.rds"),
 			fig = join(config["figures"], "{did}", "pb_mean_disp.pdf")
 	script: "{input.script}"
