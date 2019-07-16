@@ -35,17 +35,47 @@
     return(res)
 }
 
+.filter_matrix <- function(m, n = 100) {
+    while (any(m < n)) {
+        # get candidate rows/cols for removal
+        i <- m < n
+        r <- apply(i, 1, any)
+        c <- apply(i, 2, any)
+        # get smallest row/col
+        rs <- rowSums(m)
+        cs <- colSums(m)
+        r <- which(r)[which.min(rs[r])]
+        c <- which(c)[which.min(cs[c])]
+        # priorities removal of rows over cols
+        if (rs[r] <= cs[c]) {
+            m <- m[-r, , drop = FALSE]
+        } else {
+            m <- m[, -c, drop = FALSE]
+        }
+        if (any(dim(m) == 1)) 
+            break
+    }
+    return(m)
+}
+
+.update_sce <- function(sce) {
+    # update colData
+    cd <- as.data.frame(colData(sce))
+    cd <- mutate_if(cd, is.factor, droplevels) 
+    colData(sce) <- DataFrame(cd)
+    # update metadata
+    ei <- metadata(sce)$experiment_info
+    ei <- ei[ei$sample_id %in% levels(sce$sample_id), ]
+    ei <- mutate_if(ei, is.factor, droplevels)
+    metadata(sce)$experiment_info <- ei
+    return(sce)
+}
+
 .filter_sce <- function(sce, kids, sids) {
     cs1 <- sce$cluster_id %in% kids
     cs2 <- sce$sample_id %in% sids
     sce <- sce[, cs1 & cs2]
-    sce$cluster_id <- droplevels(sce$cluster_id)
-    sce$sample_id <- droplevels(sce$sample_id)
-    ei <- sce@metadata$experiment_info
-    ei <- ei[ei$sample_id %in% levels(sce$sample_id), ]
-    ei$sample_id <- droplevels(ei$sample_id)
-    ei$group_id <- droplevels(ei$group_id)
-    sce@metadata$experiment_info <- ei
+    sce <- .update_sce(sce)
     return(sce)
 }
 

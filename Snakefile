@@ -54,7 +54,9 @@ fig_dirs = sum(fig_dirs, [])
 fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 
 rule all: 
-	input:	sim_dirs, res_dirs, fig_dirs,
+	input:	expand(join(config["raw_data"], "{pre}_{did}.rds"),\
+				pre = ["sce0", "sce"], did = config["dids"]),
+			sim_dirs, res_dirs, fig_dirs,
 			#expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
 				nms = ["pb_mean_disp", "perf_by_cat"]),
@@ -69,6 +71,17 @@ rule all:
 				did = "kang", x = "s", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_expr_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"])
+
+rule prep_sce:
+	input:	script = lambda wc: join(config["scripts"], "prep_" + wc.did + ".R")
+	output:	sce = join(config["raw_data"], "sce0_{did}.rds")
+	script:	"{input.script}"
+
+rule prep_sim:
+	input:	script = lambda wc: join(config["scripts"], "prep_sim.R"),
+			sce = lambda wc: join(config["raw_data"], "sce0_" + wc.did + ".rds")
+	output:	sce = join(config["raw_data"], "sce_{did}.rds")
+	script:	"{input.script}"
 
 rule sim_qc:
 	input:	script = join(config["scripts"], "sim_qc.R"),
