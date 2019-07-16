@@ -1,3 +1,5 @@
+source(snakemake@config$utils)
+
 # load packages
 suppressMessages({
     library(dplyr)
