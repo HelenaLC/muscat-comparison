@@ -42,13 +42,13 @@ kids <- paste0("cluster", seq_len(nk))
 kids <- kids[as.numeric(factor(res$cluster_id))]
 res$cluster_id <- kids
 
-res <- dplyr::filter(res, 
+df <- dplyr::filter(res, 
     disp_tag > quantile(disp_tag, 0.01),
     disp_tag < quantile(disp_tag, 0.99))
 
 #sub <- res[sample(nrow(res), 1e4), ]
 
-p <- ggplot(sub, aes(x = mean, col = id)) +
+p <- ggplot(df, aes(x = mean, col = id)) +
     facet_wrap(~ cluster_id, nrow = 1) + 
     geom_point_rast(aes(y = disp_tag), size = 0.2, alpha = 0.02) + 
     geom_point_rast(aes(y = disp_fit), size = 0.1, alpha = 0.1) +
