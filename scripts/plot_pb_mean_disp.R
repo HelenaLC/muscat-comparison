@@ -13,12 +13,8 @@ set.seed(1994)
 
 sce <- readRDS(snakemake@input$sce)
 
-kids <- levels(sce$cluster_id)
-sids <- levels(sce$sample_id)
-
-sce <- .filter_sce(sce, 
-    kids = sample(kids, (nk <- 4)), 
-    sids = sample(sids, (ns <- 3)))
+nk <- length(kids <- levels(sce$cluster_id))
+ns <- length(sids <- levels(sce$sample_id))
 
 sim <- simData(sce, nrow(sce), 2*nk*ns*200)
 
