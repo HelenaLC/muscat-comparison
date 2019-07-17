@@ -4,6 +4,7 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(edgeR)
     library(ggplot2)
+    library(ggrastr)
     library(muscat)
     library(SingleCellExperiment)
 })
@@ -49,12 +50,12 @@ res <- dplyr::filter(res,
     disp_tag > quantile(disp_tag, 0.01),
     disp_tag < quantile(disp_tag, 0.99))
 
-sub <- res[sample(nrow(res), 1e4), ]
+#sub <- res[sample(nrow(res), 1e4), ]
 
 p <- ggplot(sub, aes(x = mean, col = id)) +
     facet_wrap(~ cluster_id, nrow = 1) + 
-    geom_point(aes(y = disp_tag), size = 0.2, alpha = 0.02) + 
-    geom_point(aes(y = disp_fit), size = 0.1, alpha = 0.1) +
+    geom_point_rast(aes(y = disp_tag), size = 0.2, alpha = 0.02) + 
+    geom_point_rast(aes(y = disp_fit), size = 0.1, alpha = 0.1) +
     scale_color_manual(NULL, values = c("royalblue", "tomato")) +
     guides(color = guide_legend(override.aes = list(size = 2, alpha = 1))) +
     labs(x = "mean logCPM", y = "dispersion") + scale_y_log10() + 
