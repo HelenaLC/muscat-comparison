@@ -9,6 +9,7 @@ suppressPackageStartupMessages({
 })
 
 x <- snakemake@wildcards$x
+
 #fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_ns;", full.names = TRUE)
 res <- .read_res(snakemake@input$res) %>% 
     mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
