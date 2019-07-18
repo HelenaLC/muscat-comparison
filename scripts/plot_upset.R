@@ -10,7 +10,7 @@ suppressMessages({
 
 #fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
 res <- .read_res(snakemake@input$res) %>% 
-    mutate(hit = paste(gene, cluster_id, sid, i, sep = ";"))
+    dplyr::mutate(hit = paste(gene, cluster_id, sid, i, sep = ";"))
 
 n_dd <- res %>% 
     dplyr::filter(mid == .$mid[1]) %>% 
@@ -20,26 +20,27 @@ n_dd <- res %>%
 
 top <- group_by(res, sid, i) %>% do({
     n <- n_dd[.$sid[1], .$i[1]]
-    filter(., p_adj.loc < 0.05) %>% 
-        arrange(p_val) %>% 
+    dplyr::filter(., p_adj.loc < 0.05) %>% 
+        dplyr::arrange(p_val) %>% 
         group_by(mid, add = TRUE) %>%
-        slice(seq_len(n)) %>% 
+        dplyr::slice(seq_len(n)) %>% 
         summarize(hit = list(hit))
-}) %>% group_by(mid) %>% summarize(hit = list(reduce(hit, c)))
+}) %>% group_by(mid) %>% summarize(hit = list(purrr::reduce(hit, c)))
 
-df <- UpSetR::fromList(set_names(top$hit, top$mid)) %>% mutate(
+l <- 
+df <- UpSetR::fromList(set_names(top$hit, top$mid)) %>% dplyr::mutate(
     code = apply(.[top$mid], 1, paste, collapse = ""),
     degree = apply(.[top$mid], 1, sum),
     hit = unique(unlist(top$hit))) %>% {
         m <- match(.$hit, res$hit)
-        mutate(., sid = res$sid[m], i = res$i[m], cat = res$category[m])
+        dplyr::mutate(., sid = res$sid[m], i = res$i[m], cat = res$category[m])
     } %>% add_count(code) %>% group_by(code) %>% 
-    mutate(p_true = mean(!cat %in% c("ee", "ep"))) %>% 
+    dplyr::mutate(p_true = mean(!cat %in% c("ee", "ep"))) %>% 
     ungroup
 
 m <- match(unique(df$code), df$code)
 keep <- pull(top_n(df[m, ], 40, n), "code")
-df <- filter(df, code %in% keep)
+df <- dplyr::filter(df, code %in% keep)
 m <- match(unique(df$code), df$code)
 o <- order(df$degree[m], -df$n[m])
 
@@ -49,9 +50,9 @@ p1 <- ggplot(df, aes(x = code)) +
     geom_point(aes(y = p_true * max),
         shape = 17, size = 1, col = "grey75") +
     scale_x_discrete(limits = df$code[m][o]) +
-    scale_y_continuous(limits = c(0, max), expand = c(0,0),
+    scale_y_continuous(trans = "sqrt", limits = c(0, max), expand = c(0,0),
         sec.axis = sec_axis(~./max(.), breaks = seq(0, 1, 0.2))) +
-    coord_trans(y = "sqrt", clip = "off") +
+    coord_cartesian(clip = "off") +
     scale_fill_manual(NULL, values = .cat_cols, 
         labels = function(u) toupper(u)) +
     .prettify("classic") + theme(
@@ -64,21 +65,22 @@ p1 <- ggplot(df, aes(x = code)) +
         axis.text.x = element_blank(),
         axis.title = element_blank(),
         aspect.ratio = NULL)
-p1
+
 lgd <- get_legend(p1 + theme(legend.margin = margin(0,0,0,0, "mm")))
 p1 <- p1 + theme(legend.position = "none")
 
 dfm <- melt(df, variable.name = "method",
     id.var = setdiff(names(df), top$mid)) %>% 
-    group_by(code, method) %>% slice(1)
+    group_by(code, method) %>% 
+    dplyr::slice(1)
 p2 <- ggplot(dfm, aes(x = code, y = method, color = factor(value))) +
     scale_x_discrete(limits = df$code[m][o]) +
     scale_y_discrete(limits = rev(top$mid)) +
     scale_color_manual(values = c("0" = "grey90", "1" = "black")) +
     geom_point(shape = 16, size = 1) +
-    geom_path(size = 0.2, data = filter(dfm, value != 0), aes(group = code)) +
+    geom_path(size = 0.2, data = dplyr::filter(dfm, value != 0), aes(group = code)) +
     annotate("rect", alpha = 0.08, xmin = 0.5, xmax = Inf, 
-        ymin = seq(0.5,nrow(top),2), ymax = seq(1.5,nrow(top)+1,2)) +
+        ymin = seq(0.5,nrow(top),2), ymax = seq(1.5, nrow(top)+1, 2)) +
     .prettify("classic") + theme(
         plot.margin = unit(c(0,0,0,0), "mm"),
         legend.position = "none",
