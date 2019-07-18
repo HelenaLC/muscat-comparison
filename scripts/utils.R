@@ -1,3 +1,6 @@
+.cat_cols <- c("royalblue", "cornflowerblue", "red3", "tomato", "orange", "gold")
+names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
+
 .meth_cols <- c(
     "edgeR.sum(counts)" = "#000000",
     "edgeR.sum(scalecpm)" = "#C6C6C6",
@@ -31,6 +34,7 @@
     if (slot == "tbl")
         res <- res %>% 
             mutate_if(is.character, as.factor) %>% 
+            mutate_at("category", factor, levels = muscat:::cats) %>% 
             mutate_at("mid", factor, levels = names(.meth_cols))
     return(res)
 }
