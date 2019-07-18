@@ -1,6 +1,7 @@
 source(snakemake@config$utils)
+x <- snakemake@wildcards$x
 
-suppressPackageStartupMessages({
+suppressMessages({
     library(data.table)
     library(dplyr)
     library(iCOBRA)
@@ -8,19 +9,16 @@ suppressPackageStartupMessages({
     library(purrr)
 })
 
-x <- snakemake@wildcards$x
-
-#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_ns;", full.names = TRUE)
+#fns <- list.files("results/kang", "ds10_ns;", full.names = TRUE)
 res <- .read_res(snakemake@input$res) %>% 
-    mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
+    dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = "j", flatten = FALSE) %>% 
     map(group_by, mid) %>% map(function(u) 
-        set_names(group_split(u), group_keys(u)[[1]]))
+        setNames(group_split(u), group_keys(u)[[1]]))
 
 cd <- lapply(seq_along(res), function(i) {
-    truth <- lapply(c(x, "is_de"), map, .x = res[[i]]) %>% 
-        map(unlist) %>% set_names(c(x, "is_de")) %>% 
+    truth <- res[[i]][[1]][, c(x, "is_de")] %>% 
         data.frame(row.names = NULL, check.names = FALSE)
     pvals <- lapply(c("p_val", "p_adj.loc"), map, .x = res[[i]]) %>% 
         map(data.frame, check.names = FALSE)
