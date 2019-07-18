@@ -11,7 +11,9 @@ suppressPackageStartupMessages({
 x <- snakemake@wildcards$x
 #fns <- list.files("/users/helena/dropbox/portmac/results/kang", "ds10_ns;", full.names = TRUE)
 res <- .read_res(snakemake@input$res) %>% 
-    setDT %>% split(by = "j", flatten = FALSE) %>% 
+    mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
+    dplyr::filter(E > 0.1) %>% setDT %>% 
+    split(by = "j", flatten = FALSE) %>% 
     map(group_by, mid) %>% map(function(u) 
         set_names(group_split(u), group_keys(u)[[1]]))
 
@@ -51,5 +53,5 @@ p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, p,
-    units = "cm", width = 15, height = 8,
+    width = 15, height = 6.2, units = "cm",
     dpi = 300, useDingbats = FALSE)
