@@ -197,14 +197,6 @@ rule plot_lfc:
 			fig = join(config["figures"], "{did}", "sim_vs_est_lfc.pdf")
 	script: "{input.script}"
 
-rule fig_perf_by_cat:
-	input:	config["utils"],
-			script = join(config["scripts"], "fig_perf_by_cat.R"),
-			gg1 = lambda wc: join(config["figures"] + "/" + wc.did + "/perf_by_cat_loc.rds"),
-			gg2 = lambda wc: join(config["figures"] + "/" + wc.did + "/perf_by_cat_glb.rds")
-	output: fig = join(config["figures"], "{did}", "perf_by_cat.pdf")
-	script: "{input.script}"
-
 
 
 
