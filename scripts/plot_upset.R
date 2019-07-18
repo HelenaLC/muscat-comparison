@@ -8,8 +8,8 @@ suppressMessages({
     library(purrr)
 })
 
-fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
-res <- .read_res(fns) %>% 
+#fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
+res <- .read_res(snakemake@input$res) %>% 
     mutate(hit = paste(gene, cluster_id, sid, i, sep = ";"))
 
 n_dd <- res %>% 
@@ -116,6 +116,6 @@ p <- plot_grid(
         rel_heights = c(3, 2)),
     nrow = 1, rel_widths = c(7, 1))
 
-ggsave("figures/kang/upset.pdf", p, dpi = 300,
+ggsave(snakemake@output$fig, p, dpi = 300,
     width = 15, height = 8, units = "cm")
 
