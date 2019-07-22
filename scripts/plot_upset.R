@@ -54,7 +54,7 @@ p1 <- ggplot(df, aes(x = code)) +
         sec.axis = sec_axis(~./max(.), breaks = seq(0, 1, 0.2))) +
     coord_cartesian(clip = "off") +
     scale_fill_manual(NULL, values = .cat_cols, 
-        labels = function(u) c("EE", "EP", "DE", "DP", "DM", "DB")) +
+        labels = c("EE", "EP", "DE", "DP", "DM", "DB")) +
     .prettify("classic") + theme(
         legend.margin = margin(0,0,0,0, "mm"),
         plot.margin = unit(c(2,2,2,2), "mm"),
