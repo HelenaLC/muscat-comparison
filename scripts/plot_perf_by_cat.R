@@ -36,7 +36,9 @@ df <- map(perf, function(u)
     mutate_at("method", factor, levels = names(.meth_cols)) %>% 
     mutate_at("splitval", function(u) {
         u <- gsub("sim_id:([a-z]+)[0-9]+", "\\1", u)
-        factor(toupper(u), levels = c("DS", "DP", "DM", "DB"))
+        factor(u, 
+            levels = c("ds", "dp", "dm", "db"),
+            labels = c("DE", "DP", "DM", "DB"))
     }) %>% 
     dplyr::filter(splitval != "overall") %>%
     group_by(splitval, thr, method) %>% 

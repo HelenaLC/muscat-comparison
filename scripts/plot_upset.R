@@ -54,7 +54,7 @@ p1 <- ggplot(df, aes(x = code)) +
         sec.axis = sec_axis(~./max(.), breaks = seq(0, 1, 0.2))) +
     coord_cartesian(clip = "off") +
     scale_fill_manual(NULL, values = .cat_cols, 
-        labels = function(u) toupper(u)) +
+        labels = function(u) c("EE", "EP", "DE", "DP", "DM", "DB")) +
     .prettify("classic") + theme(
         legend.margin = margin(0,0,0,0, "mm"),
         plot.margin = unit(c(2,2,2,2), "mm"),
@@ -91,7 +91,7 @@ p2 <- ggplot(dfm, aes(x = code, y = method, color = factor(value))) +
         axis.title = element_blank(),
         aspect.ratio = NULL) 
 
-anno <- read.csv("meta/meth_ids.csv")
+anno <- read.csv(snakemake@config$mids)
 anno$type <- factor(anno$type, levels = c("pb", "mm", "ad", "scdd", "mast"))
 .typ_cols <- setNames(RColorBrewer::brewer.pal(9, "Set3")[c(1,3,4,5,6)], levels(anno$type))
 
