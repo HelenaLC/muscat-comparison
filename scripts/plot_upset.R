@@ -33,9 +33,7 @@ df <- UpSetR::fromList(set_names(top$hit, top$mid)) %>% dplyr::mutate(
     hit = unique(unlist(top$hit))) %>% {
         m <- match(.$hit, res$hit)
         dplyr::mutate(., sid = res$sid[m], i = res$i[m], cat = res$category[m])
-    } %>% add_count(code) %>% group_by(code) %>% 
-    #dplyr::mutate(p_true = mean(!cat %in% c("ee", "ep"))) %>% 
-    ungroup
+    } %>% add_count(code) %>% group_by(code) %>% ungroup
 
 m <- match(unique(df$code), df$code)
 keep <- pull(top_n(df[m, ], 40, n), "code")
@@ -44,14 +42,10 @@ m <- match(unique(df$code), df$code)
 o <- order(df$degree[m], -df$n[m])
 
 max <- ceiling(max(df$n)/1e3)*1e3
-#df <- df[rank(df$n, ties.method = "first"), ]
 p1 <- ggplot(df, aes(x = code)) +
     stat_count(aes(fill = cat)) + 
-    #geom_point(aes(y = p_true * max),
-    #    shape = 17, size = 1, col = "grey75") +
-    scale_x_discrete(limits = df$code[m][o]) +
+    scale_x_discrete(limits = df$code[m][o], expand = c(0,0)) +
     scale_y_continuous(limits = c(0, max), expand = c(0,0)) +
-        #sec.axis = sec_axis(~./max(.), breaks = seq(0, 1, 0.2))) +
     coord_trans(y = "sqrt", clip = "off") +
     scale_fill_manual(NULL, values = .cat_cols, 
         labels = c("EE", "DE", "DP", "DM", "DB")) +
