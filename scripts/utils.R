@@ -1,3 +1,6 @@
+.typ_cols <- c(pb = "grey50", mm = "violet", ad = "lightgreen", mast = "orange", scdd = "steelblue")
+.typ_labs <- c(pb = "PB", mm = "MM", ad = "AD", mast = "MAST", scdd = "scDD")
+
 .cat_cols <- c("royalblue", "cornflowerblue", "red3", "tomato", "orange", "gold")
 names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 
@@ -28,12 +31,10 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     rmv <- vapply(res, function(u) 
         is.null(u) | inherits(u, "error"), 
         logical(1))
-    res <- res[!rmv] %>% 
-        map(mutate_if, is.factor, as.character) %>% 
-        bind_rows 
+    res <- res[!rmv]
     if (slot == "tbl")
-        res <- res %>% 
-            mutate_if(is.character, as.factor) %>% 
+        res <- map(res, mutate_if, is.factor, as.character) %>% 
+            bind_rows %>% mutate_if(is.character, as.factor) %>% 
             mutate_at("category", factor, levels = muscat:::cats) %>% 
             mutate_at("mid", factor, levels = names(.meth_cols))
     return(res)
