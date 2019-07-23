@@ -86,12 +86,10 @@ p2 <- ggplot(dfm, aes(x = code, y = method, color = factor(value))) +
         aspect.ratio = NULL) 
 
 anno <- read.csv(snakemake@config$mids)
-anno$type <- factor(anno$type, levels = c("pb", "mm", "ad", "scdd", "mast"))
-.typ_cols <- setNames(RColorBrewer::brewer.pal(9, "Set3")[c(1,3,4,5,6)], levels(anno$type))
+anno$type <- factor(anno$type, levels = names(.typ_cols))
 
 p3 <- ggplot(anno, aes(x = 0, y = id, fill = type)) +
-    scale_fill_manual("method", values = .typ_cols,
-        labels = c(pb = "PB", mm = "MM", ad = "AD", mast = "MAST", scdd = "scDD")) +
+    scale_fill_manual("method", values = .typ_cols, labels = .typ_labs) +
     geom_tile(col = "white") + coord_fixed(0.6) +
     scale_y_discrete(limits = rev(top$mid)) +
     .prettify("classic") + theme(aspect.ratio = NULL,
