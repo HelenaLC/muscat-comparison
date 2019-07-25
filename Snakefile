@@ -209,7 +209,7 @@ rule plot_runtimes:
 
 rule session_info:
 	input:	join(config["scripts"], "session_info.R")
-	output:	"session_info.html"
+	output:	txt = "session_info.txt"
 	script:	"{input}"
 
 
