@@ -5,7 +5,7 @@ This repository contains all the necessary code to perform the evaluations and a
 ### LPS dataset analysis
 
 Analyses discussed in the **Differential state analysis of mouse cortex exposed to LPS treatment**  
-results section are provided as a browsable `workflowr`[^1] website [HERE](http://htmlpreview.github.io/?https://github.com/HelenaLC/muscat-comparison/blob/master/MAGL/docs/index.html).
+results section are provided as a browsable `workflowr`[1] website [HERE](http://htmlpreview.github.io/?https://github.com/HelenaLC/muscat-comparison/blob/master/MAGL/docs/index.html).
 
 ### Comparison of DS analysis methods
 
@@ -45,4 +45,4 @@ script      | description
 
 ### References
 
-[^1]: John Blischak, Peter Carbonetto and Matthew Stephens (2019). workflowr: A Framework for Reproducible and Collaborative Data Science. R package version 1.4.0. https://CRAN.R-project.org/package=workflowr
+[1]: John Blischak, Peter Carbonetto and Matthew Stephens (2019). workflowr: A Framework for Reproducible and Collaborative Data Science. R package version 1.4.0. https://CRAN.R-project.org/package=workflowr
