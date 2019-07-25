@@ -203,7 +203,7 @@ rule plot_runtimes:
 			script = join(config["scripts"], "plot_runtimes.R"),
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
-				"/ds_10[g|c];*").search, res_dirs)
+				"/ds10_n[g|c];*").search, res_dirs)
 	output:	fig = join(config["figures"], "{did}", "runtimes.pdf")
 	script:	"{input.script}"
 
