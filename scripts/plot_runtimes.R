@@ -7,8 +7,9 @@ suppressMessages({
 })
 
 #fns <- list.files("results/kang", "ds10_n[g|c];", full.names = TRUE)
+fns <- snakemake@input$res
 pat <- "%s;%s;%s;%s;g%s;c%s;k%s;s%s"
-tbl <- .read_res(snakemake@input$res) %>% 
+tbl <- .read_res(fns) %>% 
     dplyr::mutate(id = sprintf(pat, sid, i, mid, j, g, c, k, s))
 rts <- .read_res(fns, slot = "rt") %>% 
     vapply(sum, numeric(1)) %>% 
