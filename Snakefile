@@ -207,6 +207,11 @@ rule plot_runtimes:
 	output:	fig = join(config["figures"], "{did}", "runtimes.pdf")
 	script:	"{input.script}"
 
+rule session_info:
+	input:	join(config["scripts"], "session_info.R")
+	output:	"session_info.html"
+	script:	"{input}"
+
 
 
 
