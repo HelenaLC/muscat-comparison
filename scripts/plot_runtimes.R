@@ -1,6 +1,7 @@
 source(snakemake@config$utils)
 
 suppressMessages({
+    library(cowplot)
     library(dplyr)
     library(ggplot2)
     library(purrr)
