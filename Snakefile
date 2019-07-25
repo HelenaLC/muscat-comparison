@@ -54,9 +54,9 @@ fig_dirs = sum(fig_dirs, [])
 fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 
 rule all: 
-	input:	expand(join(config["raw_data"], "{pre}_{did}.rds"), \
+	input:	sim_dirs, res_dirs, fig_dirs,
+			expand(join(config["raw_data"], "{pre}_{did}.rds"), \
 				pre = ["sce", "ref"], did = config["dids"]),
-			sim_dirs, res_dirs, fig_dirs,
 			#expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
 				nms = ["pb_mean_disp", "perf_by_cat"]),
@@ -70,7 +70,8 @@ rule all:
 			expand(join(config["figures"], "{did}", "perf_by_n{x}.{ext}"),\
 				did = "kang", x = "s", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_expr_{padj}.{ext}"),\
-				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"])
+				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
+			expand(join(config["figures"], "{did}", "runtimes.pdf"), did = ["kang"])
 
 rule prep_sce:
 	priority: 100
@@ -196,6 +197,15 @@ rule plot_lfc:
 	output:	ggp = join(config["figures"], "{did}", "sim_vs_est_lfc.rds"),
 			fig = join(config["figures"], "{did}", "sim_vs_est_lfc.pdf")
 	script: "{input.script}"
+
+rule plot_runtimes:
+	input: 	config["utils"],
+			script = join(config["scripts"], "plot_runtimes.R"),
+			res = filter(re.compile(\
+				config["results"] + "/" + wc.did +\
+				"/ds_10[g|c];*").search, res_dirs)
+	output:	fig = join(config["figues"], "{did}", "runtimes.pdf")
+	script:	"{input.script}"
 
 
 
