@@ -201,7 +201,7 @@ rule plot_lfc:
 rule plot_runtimes:
 	input: 	config["utils"],
 			script = join(config["scripts"], "plot_runtimes.R"),
-			res = filter(re.compile(\
+			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
 				"/ds_10[g|c];*").search, res_dirs)
 	output:	fig = join(config["figues"], "{did}", "runtimes.pdf")
