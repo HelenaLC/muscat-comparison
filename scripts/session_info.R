@@ -27,5 +27,4 @@ suppressMessages({
     library(yaml)
 })
 
-si <- sessionInfo()
-htmltools::save_html(si, "session_info.html")
+writeLines(capture.output(sessionInfo()), snakemake@output$txt)
