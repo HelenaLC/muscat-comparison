@@ -42,6 +42,7 @@ script      | description
 `plot_pb_mean_disp` | provided with a reference dataset, simulates a null dataset (no DS, no type-genes)<br>and plots pseudobulk-level mean-dispersion estimates for simulated vs. reference data
 `plot_runtimes`     | barplots of runtimes vs. nb. of genes/cells
 `utils`     | various helpers for data handling, formatting, and plotting
+`session_info` | generates a `.txt` file capturing the output of `session_info()`
 
 ### References
 
