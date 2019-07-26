@@ -37,6 +37,7 @@ suppressMessages({
     library(topGO)
     library(UpSetR)
     library(viridis)
+    library(workflowr)
     library(yaml)
 })
 
