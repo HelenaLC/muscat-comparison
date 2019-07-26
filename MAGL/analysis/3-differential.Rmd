@@ -62,14 +62,14 @@ anno <- list(
     "Microglia" = 17,
     "Oligodendrocytes" = 4,
     "OPC" = 12,
-    "Excit_Neuron" = c(0, 1, 2, 5, 6, 7, 10, 14, 16),
-    "Inhib_Neuron" = c(8, 9, 11, 15),
-    "CPE cells" = c(18, 19))
+    "CPE cells" = c(18, 19),
+    "Excit. Neuron" = c(0, 1, 2, 5, 6, 7, 10, 14, 16),
+    "Inhib. Neuron" = c(8, 9, 11, 15))
 
 m <- match(sce$cluster_id, unlist(anno))
 ns <- vapply(anno, length, numeric(1))
 lab <- rep.int(names(anno), ns)
-sce$cluster_id <- lab[m]
+sce$cluster_id <- factor(lab[m], levels = names(anno))
 
 # cluster-sample cell-counts
 table(sce$cluster_id, sce$sample_id)

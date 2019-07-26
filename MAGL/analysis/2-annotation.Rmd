@@ -19,6 +19,7 @@ output:
 ```{r load-libs, message = FALSE, warning = FALSE}
 library(ComplexHeatmap)
 library(cowplot)
+library(ggplot2)
 library(dplyr)
 library(purrr)
 library(RColorBrewer)
@@ -144,7 +145,7 @@ mat <- do.call("rbind", means_by_cluster)
 mat <- muscat:::.scale(mat)
 rownames(mat) <- gs
 
-cols <- muscat:::cluster_colors[seq_along(known_markers)]
+cols <- muscat:::.cluster_colors[seq_along(known_markers)]
 cols <- setNames(cols, names(known_markers))
 row_anno <- rowAnnotation(
     df = data.frame(label = ks),

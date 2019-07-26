@@ -7,10 +7,11 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
-<meta name="date" content="2019-07-10" />
+<meta name="date" content="2019-07-16" />
 
 <title>Cluster annotation</title>
 
@@ -250,48 +251,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -379,7 +341,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">MAGL</a>
+      <a class="navbar-brand" href="index.html">LPS</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -400,6 +362,12 @@ div.tocify {
 </li>
 <li>
   <a href="4-geneset.html">Geneset analysis</a>
+</li>
+<li>
+  <a href="5-visualization.html">Visualization</a>
+</li>
+<li>
+  <a href="6-more.html">Downstream</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -433,7 +401,7 @@ div.section {
 <address class="author_afil">
 Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
 <address class="author_afil">
-Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 10, 2019</h4>
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 16, 2019</h4>
 
 </div>
 
@@ -458,7 +426,7 @@ Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-07-10
+<strong>Last updated:</strong> 2019-07-16
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
@@ -594,10 +562,10 @@ environment
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5253b5f66ce58a2cd198fca0a243e6c250949dfatargetblank5253b5fa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/5253b5f66ce58a2cd198fca0a243e6c250949dfa" target="_blank">5253b5f</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree282cd5af8ff1a0deca02d3ab2aa29cec0a1a7106targetblank282cd5aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/282cd5af8ff1a0deca02d3ab2aa29cec0a1a7106" target="_blank">282cd5a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5253b5f66ce58a2cd198fca0a243e6c250949dfatargetblank5253b5fa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree282cd5af8ff1a0deca02d3ab2aa29cec0a1a7106targetblank282cd5aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -609,6 +577,7 @@ Ignored files:
     Ignored:    ._.gitignore
     Ignored:    ._README.md
     Ignored:    ._Snakefile
+    Ignored:    ._config.yaml
     Ignored:    .snakemake/
     Ignored:    MAGL/.DS_Store
     Ignored:    MAGL/.RData
@@ -625,36 +594,40 @@ Ignored files:
     Ignored:    MAGL/analysis/5-geneset_cache/
     Ignored:    MAGL/analysis/6-more_cache/
     Ignored:    MAGL/analysis/figure/
+    Ignored:    MAGL/code/._utils.R
     Ignored:    MAGL/data/
     Ignored:    MAGL/output/
-    Ignored:    data/sim_data/
+    Ignored:    data/
     Ignored:    figures/
     Ignored:    meta/
     Ignored:    results/
+    Ignored:    scripts/.DS_Store
+    Ignored:    scripts/._.DS_Store
     Ignored:    scripts/._apply_scdd.R
-    Ignored:    scripts/._fig_vehicle_vs_lps.R
     Ignored:    scripts/._plot_perf_by_expr.R
     Ignored:    scripts/._plot_perf_by_lfc.R
     Ignored:    scripts/._plot_perf_by_ss.R
     Ignored:    scripts/._plot_runtimes.R
     Ignored:    scripts/._plot_sim_ex.R
+    Ignored:    scripts/._prep_data.R
+    Ignored:    scripts/._prep_magl.R
+    Ignored:    scripts/._prep_sim.R
     Ignored:    scripts/._sim_qc.R
+    Ignored:    scripts/._utils.R
 
 Untracked files:
     Untracked:  .RData
     Untracked:  .RDataTmp
     Untracked:  .Rhistory
+    Untracked:  MAGL/code/utils.R
     Untracked:  MAGL/current
-    Untracked:  scripts/fig_vehicle_vs_lps.R
+    Untracked:  figs/
 
 Unstaged changes:
     Modified:   MAGL/.Rprofile
-    Modified:   MAGL/analysis/0-preprocessing.Rmd
-    Modified:   MAGL/analysis/1-clustering.Rmd
     Modified:   MAGL/analysis/2-annotation.Rmd
     Modified:   MAGL/analysis/3-differential.Rmd
-    Modified:   MAGL/analysis/6-more.Rmd
-    Modified:   scripts/utils.R
+    Deleted:    scripts/fig_vehicle_vs_lps.R
 
 </code></pre>
 <p>
@@ -693,6 +666,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/analysis/2-annotation.Rmd" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+update lps analysis to include removal of doublets
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/2-annotation.html" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+update lps analysis to include removal of doublets
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -806,6 +813,7 @@ initial commit
 <h3>Load packages</h3>
 <pre class="r"><code>library(ComplexHeatmap)
 library(cowplot)
+library(ggplot2)
 library(dplyr)
 library(purrr)
 library(RColorBrewer)
@@ -891,6 +899,43 @@ Heatmap(mat,
         grid.text(round(mat[j, i] * 100, 2), x = x, y = y, 
             gp = gpar(col = &quot;white&quot;, fontsize = 8)))</code></pre>
 <p><img src="figure/2-annotation.Rmd/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-4-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="dr-colored-by-cluster-id" class="section level1 tabset">
 <h1>DR colored by cluster ID</h1>
@@ -917,14 +962,125 @@ for (id in ids) {
 <div id="cluster_id" class="section level2">
 <h2>cluster_id</h2>
 <p><img src="figure/2-annotation.Rmd/dim-red-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dim-red-1">
+Past versions of dim-red-1.png
+</button>
+</p>
+<div id="fig-dim-red-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/dim-red-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="group_id" class="section level2">
 <h2>group_id</h2>
 <p><img src="figure/2-annotation.Rmd/dim-red-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dim-red-2">
+Past versions of dim-red-2.png
+</button>
+</p>
+<div id="fig-dim-red-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/dim-red-2.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="sample_id" class="section level2">
 <h2>sample_id</h2>
 <p><img src="figure/2-annotation.Rmd/dim-red-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dim-red-3">
+Past versions of dim-red-3.png
+</button>
+</p>
+<div id="fig-dim-red-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/dim-red-3.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="known-marker-genes" class="section level1">
@@ -967,7 +1123,7 @@ mat &lt;- muscat:::.scale(mat)</code></pre>
   dfbetas.influence.merMod        car </code></pre>
 <pre class="r"><code>rownames(mat) &lt;- gs
 
-cols &lt;- muscat:::cluster_colors[seq_along(known_markers)]
+cols &lt;- muscat:::.cluster_colors[seq_along(known_markers)]
 cols &lt;- setNames(cols, names(known_markers))
 row_anno &lt;- rowAnnotation(
     df = data.frame(label = ks),
@@ -1006,6 +1162,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-6-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/HelenaLC/muscat-comparison/blob/67f5a1b688156232aa3ee82b60730aecf6f7757e/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-6-1.png" target="_blank">67f5a1b</a>
@@ -1064,6 +1231,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-7-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/HelenaLC/muscat-comparison/blob/67f5a1b688156232aa3ee82b60730aecf6f7757e/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-7-1.png" target="_blank">67f5a1b</a>
 </td>
 <td>
@@ -1114,6 +1292,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-9-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/HelenaLC/muscat-comparison/blob/67f5a1b688156232aa3ee82b60730aecf6f7757e/MAGL/docs/figure/2-annotation.Rmd/unnamed-chunk-9-1.png" target="_blank">67f5a1b</a>
@@ -1172,7 +1361,7 @@ other attached packages:
 [13] BiocGenerics_0.30.0         viridis_0.5.1              
 [15] viridisLite_0.3.0           RColorBrewer_1.1-2         
 [17] purrr_0.3.2                 dplyr_0.8.3                
-[19] cowplot_0.9.4               ggplot2_3.2.0              
+[19] ggplot2_3.2.0               cowplot_1.0.0              
 [21] ComplexHeatmap_2.0.0       
 
 loaded via a namespace (and not attached):
@@ -1231,7 +1420,7 @@ loaded via a namespace (and not attached):
 [105] DESeq2_1.24.0               rrcov_1.4-7                
 [107] fitdistrplus_1.0-14         XVector_0.24.0             
 [109] lmerTest_3.1-0              listenv_0.7.0              
-[111] pbapply_1.4-0               TMB_1.7.15                 
+[111] pbapply_1.4-1               TMB_1.7.15                 
 [113] htmlTable_1.13.1            Formula_1.2-3              
 [115] FlowSOM_1.16.0              MASS_7.3-51.4              
 [117] tidyselect_0.2.5            stringi_1.4.3              
@@ -1270,7 +1459,7 @@ loaded via a namespace (and not attached):
 [183] gtools_3.8.1                zip_2.0.3                  
 [185] shinyjs_1.0                 openxlsx_4.1.0.1           
 [187] survival_2.44-1.1           limma_3.40.2               
-[189] glmmTMB_0.2.3               rmarkdown_1.13             
+[189] glmmTMB_0.2.3               rmarkdown_1.14             
 [191] munsell_0.5.0               GetoptLong_0.1.7           
 [193] GenomeInfoDbData_1.2.1      iterators_1.0.10           
 [195] variancePartition_1.14.0    haven_2.1.1                
@@ -1308,6 +1497,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

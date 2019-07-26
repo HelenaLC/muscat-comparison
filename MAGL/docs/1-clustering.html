@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2019-07-10" />
+<meta name="date" content="2019-07-16" />
 
 <title>Clustering</title>
 
@@ -379,7 +379,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">MAGL</a>
+      <a class="navbar-brand" href="index.html">LPS</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -400,6 +400,12 @@ div.tocify {
 </li>
 <li>
   <a href="4-geneset.html">Geneset analysis</a>
+</li>
+<li>
+  <a href="5-visualization.html">Visualization</a>
+</li>
+<li>
+  <a href="6-more.html">Downstream</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -433,7 +439,7 @@ div.section {
 <address class="author_afil">
 Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
 <address class="author_afil">
-Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 10, 2019</h4>
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 16, 2019</h4>
 
 </div>
 
@@ -458,10 +464,10 @@ Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-07-10
+<strong>Last updated:</strong> 2019-07-16
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 3
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -477,12 +483,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -570,24 +576,12 @@ environment
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
-<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-The following chunks had caches available:
-<ul>
-<li>
-data
-</li>
-<li>
-integration
-</li>
-<li>
-setup
-</li>
-</ul>
-<p>To ensure reproducibility of the results, delete the cache directory <code>1-clustering_cache</code> and re-run the analysis. To have workflowr automatically delete the cache directory prior to building the file, set <code>delete_cache = TRUE</code> when running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
 </div>
 </div>
 </div>
@@ -606,10 +600,10 @@ setup
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree2105ac2dc921f76016afb3d02aaa235fc06e83aatargetblank2105ac2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/2105ac2dc921f76016afb3d02aaa235fc06e83aa" target="_blank">2105ac2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree282cd5af8ff1a0deca02d3ab2aa29cec0a1a7106targetblank282cd5aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/282cd5af8ff1a0deca02d3ab2aa29cec0a1a7106" target="_blank">282cd5a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree2105ac2dc921f76016afb3d02aaa235fc06e83aatargetblank2105ac2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree282cd5af8ff1a0deca02d3ab2aa29cec0a1a7106targetblank282cd5aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -621,6 +615,7 @@ Ignored files:
     Ignored:    ._.gitignore
     Ignored:    ._README.md
     Ignored:    ._Snakefile
+    Ignored:    ._config.yaml
     Ignored:    .snakemake/
     Ignored:    MAGL/.DS_Store
     Ignored:    MAGL/.RData
@@ -631,40 +626,41 @@ Ignored files:
     Ignored:    MAGL/._data
     Ignored:    MAGL/analysis/._refs.bib
     Ignored:    MAGL/analysis/0-preprocessing_cache/
-    Ignored:    MAGL/analysis/1-clustering_cache/
     Ignored:    MAGL/analysis/3-differential_cache/
     Ignored:    MAGL/analysis/4-visualization_cache/
     Ignored:    MAGL/analysis/5-geneset_cache/
     Ignored:    MAGL/analysis/6-more_cache/
     Ignored:    MAGL/data/
     Ignored:    MAGL/output/
-    Ignored:    data/sim_data/
+    Ignored:    data/
     Ignored:    figures/
     Ignored:    meta/
     Ignored:    results/
+    Ignored:    scripts/.DS_Store
+    Ignored:    scripts/._.DS_Store
     Ignored:    scripts/._apply_scdd.R
-    Ignored:    scripts/._fig_vehicle_vs_lps.R
     Ignored:    scripts/._plot_perf_by_expr.R
     Ignored:    scripts/._plot_perf_by_lfc.R
     Ignored:    scripts/._plot_perf_by_ss.R
     Ignored:    scripts/._plot_runtimes.R
     Ignored:    scripts/._plot_sim_ex.R
+    Ignored:    scripts/._prep_data.R
+    Ignored:    scripts/._prep_magl.R
+    Ignored:    scripts/._prep_sim.R
     Ignored:    scripts/._sim_qc.R
+    Ignored:    scripts/._utils.R
 
 Untracked files:
     Untracked:  .RData
     Untracked:  .RDataTmp
     Untracked:  .Rhistory
     Untracked:  MAGL/current
-    Untracked:  scripts/fig_vehicle_vs_lps.R
+    Untracked:  figs/
 
 Unstaged changes:
     Modified:   MAGL/.Rprofile
-    Modified:   MAGL/analysis/0-preprocessing.Rmd
-    Modified:   MAGL/analysis/1-clustering.Rmd
-    Modified:   MAGL/analysis/6-more.Rmd
-    Modified:   scripts/meth_pars.R
-    Modified:   scripts/utils.R
+    Modified:   MAGL/analysis/3-differential.Rmd
+    Deleted:    scripts/fig_vehicle_vs_lps.R
 
 </code></pre>
 <p>
@@ -703,6 +699,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/analysis/1-clustering.Rmd" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+update lps analysis to include removal of doublets
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/1-clustering.html" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+update lps analysis to include removal of doublets
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -928,6 +958,43 @@ ps &lt;- lapply(c(&quot;sample_id&quot;, &quot;group_id&quot;, &quot;ident&quot;
 })
 plot_grid(plotlist = ps, ncol = 1)</code></pre>
 <p><img src="figure/1-clustering.Rmd/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/1-clustering.Rmd/unnamed-chunk-2-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="save-seuratobject-to-.rds" class="section level1">
 <h1>Save SeuratObject to .rds</h1>
@@ -957,7 +1024,7 @@ locale:
 [11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
 [8] methods   base     
 
 other attached packages:
@@ -972,38 +1039,38 @@ other attached packages:
 loaded via a namespace (and not attached):
   [1] Rtsne_0.15             colorspace_1.4-1       ggridges_0.5.1        
   [4] rprojroot_1.3-2        XVector_0.24.0         fs_1.3.1              
-  [7] rstudioapi_0.10        listenv_0.7.0          npsurv_0.4-0          
- [10] ggrepel_0.8.1          codetools_0.2-16       splines_3.6.0         
- [13] R.methodsS3_1.7.1      lsei_1.2-0             knitr_1.23            
- [16] jsonlite_1.6           workflowr_1.4.0        ica_1.0-2             
- [19] cluster_2.1.0          png_0.1-7              R.oo_1.22.0           
- [22] sctransform_0.2.0      compiler_3.6.0         httr_1.4.0            
- [25] backports_1.1.4        assertthat_0.2.1       Matrix_1.2-17         
- [28] lazyeval_0.2.2         htmltools_0.3.6        tools_3.6.0           
- [31] rsvd_1.0.1             igraph_1.2.4.1         gtable_0.3.0          
- [34] glue_1.3.1             GenomeInfoDbData_1.2.1 RANN_2.6.1            
- [37] reshape2_1.4.3         dplyr_0.8.3            Rcpp_1.0.1            
- [40] gdata_2.18.0           ape_5.3                nlme_3.1-140          
- [43] gbRd_0.4-11            lmtest_0.9-37          xfun_0.8              
- [46] stringr_1.4.0          globals_0.12.4         irlba_2.3.3           
- [49] gtools_3.8.1           future_1.14.0          MASS_7.3-51.4         
- [52] zlibbioc_1.30.0        zoo_1.8-6              scales_1.0.0          
- [55] RColorBrewer_1.1-2     yaml_2.2.0             reticulate_1.12       
- [58] pbapply_1.4-0          gridExtra_2.3          stringi_1.4.3         
- [61] highr_0.8              caTools_1.17.1.2       bibtex_0.4.2          
- [64] Rdpack_0.11-0          SDMTools_1.1-221.1     rlang_0.4.0           
- [67] pkgconfig_2.0.2        bitops_1.0-6           evaluate_0.14         
- [70] lattice_0.20-38        ROCR_1.0-7             purrr_0.3.2           
- [73] labeling_0.3           htmlwidgets_1.3        tidyselect_0.2.5      
- [76] plyr_1.8.4             magrittr_1.5           R6_2.4.0              
- [79] gplots_3.0.1.1         pillar_1.4.2           whisker_0.3-2         
- [82] withr_2.1.2            fitdistrplus_1.0-14    survival_2.44-1.1     
- [85] RCurl_1.95-4.12        tibble_2.1.3           future.apply_1.3.0    
- [88] tsne_0.1-3             crayon_1.3.4           KernSmooth_2.23-15    
- [91] plotly_4.9.0           rmarkdown_1.13         grid_3.6.0            
- [94] data.table_1.12.2      git2r_0.26.1           metap_1.1             
- [97] digest_0.6.20          tidyr_0.8.3            R.utils_2.9.0         
-[100] munsell_0.5.0          viridisLite_0.3.0     </code></pre>
+  [7] listenv_0.7.0          npsurv_0.4-0           ggrepel_0.8.1         
+ [10] codetools_0.2-16       splines_3.6.0          R.methodsS3_1.7.1     
+ [13] lsei_1.2-0             knitr_1.23             jsonlite_1.6          
+ [16] workflowr_1.4.0        ica_1.0-2              cluster_2.1.0         
+ [19] png_0.1-7              R.oo_1.22.0            sctransform_0.2.0     
+ [22] compiler_3.6.0         httr_1.4.0             backports_1.1.4       
+ [25] assertthat_0.2.1       Matrix_1.2-17          lazyeval_0.2.2        
+ [28] htmltools_0.3.6        tools_3.6.0            rsvd_1.0.1            
+ [31] igraph_1.2.4.1         gtable_0.3.0           glue_1.3.1            
+ [34] GenomeInfoDbData_1.2.1 RANN_2.6.1             reshape2_1.4.3        
+ [37] dplyr_0.8.3            Rcpp_1.0.1             gdata_2.18.0          
+ [40] ape_5.3                nlme_3.1-140           gbRd_0.4-11           
+ [43] lmtest_0.9-37          xfun_0.8               stringr_1.4.0         
+ [46] globals_0.12.4         irlba_2.3.3            gtools_3.8.1          
+ [49] future_1.14.0          MASS_7.3-51.4          zlibbioc_1.30.0       
+ [52] zoo_1.8-6              scales_1.0.0           RColorBrewer_1.1-2    
+ [55] yaml_2.2.0             reticulate_1.12        pbapply_1.4-0         
+ [58] gridExtra_2.3          stringi_1.4.3          highr_0.8             
+ [61] caTools_1.17.1.2       bibtex_0.4.2           Rdpack_0.11-0         
+ [64] SDMTools_1.1-221.1     rlang_0.4.0            pkgconfig_2.0.2       
+ [67] bitops_1.0-6           evaluate_0.14          lattice_0.20-38       
+ [70] ROCR_1.0-7             purrr_0.3.2            htmlwidgets_1.3       
+ [73] labeling_0.3           tidyselect_0.2.5       plyr_1.8.4            
+ [76] magrittr_1.5           R6_2.4.0               gplots_3.0.1.1        
+ [79] pillar_1.4.2           whisker_0.3-2          withr_2.1.2           
+ [82] fitdistrplus_1.0-14    survival_2.44-1.1      RCurl_1.95-4.12       
+ [85] tibble_2.1.3           future.apply_1.3.0     tsne_0.1-3            
+ [88] crayon_1.3.4           KernSmooth_2.23-15     plotly_4.9.0          
+ [91] rmarkdown_1.13         grid_3.6.0             data.table_1.12.2     
+ [94] git2r_0.26.1           metap_1.1              digest_0.6.20         
+ [97] tidyr_0.8.3            R.utils_2.9.0          munsell_0.5.0         
+[100] viridisLite_0.3.0     </code></pre>
 </div>
 </div>
 

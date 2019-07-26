@@ -13,47 +13,48 @@ groups <- c("E <= 0.1", "0.1 < E <= 0.5", "0.5 < E <= 1", "E > 1")
     if (v <= 0.1) 1 else if (v <= 0.5) 2 else if (v <= 1) 3 else 4) %>% 
     factor
 
-#fns <- list.files("/Users/helena/Dropbox/portmac/results/kang", "ds10;", full.names = TRUE)
-#rds <- lapply(fns, readRDS)
-res <- lapply(snakemake@input$res, readRDS) %>% 
-    map("tbl") %>%
-    map(mutate_if, is.factor, as.character) %>% 
-    bind_rows %>% 
-    mutate(avg_expr = sim_mean.A + sim_mean.B) %>% 
-    mutate(group = .get_group(abs(.$avg_expr))) %>% 
-    setDT %>% split(by = c("i", "group", "mid"), flatten = FALSE)
+#fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
+res <- .read_res(snakemake@input$res) %>% 
+    dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
+    dplyr::mutate(group = .get_group(.$E)) %>% setDT %>% 
+    split(by = c("sid", "i", "group", "mid"), flatten = FALSE)
 
-p_adj <- paste0("p_adj.", snakemake@wildcards$padj)
+cd <- lapply(names(res), function(sid) {
+    lapply(seq_along(res[[sid]]), function(i) COBRAData( 
+        pval = as.data.frame(bind_rows(map(map_depth(res[[sid]][[i]], 2, "p_val"), bind_cols))),
+        padj = as.data.frame(bind_rows(map(map_depth(res[[sid]][[i]], 2, "p_adj.loc"), bind_cols))),
+        truth = data.frame(
+            row.names = NULL,
+            group = unlist(map(map_depth(res[[sid]][[i]], 2, "group"), 1)),
+            is_de = unlist(map(map_depth(res[[sid]][[i]], 2, "is_de"), 1)))))
+})
 
-cd <- lapply(seq_along(res), function(i) COBRAData( 
-    pval = as.data.frame(bind_rows(map(map_depth(res[[i]], 2, "p_val"), bind_cols))),
-    padj = as.data.frame(bind_rows(map(map_depth(res[[i]], 2, p_adj), bind_cols))),
-    truth = data.frame(
-        row.names = NULL,
-        group = unlist(map(map_depth(res[[i]], 2, "group"), 1)),
-        is_de = unlist(map(map_depth(res[[i]], 2, "is_de"), 1)))))
-
-perf <- lapply(cd, calculate_performance,
+perf <- map_depth(cd, 2, calculate_performance,
     aspects = c("fdrtpr", "fdrtprcurve"),
     splv = "group", maxsplit = Inf,
     binary_truth = "is_de")
 
-df <- map(perf, function(u) 
-    select(fdrtpr(u), splitval, thr, method, TPR, FDR)) %>% 
-    bind_rows(.id = "i") %>% 
-    mutate_at("thr", function(u) as.numeric(gsub("thr", "", u))) %>% 
+df <- map_depth(perf, 2, fdrtpr) %>% 
+    map(bind_rows, .id = "i") %>% 
+    bind_rows(.id = "sid") %>% 
+    select(sid, splitval, thr, method, TPR, FDR) %>% 
+    mutate_at("thr", function(u) as.numeric(gsub("thr", "", u))) %>%
     mutate_at("method", factor, levels = names(.meth_cols)) %>% 
     dplyr::filter(splitval != "overall") %>% 
     mutate_at("splitval", function(u) gsub("group:", "", u)) %>% 
     mutate_at("splitval", factor, labels = groups) %>% 
-    group_by(splitval, thr, method) %>% 
-    summarise_at(c("FDR", "TPR"), mean) 
+    group_by(splitval, sid, thr, method) %>% 
+    summarise_at(c("FDR", "TPR"), mean) %>% 
+    ungroup %>% mutate_at("sid", factor, 
+        labels = gsub("10", "", names(res))) %>% 
+    mutate_at("sid", factor, 
+        levels = c("ds", "dp", "dm", "db"),
+        labels = c("DE", "DP", "DM", "DB"))
 
-p <- .plot_perf_points(df)
-p$facet$params$ncol <- nlevels(df$splitval)
-# ggsave("/Users/helena/Dropbox/portmac/perf_by_expr.pdf", p,
-#     width = 15, height = 6.25, units = "cm", dpi = 300)
+p <- .plot_perf_points(df) +
+    facet_grid(rows = vars(sid), cols = vars(splitval))
+
 saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, p,
-    units = "cm", width = 15, height = 6.25,
+    units = "cm", width = 15, height = 16.3,
     dpi = 300, useDingbats = FALSE)
