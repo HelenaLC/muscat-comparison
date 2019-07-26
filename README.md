@@ -1,6 +1,6 @@
 # On the discovery of population-specific state transitions <br> from multi-sample multi-condition scRNA-seq data
 
-This repository contains all the necessary code to perform the evaluations and analyses from ...
+This repository contains all the necessary code to perform the evaluations and analyses from our preprint available at https://doi.org/10.1101/713412.
 
 ### LPS dataset analysis
 
