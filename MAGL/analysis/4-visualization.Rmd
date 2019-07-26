@@ -28,8 +28,7 @@ library(purrr)
 library(reshape2)
 library(scater)
 library(SingleCellExperiment)
-
-options(future.globals.maxSize = 2e3*1024^2)
+library(UpSetR)
 ```
 
 # Load data & results
@@ -39,12 +38,20 @@ sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 res <- readRDS(file.path("output", "MAGL-DS_res.rds"))
 ```
 
+For easy accession, we store the character vectors of cluster and sample IDs, as well as the number of clusters and samples:
+
+```{r}
+nk <- length(kids <- set_names(levels(sce$cluster_id)))
+ns <- length(sids <- set_names(levels(sce$sample_id)))
+ng <- length(gids <- set_names(levels(sce$group_id)))
+```
+
 # Results filtering & overview
 
 To get a general overview of the differential testing results, we first filter them to retain hits with $\text{FDR}<5\%$ and $~|~logFC~|~>1$, and view the number & percentage of differential findings by cluster. Finally, we extract the top hits (lowest adj. p-value) in each cluster.
 
 ```{r collapse = FALSE}
-tbl <- res$table$`LPS-WT` %>% 
+tbl <- res$table[[1]] %>% 
     # filter abs(logFC) > 1 & FDR < 0.05
     lapply(dplyr::filter, p_adj.loc < 0.05, abs(logFC) > 1) %>% 
     # sort by FDR
@@ -57,40 +64,11 @@ cbind(n_de, perc = round(n_de / nrow(sce) * 100, 2))
 
 # Between-cluster concordance
 
-```{r fig.width = 8, fig.height = 8, collapse = TRUE}
-nk <- length(kids <- levels(sce$cluster_id) %>% set_names)
-cmat <- sapply(kids, function(k1) sapply(kids, function(k2)
-    sum(tbl[[k1]]$gene %in% tbl[[k2]]$gene) / nrow(tbl[[k1]])))
-
-n_de <- sapply(tbl, nrow)
-plot_grid(
-    ggplot(data.frame(cluster_id = kids, n_de),
-        aes(x = cluster_id, y = n_de)) +
-        geom_bar(stat = "identity", size = 0.2, width = 0.8, 
-            fill = "lightgrey", col = "darkgrey") +
-        annotate("rect", xmin = 0.5, xmax = nk + 0.5, ymin = 602, ymax = 700, fill = "white") +
-        annotate("text", x = seq_len(nk), y = 650, label = n_de, size = 4, fontface = "bold") +
-        scale_x_discrete(limits = kids) +
-        scale_y_continuous(NULL, limits = c(0, 700), 
-            breaks = seq(0, 600, 200), expand = c(0, 0), 
-            sec.axis = dup_axis(name = "Nb. of DE genes")) +
-        theme_minimal() + theme(
-            axis.title.x = element_blank(),
-            axis.text.x = element_blank(),
-            panel.grid.minor = element_blank(),
-            axis.text.y.right = element_blank(),
-            axis.ticks.y.right = element_blank()),
-    ggplot(melt(cmat * 100), 
-        aes(x = Var1, y = Var2, fill = value)) +
-        geom_tile(col = "white", size = 0.2) +
-        geom_text(aes(label = ifelse(is.na(value), "", round(value, 1))), size = 4) +
-        scale_fill_distiller("Overlap (%)", palette = "RdYlBu", na.value = "lightgrey") +
-        scale_x_discrete(limits = kids) + scale_y_discrete(limits = rev(kids)) +
-        theme_minimal() + theme(
-            panel.grid = element_blank(),
-            axis.title = element_blank(),
-            axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)),
-    ncol = 1, axis = "lr", align = "v", rel_heights = c(1, 4))
+```{r fig.width = 10, fig.height = 6, collapse = TRUE}
+deg_by_k <- lapply(tbl, pull, "gene")
+upset(fromList(deg_by_k), sets = rev(kids)[-c(1, 2)],
+    mb.ratio = c(0.6, 0.4), nintersects = 30,  
+    text.scale = 0.8, point.size = 2, line.size = 0.4)
 ```
 
 # Cell-level visualization {.tabset}
@@ -118,17 +96,6 @@ for (k in kids) {
 }
 ```
 
-# Sample-level visualization {.tabset}
-
-```{r diff-hm, results = "asis", fig.wide = TRUE, fig.height = 6}
-for (k in kids) {
-    cat("## ", k, "\n")
-    hm <- plotDiffHeatmap(sce, res, k = k, top_n = 20)
-    tryCatch(print(hm), error = function(e) NULL)
-    cat("\n\n")
-}
-```
-
 # Dimension reduction {.tabset}
 
 ```{r dr, results = "asis", fig.wide = TRUE, fig.height = 5}
@@ -142,7 +109,7 @@ for (dr in c("TSNE", "UMAP")) {
             legend.key.height = unit(2, "mm"), 
             legend.position = "bottom")
     p1 <-  p + geom_point(size = 0.1, alpha = 0.2, aes(col = cluster_id)) + 
-        scale_color_manual(values = muscat:::cluster_colors) +
+        scale_color_manual(values = CATALYST:::.cluster_cols) +
         guides(color = guide_legend(ncol = 3,
             override.aes = list(size = 2, alpha = 1)))
     p2 <- p + geom_point(size = 0.1, alpha = 0.2, aes(col = group_id)) +

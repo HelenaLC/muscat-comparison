@@ -7,10 +7,11 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
-<meta name="date" content="2019-05-23" />
+<meta name="date" content="2019-07-26" />
 
 <title>Geneset analysis</title>
 
@@ -250,48 +251,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -379,7 +341,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">MAGL</a>
+      <a class="navbar-brand" href="index.html">LPS</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -400,6 +362,12 @@ div.tocify {
 </li>
 <li>
   <a href="4-geneset.html">Geneset analysis</a>
+</li>
+<li>
+  <a href="5-visualization.html">Visualization</a>
+</li>
+<li>
+  <a href="6-more.html">Downstream</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -433,7 +401,7 @@ div.section {
 <address class="author_afil">
 Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
 <address class="author_afil">
-Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">May 23, 2019</h4>
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 26, 2019</h4>
 
 </div>
 
@@ -458,22 +426,22 @@ Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2019-05-23
+<strong>Last updated:</strong> 2019-07-26
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 3
 </p>
 <p>
 <strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
 </p>
 <p>
 This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.3.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
 <div id="checks" class="tab-pane fade">
-<div id="workflowr-checks" class="panel-group">
+<div class="panel-group" id="workflowr-checks">
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
@@ -482,19 +450,64 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Environment:</strong> objects present </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongobjectspresent" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+
+<p>
+The global environment had objects present when the code in the R Markdown file was run. These objects can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment. Use <code>wflow_publish</code> or <code>wflow_build</code> to ensure that the code is always run in an empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+data
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+env
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -564,10 +577,22 @@ unnamed-chunk-6
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5e2e38dda0353fb43df735d4cf981df7ea1dec48targetblank5e2e38da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/5e2e38dda0353fb43df735d4cf981df7ea1dec48" target="_blank">5e2e38d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree5e2e38dda0353fb43df735d4cf981df7ea1dec48targetblank5e2e38da" class="panel-collapse collapse">
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree659320b63102a9b1779af72e6072811bec615663targetblank659320ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/659320b63102a9b1779af72e6072811bec615663" target="_blank">659320b</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree659320b63102a9b1779af72e6072811bec615663targetblank659320ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -575,105 +600,61 @@ Great! You are using Git for version control. Tracking code development and conn
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    ._.Renviron
+    Ignored:    ._.gitignore
+    Ignored:    ._README.md
+    Ignored:    ._Snakefile
+    Ignored:    ._config.yaml
+    Ignored:    ._session_info.txt
     Ignored:    .snakemake/
     Ignored:    MAGL/.DS_Store
     Ignored:    MAGL/.RData
     Ignored:    MAGL/.Rhistory
+    Ignored:    MAGL/._.DS_Store
+    Ignored:    MAGL/._.Rprofile
+    Ignored:    MAGL/._.gitignore
+    Ignored:    MAGL/._data
+    Ignored:    MAGL/analysis/._refs.bib
     Ignored:    MAGL/analysis/0-preprocessing_cache/
     Ignored:    MAGL/analysis/1-clustering_cache/
     Ignored:    MAGL/analysis/3-differential_cache/
     Ignored:    MAGL/analysis/4-visualization_cache/
     Ignored:    MAGL/analysis/5-geneset_cache/
+    Ignored:    MAGL/analysis/6-more_cache/
+    Ignored:    MAGL/code/._utils.R
     Ignored:    MAGL/data/
     Ignored:    MAGL/output/
-    Ignored:    config/
     Ignored:    data/
     Ignored:    figures/
-    Ignored:    metadata/
+    Ignored:    meta/
     Ignored:    results/
+    Ignored:    scripts/.DS_Store
+    Ignored:    scripts/._.DS_Store
+    Ignored:    scripts/._apply_scdd.R
+    Ignored:    scripts/._plot_perf_by_expr.R
+    Ignored:    scripts/._plot_perf_by_ss.R
+    Ignored:    scripts/._plot_runtimes.R
+    Ignored:    scripts/._prep_magl.R
+    Ignored:    scripts/._prep_sim.R
+    Ignored:    scripts/._session_info.R
+    Ignored:    scripts/._sim_qc.R
+    Ignored:    scripts/._utils.R
 
 Untracked files:
     Untracked:  .RData
+    Untracked:  .RDataTmp
     Untracked:  .Rhistory
-    Untracked:  ._.gitignore
-    Untracked:  ._README.md
-    Untracked:  ._Snakefile
-    Untracked:  ._config.yaml
-    Untracked:  ASD/
-    Untracked:  MAGL/._.DS_Store
-    Untracked:  MAGL/._.Rprofile
-    Untracked:  MAGL/._data
-    Untracked:  MAGL/analysis/._refs.bib
-    Untracked:  MAGL/analysis/4-visualization.Rmd
-    Untracked:  MAGL/analysis/5-geneset.Rmd
+    Untracked:  MAGL/code/utils.R
     Untracked:  MAGL/current
-    Untracked:  MAGL/docs/figure/3-differential.Rmd/
-    Untracked:  MAGL/docs/figure/4-visualization.Rmd/
-    Untracked:  MAGL/docs/figure/5-geneset.Rmd/
-    Untracked:  Rplots.pdf
-    Untracked:  scripts/._apply_ad.R
-    Untracked:  scripts/._apply_mm.R
-    Untracked:  scripts/._apply_scdd.R
-    Untracked:  scripts/._calc_conc.R
-    Untracked:  scripts/._countsimQC.R
-    Untracked:  scripts/._data_sim.R
-    Untracked:  scripts/._meth_pars.R
-    Untracked:  scripts/._plot_conc.R
-    Untracked:  scripts/._plot_padj_local_vs_global.R
-    Untracked:  scripts/._plot_pbMDS.R
-    Untracked:  scripts/._plot_perf_combined.R
-    Untracked:  scripts/._plot_perf_split_by_cat.R
-    Untracked:  scripts/._plot_perf_split_by_lfc.R
-    Untracked:  scripts/._plot_perf_vs_ncells.R
-    Untracked:  scripts/._plot_sim_pars.R
-    Untracked:  scripts/._plot_summary.R
-    Untracked:  scripts/._plot_upsets.R
-    Untracked:  scripts/._run_method.R
-    Untracked:  scripts/._sim_data.R
-    Untracked:  scripts/._sim_pars.R
-    Untracked:  scripts/._utils.R
-    Untracked:  scripts/plot_padj_local_vs_global.R
-    Untracked:  scripts/plot_pbMDS.R
-    Untracked:  scripts/plot_perf_combined.R
-    Untracked:  scripts/plot_perf_split_by_cat.R
-    Untracked:  scripts/plot_perf_split_by_lfc.R
-    Untracked:  scripts/plot_sim_ex_hm.R
-    Untracked:  scripts/plot_sim_pars.R
-    Untracked:  scripts/plot_sim_vs_est_logFC.R
-    Untracked:  scripts/plot_summary.R
+    Untracked:  figs/
 
 Unstaged changes:
-    Modified:   .gitignore
     Modified:   MAGL/.Rprofile
-    Modified:   MAGL/analysis/1-clustering.Rmd
-    Modified:   MAGL/analysis/3-differential.Rmd
-    Deleted:    MAGL/analysis/4-geneset.Rmd
-    Deleted:    MAGL/analysis/about.Rmd
-    Deleted:    MAGL/analysis/license.Rmd
-    Modified:   Snakefile
-    Modified:   config.yaml
-    Modified:   scripts/apply_ad.R
-    Modified:   scripts/apply_mast.R
-    Modified:   scripts/apply_mm.R
-    Modified:   scripts/apply_pb.R
-    Modified:   scripts/apply_scdd.R
-    Modified:   scripts/calc_conc.R
-    Modified:   scripts/countsimQC.R
-    Modified:   scripts/data_sim.R
-    Modified:   scripts/meth_pars.R
-    Modified:   scripts/plot_conc.R
-    Modified:   scripts/plot_null.R
-    Deleted:    scripts/plot_padj_loc_vs_glb.R
-    Modified:   scripts/plot_pb_mean_vs_disp.R
-    Modified:   scripts/plot_perf.R
-    Deleted:    scripts/plot_perf_split.R
-    Modified:   scripts/plot_perf_vs_ncells.R
-    Deleted:    scripts/plot_perf_vs_ncells_box.R
-    Modified:   scripts/plot_upsets.R
-    Modified:   scripts/run_method.R
-    Modified:   scripts/sim_data.R
-    Modified:   scripts/sim_pars.R
-    Modified:   scripts/utils.R
+    Modified:   MAGL/analysis/4-visualization.Rmd
+    Modified:   MAGL/analysis/5-geneset.Rmd
+    Deleted:    scripts/plot_perf_by_lfc.R
+    Deleted:    scripts/plot_sim_ex.R
+    Deleted:    scripts/prep_data.R
 
 </code></pre>
 <p>
@@ -686,9 +667,69 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/analysis/5-geneset.Rmd" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/5-geneset.html" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+<td>
+update
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -716,22 +757,21 @@ dat &lt;- lapply(res$data, function(u) {
       ensembl_id = sapply(ss, .subset, 1), 
       symbol = sapply(ss, .subset, 2))
   return(u)
-})
+})</code></pre>
+<pre><code>Loading required package: edgeR</code></pre>
+<pre><code>
+Attaching package: &#39;edgeR&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:SingleCellExperiment&#39;:
 
-sapply(dat, function(u) 
+    cpm</code></pre>
+<pre class="r"><code>sapply(dat, function(u) 
     table(u$genes$symbol %in% m_df$gene_symbol))</code></pre>
-<pre><code>      Astrocytes Endothelial Microglia   OPC Oligodendrocytes
-FALSE       1122        1117      1118  1113             1104
-TRUE       10169       10163     10137 10147            10137
-      excit_neuron1 excit_neuron2 excit_neuron3 excit_neuron4
-FALSE          1129          1126          1128          1125
-TRUE          10180         10171         10178         10173
-      excit_neuron5 excit_neuron6 inhib_neuron1 inhib_neuron2
-FALSE          1112          1104          1128          1124
-TRUE          10117         10140         10178         10167
-      inhib_neuron3
-FALSE          1121
-TRUE          10159</code></pre>
+<pre><code>      Astrocytes Endothelial Microglia Oligodendrocytes  OPC CPE cells
+FALSE       1082        1085      1077             1081 1070      1078
+TRUE        9960        9964      9919             9942 9934      9922
+      Excit. Neuron Inhib. Neuron
+FALSE          1091          1090
+TRUE           9972          9972</code></pre>
 <pre class="r"><code>sets &lt;- split(m_df$gene_symbol, m_df$gs_name)
 n &lt;- vapply(sets, length, numeric(1))
 sets &lt;- sets[n &gt;= 20 &amp; n &lt;= 1000]
@@ -742,52 +782,85 @@ length(sets)</code></pre>
 <h1>Run <code>camera</code> on ea. cluster</h1>
 <pre class="r"><code>gs_dat &lt;- mapply(function(uu, vv) {
     inds &lt;- ids2indices(sets, uu$genes$symbol, remove.empty = TRUE)
-
-    mm &lt;- res$design[colnames(uu),]
+    mm &lt;- uu$design[colnames(uu),]
     v &lt;- voom(uu, mm)
-  
     f &lt;- lmFit(v, mm)
     f &lt;- eBayes(f)
-    cf &lt;- contrasts.fit(f, res$contrast)
+    cf &lt;- contrasts.fit(f, coefficients = 2)
     cf &lt;- eBayes(cf)
-  
     list(indices = inds, voom = v, design = mm, 
         cluster_id = vv, contrasts.fit = cf)
 }, dat, names(dat), SIMPLIFY = FALSE)
 
 gs_df &lt;- lapply(gs_dat, function(u)
-    camera(u$voom, u$indices, res$design, res$contrast) %&gt;% 
+    camera(u$voom, u$indices, u$design) %&gt;% 
         rownames_to_column(&quot;geneset&quot;)) %&gt;% 
     bind_rows(.id = &quot;cluster_id&quot;)</code></pre>
 </div>
 <div id="heatmap-summary" class="section level1">
 <h1>Heatmap summary</h1>
 <pre class="r"><code>cats &lt;- gs_df %&gt;% 
-    dplyr::filter(FDR &lt; 1e-10) %&gt;%
+    dplyr::filter(FDR &lt; 1e-20) %&gt;%
     pull(geneset) %&gt;% unique
 length(cats)</code></pre>
-<pre><code>[1] 29</code></pre>
+<pre><code>[1] 68</code></pre>
 <pre class="r"><code>gs_df %&gt;% 
     dplyr::filter(geneset %in% cats) %&gt;%
     dplyr::mutate(neg_log10_fdr = -log10(FDR)) %&gt;% 
     acast(cluster_id ~ geneset, value.var = &quot;neg_log10_fdr&quot;) %&gt;% 
-    set_colnames(strtrim(colnames(.), 25)) %&gt;% 
-    pheatmap</code></pre>
-<p><img src="figure/5-geneset.Rmd/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /></p>
+    set_colnames(gsub(&quot;/*([^_]*)_(.*)&quot;, &quot;\\2&quot;, colnames(.))) %&gt;% 
+    set_colnames(strtrim(colnames(.), 30)) %&gt;%
+    pheatmap(fontsize = 8, border_color = NA, color = colorRampPalette(
+        c(&quot;aliceblue&quot;, &quot;cornflowerblue&quot;, &quot;violet&quot;, &quot;red&quot;))(50))</code></pre>
+<p><img src="figure/5-geneset.Rmd/unnamed-chunk-5-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/unnamed-chunk-5-1.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="barcode-plots" class="section level1 tabset">
 <h1>Barcode plots</h1>
 <pre class="r"><code>cats_by_cluster &lt;- gs_df %&gt;% 
-    dplyr::filter(FDR &lt; 1e-10) %&gt;% 
     group_by(cluster_id) %&gt;% 
+    top_n(10, dplyr::desc(FDR)) %&gt;% 
     group_split %&gt;% 
     lapply(pull, geneset) %&gt;% 
     set_names(names(res$data))
-vapply(cats_by_cluster, length, numeric(1))</code></pre>
-<pre><code>  Astrocytes      Endothelial        Microglia              OPC 
-          10                4               26               18 </code></pre>
-<p>Oligodendrocytes excit_neuron1 excit_neuron2 excit_neuron3 21 18 10 23 excit_neuron4 excit_neuron5 excit_neuron6 inhib_neuron1 17 18 16 18 inhib_neuron2 inhib_neuron3 11 2</p>
-<pre class="r"><code>lapply(names(res$data), function(k) {
+
+lapply(names(res$data), function(k) {
     cat(&quot;## &quot;, k, &quot;\n&quot;)
     lapply(cats_by_cluster[[k]], function(c)
         barcodeplot(
@@ -799,59 +872,3181 @@ vapply(cats_by_cluster, length, numeric(1))</code></pre>
 })</code></pre>
 <div id="astrocytes" class="section level2">
 <h2>Astrocytes</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-1.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-2.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-3.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-4.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-5.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-6.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-7.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-8.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-9.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-10.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-1">
+Past versions of barcode-1.png
+</button>
+</p>
+<div id="fig-barcode-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-1.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-2.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-2">
+Past versions of barcode-2.png
+</button>
+</p>
+<div id="fig-barcode-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-2.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-3.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-3">
+Past versions of barcode-3.png
+</button>
+</p>
+<div id="fig-barcode-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-3.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-4.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-4">
+Past versions of barcode-4.png
+</button>
+</p>
+<div id="fig-barcode-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-4.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-5.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-5">
+Past versions of barcode-5.png
+</button>
+</p>
+<div id="fig-barcode-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-5.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-6.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-6">
+Past versions of barcode-6.png
+</button>
+</p>
+<div id="fig-barcode-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-6.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-7.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-7">
+Past versions of barcode-7.png
+</button>
+</p>
+<div id="fig-barcode-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-7.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-8.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-8">
+Past versions of barcode-8.png
+</button>
+</p>
+<div id="fig-barcode-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-8.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-9.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-9">
+Past versions of barcode-9.png
+</button>
+</p>
+<div id="fig-barcode-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-9.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-10.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-10">
+Past versions of barcode-10.png
+</button>
+</p>
+<div id="fig-barcode-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-10.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="endothelial" class="section level2">
 <h2>Endothelial</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-11.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-12.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-13.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-14.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-11.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-11">
+Past versions of barcode-11.png
+</button>
+</p>
+<div id="fig-barcode-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-11.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-12.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-12">
+Past versions of barcode-12.png
+</button>
+</p>
+<div id="fig-barcode-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-12.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-13.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-13">
+Past versions of barcode-13.png
+</button>
+</p>
+<div id="fig-barcode-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-13.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-14.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-14">
+Past versions of barcode-14.png
+</button>
+</p>
+<div id="fig-barcode-14" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-14.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-15.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-15">
+Past versions of barcode-15.png
+</button>
+</p>
+<div id="fig-barcode-15" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-15.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-16.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-16">
+Past versions of barcode-16.png
+</button>
+</p>
+<div id="fig-barcode-16" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-16.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-17.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-17">
+Past versions of barcode-17.png
+</button>
+</p>
+<div id="fig-barcode-17" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-17.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-18.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-18">
+Past versions of barcode-18.png
+</button>
+</p>
+<div id="fig-barcode-18" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-18.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-19.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-19">
+Past versions of barcode-19.png
+</button>
+</p>
+<div id="fig-barcode-19" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-19.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-20.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-20">
+Past versions of barcode-20.png
+</button>
+</p>
+<div id="fig-barcode-20" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-20.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="microglia" class="section level2">
 <h2>Microglia</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-15.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-16.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-17.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-18.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-19.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-20.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-21.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-22.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-23.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-24.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-25.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-26.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-27.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-28.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-29.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-30.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-31.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-32.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-33.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-34.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-35.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-36.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-37.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-38.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-39.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-40.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-21.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-21">
+Past versions of barcode-21.png
+</button>
+</p>
+<div id="fig-barcode-21" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-21.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="opc" class="section level2">
-<h2>OPC</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-41.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-42.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-43.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-44.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-45.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-46.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-47.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-48.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-49.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-50.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-51.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-52.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-53.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-54.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-55.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-56.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-57.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-58.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-22.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-22">
+Past versions of barcode-22.png
+</button>
+</p>
+<div id="fig-barcode-22" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-22.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-23.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-23">
+Past versions of barcode-23.png
+</button>
+</p>
+<div id="fig-barcode-23" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-23.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-24.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-24">
+Past versions of barcode-24.png
+</button>
+</p>
+<div id="fig-barcode-24" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-24.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-25.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-25">
+Past versions of barcode-25.png
+</button>
+</p>
+<div id="fig-barcode-25" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-25.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-26.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-26">
+Past versions of barcode-26.png
+</button>
+</p>
+<div id="fig-barcode-26" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-26.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-27.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-27">
+Past versions of barcode-27.png
+</button>
+</p>
+<div id="fig-barcode-27" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-27.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-28.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-28">
+Past versions of barcode-28.png
+</button>
+</p>
+<div id="fig-barcode-28" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-28.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-29.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-29">
+Past versions of barcode-29.png
+</button>
+</p>
+<div id="fig-barcode-29" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-29.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-30.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-30">
+Past versions of barcode-30.png
+</button>
+</p>
+<div id="fig-barcode-30" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-30.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="oligodendrocytes" class="section level2">
 <h2>Oligodendrocytes</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-59.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-60.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-61.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-62.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-63.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-64.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-65.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-66.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-67.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-68.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-69.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-70.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-71.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-72.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-73.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-74.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-75.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-76.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-77.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-78.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-79.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-31.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-31">
+Past versions of barcode-31.png
+</button>
+</p>
+<div id="fig-barcode-31" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-31.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="excit_neuron1" class="section level2">
-<h2>excit_neuron1</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-80.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-81.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-82.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-83.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-84.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-85.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-86.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-87.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-88.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-89.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-90.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-91.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-92.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-93.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-94.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-95.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-96.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-97.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="excit_neuron2" class="section level2">
-<h2>excit_neuron2</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-98.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-99.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-100.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-101.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-102.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-103.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-104.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-105.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-106.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-107.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-32.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-32">
+Past versions of barcode-32.png
+</button>
+</p>
+<div id="fig-barcode-32" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-32.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="excit_neuron3" class="section level2">
-<h2>excit_neuron3</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-108.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-109.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-110.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-111.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-112.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-113.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-114.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-115.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-116.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-117.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-118.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-119.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-120.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-121.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-122.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-123.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-124.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-125.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-126.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-127.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-128.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-129.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-130.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="excit_neuron4" class="section level2">
-<h2>excit_neuron4</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-131.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-132.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-133.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-134.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-135.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-136.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-137.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-138.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-139.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-140.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-141.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-142.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-143.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-144.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-145.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-146.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-147.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-33.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-33">
+Past versions of barcode-33.png
+</button>
+</p>
+<div id="fig-barcode-33" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-33.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="excit_neuron5" class="section level2">
-<h2>excit_neuron5</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-148.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-149.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-150.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-151.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-152.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-153.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-154.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-155.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-156.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-157.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-158.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-159.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-160.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-161.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-162.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-163.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-164.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-165.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="excit_neuron6" class="section level2">
-<h2>excit_neuron6</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-166.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-167.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-168.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-169.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-170.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-171.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-172.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-173.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-174.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-175.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-176.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-177.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-178.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-179.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-180.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-181.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-34.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-34">
+Past versions of barcode-34.png
+</button>
+</p>
+<div id="fig-barcode-34" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-34.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="inhib_neuron1" class="section level2">
-<h2>inhib_neuron1</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-182.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-183.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-184.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-185.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-186.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-187.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-188.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-189.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-190.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-191.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-192.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-193.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-194.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-195.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-196.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-197.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-198.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-199.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
-<div id="inhib_neuron2" class="section level2">
-<h2>inhib_neuron2</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-200.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-201.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-202.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-203.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-204.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-205.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-206.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-207.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-208.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-209.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-210.png" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="figure/5-geneset.Rmd/barcode-35.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-35">
+Past versions of barcode-35.png
+</button>
+</p>
+<div id="fig-barcode-35" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-35.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="inhib_neuron3" class="section level2">
-<h2>inhib_neuron3</h2>
-<p><img src="figure/5-geneset.Rmd/barcode-211.png" width="576" style="display: block; margin: auto;" /><img src="figure/5-geneset.Rmd/barcode-212.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-36.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-36">
+Past versions of barcode-36.png
+</button>
+</p>
+<div id="fig-barcode-36" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-36.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-37.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-37">
+Past versions of barcode-37.png
+</button>
+</p>
+<div id="fig-barcode-37" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-37.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-38.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-38">
+Past versions of barcode-38.png
+</button>
+</p>
+<div id="fig-barcode-38" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-38.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-39.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-39">
+Past versions of barcode-39.png
+</button>
+</p>
+<div id="fig-barcode-39" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-39.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-40.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-40">
+Past versions of barcode-40.png
+</button>
+</p>
+<div id="fig-barcode-40" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-40.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-41.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-41">
+Past versions of barcode-41.png
+</button>
+</p>
+<div id="fig-barcode-41" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-41.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-42.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-42">
+Past versions of barcode-42.png
+</button>
+</p>
+<div id="fig-barcode-42" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-42.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="opc" class="section level2">
+<h2>OPC</h2>
+<p><img src="figure/5-geneset.Rmd/barcode-43.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-43">
+Past versions of barcode-43.png
+</button>
+</p>
+<div id="fig-barcode-43" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-43.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-44.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-44">
+Past versions of barcode-44.png
+</button>
+</p>
+<div id="fig-barcode-44" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-44.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-45.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-45">
+Past versions of barcode-45.png
+</button>
+</p>
+<div id="fig-barcode-45" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-45.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-46.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-46">
+Past versions of barcode-46.png
+</button>
+</p>
+<div id="fig-barcode-46" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-46.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-47.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-47">
+Past versions of barcode-47.png
+</button>
+</p>
+<div id="fig-barcode-47" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-47.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-48.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-48">
+Past versions of barcode-48.png
+</button>
+</p>
+<div id="fig-barcode-48" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-48.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-49.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-49">
+Past versions of barcode-49.png
+</button>
+</p>
+<div id="fig-barcode-49" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-49.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-50.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-50">
+Past versions of barcode-50.png
+</button>
+</p>
+<div id="fig-barcode-50" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-50.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-51.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-51">
+Past versions of barcode-51.png
+</button>
+</p>
+<div id="fig-barcode-51" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-51.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-52.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-52">
+Past versions of barcode-52.png
+</button>
+</p>
+<div id="fig-barcode-52" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-52.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="cpe-cells" class="section level2">
+<h2>CPE cells</h2>
+<p><img src="figure/5-geneset.Rmd/barcode-53.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-53">
+Past versions of barcode-53.png
+</button>
+</p>
+<div id="fig-barcode-53" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-53.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-54.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-54">
+Past versions of barcode-54.png
+</button>
+</p>
+<div id="fig-barcode-54" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-54.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-55.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-55">
+Past versions of barcode-55.png
+</button>
+</p>
+<div id="fig-barcode-55" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-55.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-56.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-56">
+Past versions of barcode-56.png
+</button>
+</p>
+<div id="fig-barcode-56" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-56.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-57.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-57">
+Past versions of barcode-57.png
+</button>
+</p>
+<div id="fig-barcode-57" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-57.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-58.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-58">
+Past versions of barcode-58.png
+</button>
+</p>
+<div id="fig-barcode-58" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-58.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-59.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-59">
+Past versions of barcode-59.png
+</button>
+</p>
+<div id="fig-barcode-59" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-59.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-60.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-60">
+Past versions of barcode-60.png
+</button>
+</p>
+<div id="fig-barcode-60" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-60.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-61.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-61">
+Past versions of barcode-61.png
+</button>
+</p>
+<div id="fig-barcode-61" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-61.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-62.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-62">
+Past versions of barcode-62.png
+</button>
+</p>
+<div id="fig-barcode-62" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-62.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="excit.-neuron" class="section level2">
+<h2>Excit. Neuron</h2>
+<p><img src="figure/5-geneset.Rmd/barcode-63.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-63">
+Past versions of barcode-63.png
+</button>
+</p>
+<div id="fig-barcode-63" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-63.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-64.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-64">
+Past versions of barcode-64.png
+</button>
+</p>
+<div id="fig-barcode-64" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-64.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-65.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-65">
+Past versions of barcode-65.png
+</button>
+</p>
+<div id="fig-barcode-65" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-65.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-66.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-66">
+Past versions of barcode-66.png
+</button>
+</p>
+<div id="fig-barcode-66" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-66.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-67.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-67">
+Past versions of barcode-67.png
+</button>
+</p>
+<div id="fig-barcode-67" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-67.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-68.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-68">
+Past versions of barcode-68.png
+</button>
+</p>
+<div id="fig-barcode-68" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-68.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-69.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-69">
+Past versions of barcode-69.png
+</button>
+</p>
+<div id="fig-barcode-69" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-69.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-70.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-70">
+Past versions of barcode-70.png
+</button>
+</p>
+<div id="fig-barcode-70" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-70.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-71.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-71">
+Past versions of barcode-71.png
+</button>
+</p>
+<div id="fig-barcode-71" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-71.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-72.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-72">
+Past versions of barcode-72.png
+</button>
+</p>
+<div id="fig-barcode-72" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-72.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-73.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-73">
+Past versions of barcode-73.png
+</button>
+</p>
+<div id="fig-barcode-73" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-73.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="inhib.-neuron" class="section level2">
+<h2>Inhib. Neuron</h2>
+<p><img src="figure/5-geneset.Rmd/barcode-74.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-74">
+Past versions of barcode-74.png
+</button>
+</p>
+<div id="fig-barcode-74" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-74.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-75.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-75">
+Past versions of barcode-75.png
+</button>
+</p>
+<div id="fig-barcode-75" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-75.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-76.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-76">
+Past versions of barcode-76.png
+</button>
+</p>
+<div id="fig-barcode-76" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-76.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-77.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-77">
+Past versions of barcode-77.png
+</button>
+</p>
+<div id="fig-barcode-77" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-77.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-78.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-78">
+Past versions of barcode-78.png
+</button>
+</p>
+<div id="fig-barcode-78" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-78.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-79.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-79">
+Past versions of barcode-79.png
+</button>
+</p>
+<div id="fig-barcode-79" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-79.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-80.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-80">
+Past versions of barcode-80.png
+</button>
+</p>
+<div id="fig-barcode-80" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-80.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-81.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-81">
+Past versions of barcode-81.png
+</button>
+</p>
+<div id="fig-barcode-81" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-81.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-82.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-82">
+Past versions of barcode-82.png
+</button>
+</p>
+<div id="fig-barcode-82" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-82.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/5-geneset.Rmd/barcode-83.png" width="576" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-barcode-83">
+Past versions of barcode-83.png
+</button>
+</p>
+<div id="fig-barcode-83" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/figure/5-geneset.Rmd/barcode-83.png" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>[[1]] NULL</p>
 <p>[[2]] NULL</p>
 <p>[[3]] NULL</p>
@@ -860,12 +4055,6 @@ vapply(cats_by_cluster, length, numeric(1))</code></pre>
 <p>[[6]] NULL</p>
 <p>[[7]] NULL</p>
 <p>[[8]] NULL</p>
-<p>[[9]] NULL</p>
-<p>[[10]] NULL</p>
-<p>[[11]] NULL</p>
-<p>[[12]] NULL</p>
-<p>[[13]] NULL</p>
-<p>[[14]] NULL</p>
 </div>
 </div>
 <div id="write-results-to-.rds-.csv" class="section level1">
@@ -886,13 +4075,13 @@ write.csv(dplyr::filter(gs_df, FDR &lt; 0.05),
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.1 (2018-07-02)
+<pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 16.04.5 LTS
 
 Matrix products: default
-BLAS: /usr/local/R/R-3.5.1/lib/libRblas.so
-LAPACK: /usr/local/R/R-3.5.1/lib/libRlapack.so
+BLAS:   /usr/local/R/R-3.6.0/lib/libRblas.so
+LAPACK: /usr/local/R/R-3.6.0/lib/libRlapack.so
 
 locale:
  [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
@@ -903,36 +4092,37 @@ locale:
 [11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[1] stats4    parallel  stats     graphics  grDevices utils     datasets 
 [8] methods   base     
 
 other attached packages:
- [1] edgeR_3.24.3                pheatmap_1.0.12            
- [3] SingleCellExperiment_1.4.1  SummarizedExperiment_1.12.0
- [5] DelayedArray_0.8.0          BiocParallel_1.16.6        
- [7] matrixStats_0.54.0          Biobase_2.42.0             
- [9] GenomicRanges_1.34.0        GenomeInfoDb_1.18.2        
-[11] IRanges_2.16.0              S4Vectors_0.20.1           
-[13] BiocGenerics_0.28.0         reshape2_1.4.3             
-[15] msigdbr_6.2.1               tibble_2.1.1               
-[17] dplyr_0.8.1                 magrittr_1.5               
-[19] limma_3.38.3               
+ [1] edgeR_3.26.5                pheatmap_1.0.12            
+ [3] SingleCellExperiment_1.6.0  SummarizedExperiment_1.14.0
+ [5] DelayedArray_0.10.0         BiocParallel_1.18.0        
+ [7] matrixStats_0.54.0          Biobase_2.44.0             
+ [9] GenomicRanges_1.36.0        GenomeInfoDb_1.20.0        
+[11] IRanges_2.18.1              S4Vectors_0.22.0           
+[13] BiocGenerics_0.30.0         reshape2_1.4.3             
+[15] msigdbr_6.2.1               tibble_2.1.3               
+[17] dplyr_0.8.3                 magrittr_1.5               
+[19] limma_3.40.2               
 
 loaded via a namespace (and not attached):
- [1] locfit_1.5-9.1         tidyselect_0.2.5       xfun_0.7              
+ [1] locfit_1.5-9.1         tidyselect_0.2.5       xfun_0.8              
  [4] purrr_0.3.2            lattice_0.20-38        colorspace_1.4-1      
- [7] htmltools_0.3.6        yaml_2.2.0             rlang_0.3.4           
-[10] pillar_1.4.0           glue_1.3.1             RColorBrewer_1.1-2    
-[13] GenomeInfoDbData_1.2.0 plyr_1.8.4             stringr_1.4.0         
-[16] zlibbioc_1.28.0        munsell_0.5.0          gtable_0.3.0          
-[19] workflowr_1.3.0        codetools_0.2-16       evaluate_0.13         
-[22] knitr_1.23             Rcpp_1.0.1             backports_1.1.4       
-[25] scales_1.0.0           XVector_0.22.0         fs_1.3.1              
-[28] digest_0.6.19          stringi_1.4.3          rprojroot_1.3-2       
-[31] grid_3.5.1             tools_3.5.1            bitops_1.0-6          
-[34] RCurl_1.95-4.12        crayon_1.3.4           pkgconfig_2.0.2       
-[37] Matrix_1.2-17          assertthat_0.2.1       rmarkdown_1.13        
-[40] R6_2.4.0               git2r_0.25.2           compiler_3.5.1        </code></pre>
+ [7] htmltools_0.3.6        yaml_2.2.0             rlang_0.4.0           
+[10] pillar_1.4.2           glue_1.3.1             RColorBrewer_1.1-2    
+[13] GenomeInfoDbData_1.2.1 plyr_1.8.4             stringr_1.4.0         
+[16] zlibbioc_1.30.0        munsell_0.5.0          gtable_0.3.0          
+[19] workflowr_1.4.0        codetools_0.2-16       evaluate_0.14         
+[22] knitr_1.23             highr_0.8              Rcpp_1.0.1            
+[25] backports_1.1.4        scales_1.0.0           XVector_0.24.0        
+[28] fs_1.3.1               digest_0.6.20          stringi_1.4.3         
+[31] rprojroot_1.3-2        grid_3.6.0             tools_3.6.0           
+[34] bitops_1.0-6           RCurl_1.95-4.12        crayon_1.3.4          
+[37] whisker_0.3-2          pkgconfig_2.0.2        Matrix_1.2-17         
+[40] assertthat_0.2.1       rmarkdown_1.14         rstudioapi_0.10       
+[43] R6_2.4.0               git2r_0.26.1           compiler_3.6.0        </code></pre>
 </div>
 </div>
 
@@ -966,6 +4156,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
