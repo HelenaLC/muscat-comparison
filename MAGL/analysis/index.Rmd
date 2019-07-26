@@ -31,7 +31,7 @@ output:
     - Results filtering & overview
     - Dimension reduction: t-SNE & UMAP
 
-- [Visualization](5-visualization.html)
+- [Visualization](4-visualization.html)
     - Cluster-sample cell counts
     - Cell-level vis.: Violin plots
     - Sample-level vis.: Heatmap of cluster-sample mean-expressions
