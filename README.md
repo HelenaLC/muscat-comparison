@@ -23,7 +23,7 @@ The table below summarizes the different R scripts in `scripts`:
 
 script      | description 
 :-----------|:-----------------------------------------------
-`prep_X`    | generates a references SCE for simulation by<br>i)by keeping samples from one condition only; and,<br>ii) unifying relevant cell metadata names to `"cluster/sample/group_id"`
+`prep_X`    | generates a references SCE for simulation by<br>i) keeping samples from one condition only; and,<br>ii) unifying relevant cell metadata names to `"cluster/sample/group_id"`
 `prep_sim` | prepares a reference SCE for simulation by<br>i) retaining subpopulation-sample combinations with at least 100 cells; and,<br>ii) estimating cell / gene parameters (offsets / coefficients and dispersions)
 `sim_pars`  | for ea. simulation ID, generates a `.json` file in `meta/sim_pars`<br>that specifies simulation parameters (e.g., prob. of DS, nb. of simulation replicates)
 `run_pars`  | for ea. reference and simulation ID, generates a `.json` file in `meta/run_pars`<br>that specifies runmode parameters (e.g., nb. of cells/genes to sample, nb. of run replicates) 
