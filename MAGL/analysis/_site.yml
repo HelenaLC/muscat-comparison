@@ -13,10 +13,10 @@ navbar:
     href: 2-annotation.html
   - text: "DS analysis"
     href: 3-differential.html
-  - text: "Geneset analysis"
-    href: 4-geneset.html
   - text: "Visualization"
-    href: 5-visualization.html
+    href: 4-visualization.html
+  - text: "Geneset analysis"
+    href: 5-geneset.html
   - text: "Downstream"
     href: 6-more.html
   right:
