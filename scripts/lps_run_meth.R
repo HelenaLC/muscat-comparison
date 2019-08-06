@@ -1,8 +1,15 @@
 options(conflicts.policy = list(warn = FALSE))
 
 # load data & method parameters
-sce <- readRDS(file.path("MAGL", "output", "MAGL-SCE.rds"))
+sce <- readRDS(snakemake@input$sce)
 meth_pars <- as.list(jsonlite::fromJSON(snakemake@input$meth_pars))
+
+# compute new assay slot if required
+if (meth_pars$id == "edgeR.sum(scalecpm)")
+    assays(sim)$cpm <- scater::calculateCPM(sim)
+if (isTRUE(grep("vstresiduals", meth_pars$id) == 1))
+    assays(sce)$vstresiduals <- suppressWarnings(
+        vst(counts(sim), show_progress = FALSE)$y)
 
 # get method wrapper 'apply_xx()'
 source(fun <- snakemake@input$fun)
