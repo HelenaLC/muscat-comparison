@@ -31,6 +31,8 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
 run_scdd <- function(sce) {
     kids <- levels(sce$cluster_id)
     cells_by_k <- split(colnames(sce), sce$cluster_id)
+    if (is(normcounts(sce), "dgCMatrix"))
+        normcounts(sce) <- as.matrix(normcounts(sce))
     suppressMessages(
         lapply(kids, function(k) {
             res <- results(scDD(sce[, cells_by_k[[k]]], 
