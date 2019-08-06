@@ -11,5 +11,5 @@ source(fun <- snakemake@input$fun)
 fun <- gsub("(.R)", "", basename(fun))
 
 # run method & write results to .rds
-res <- get(fun)(sce, meth_pars)
+res <- get(fun)(sce, meth_pars, ds_only = FALSE)
 saveRDS(res, snakemake@output$res)
