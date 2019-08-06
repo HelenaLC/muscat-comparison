@@ -16,7 +16,7 @@ apply_pb <- function(sce, pars, ds_only = TRUE) {
                     counts = counts(sce),
                     normcounts = normcounts(normalize(sce, return_log = FALSE)),
                     logcounts = logcounts(normalize(sce)),
-                    vstcounts = vst(counts(sce), show_progress = FALSE)$y,
+                    vstresiduals = vst(counts(sce), show_progress = FALSE)$y,
                     cpm = calculateCPM(counts(sce)),
                     logcpm = log2(calculateCPM(counts(sce)) + 1))))
         }
