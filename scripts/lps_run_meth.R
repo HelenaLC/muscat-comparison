@@ -7,11 +7,11 @@ meth_pars <- as.list(jsonlite::fromJSON(snakemake@input$meth_pars))
 
 # compute new assay slot if required
 if (meth_pars$id == "edgeR.sum(scalecpm)")
-    assays(sim)$cpm <- scater::calculateCPM(sim)
+    assays(sce)$cpm <- scater::calculateCPM(sce)
 
 if (isTRUE(grep("vstresiduals", meth_pars$id) == 1))
     assays(sce)$vstresiduals <- suppressWarnings(
-        sctransform::vst(counts(sim), show_progress = FALSE)$y)
+        sctransform::vst(counts(sce), show_progress = FALSE)$y)
 
 # get method wrapper 'apply_xx()'
 source(fun <- snakemake@input$fun)
