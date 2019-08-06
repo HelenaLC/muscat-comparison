@@ -71,7 +71,8 @@ rule all:
 				did = "kang", x = "s", ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "perf_by_expr_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
-			expand(join(config["figures"], "{did}", "runtimes.pdf"), did = ["kang"])
+			expand(join(config["figures"], "{did}", "runtimes.pdf"), did = ["kang"]),
+			expand(join(config["results"], "lps", "{mid}.rds"), mid = mids)
 
 rule prep_sce:
 	priority: 100
@@ -206,6 +207,12 @@ rule plot_runtimes:
 				"/ds10_n[g|c];*").search, res_dirs)
 	output:	fig = join(config["figures"], "{did}", "runtimes.pdf")
 	script:	"{input.script}"
+
+rule lps_run_meth:
+	input:	script = join(config["scripts"], "lps_run_meth.R"),
+			meth_pars = join(config["meth_pars"], "{mid}.json"),
+			fun = lambda wc: join(config["scripts"], "apply_" + mids.loc[wc.mid, "type"] + ".R")
+	output:	res = join(config["results"], "lps", "{mid}.rds")
 
 rule session_info:
 	input:	join(config["scripts"], "session_info.R")
