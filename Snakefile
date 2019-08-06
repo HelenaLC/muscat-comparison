@@ -72,7 +72,7 @@ rule all:
 			expand(join(config["figures"], "{did}", "perf_by_expr_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 			expand(join(config["figures"], "{did}", "runtimes.pdf"), did = ["kang"]),
-			expand(join(config["results"], "lps", "{mid}.rds"), mid = mids)
+			expand(join(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 
 rule prep_sce:
 	priority: 100
