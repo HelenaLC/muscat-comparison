@@ -1,4 +1,5 @@
 options(conflicts.policy = list(warn = FALSE))
+library(SingleCellExperiment)
 
 # load data & method parameters
 sce <- readRDS(snakemake@input$sce)
