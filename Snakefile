@@ -208,13 +208,13 @@ rule plot_runtimes:
 	output:	fig = join(config["figures"], "{did}", "runtimes.pdf")
 	script:	"{input.script}"
 
-rule lps_run_meth:
-	input:	script = join(config["scripts"], "lps_run_meth.R"),
-			sce = join(config["raw_data"], "sce0_magl.rds"),
-			meth_pars = join(config["meth_pars"], "{mid}.json"),
-			fun = lambda wc: join(config["scripts"], "apply_" + mids.loc[wc.mid, "type"] + ".R")
-	output:	res = join(config["results"], "lps", "{mid}.rds")
-	script:	"{input.script}"
+#rule lps_run_meth:
+#	input:	script = join(config["scripts"], "lps_run_meth.R"),
+#			sce = join(config["raw_data"], "sce0_magl.rds"),
+#			meth_pars = join(config["meth_pars"], "{mid}.json"),
+#			fun = lambda wc: join(config["scripts"], "apply_" + mids.loc[wc.mid, "type"] + ".R")
+#	output:	res = join(config["results"], "lps", "{mid}.rds")
+#	script:	"{input.script}"
 
 rule session_info:
 	input:	join(config["scripts"], "session_info.R")
