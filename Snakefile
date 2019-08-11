@@ -58,8 +58,8 @@ rule all:
 			expand(join(config["raw_data"], "{pre}_{did}.rds"), \
 				pre = ["sce", "ref"], did = config["dids"]),
 			#expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
-			expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
-				nms = ["pb_mean_disp", "perf_by_cat"]),
+			#expand(join(config["figures"], "{did}", "{nms}.pdf"), did = config["dids"],\
+			#	nms = ["pb_mean_disp", "perf_by_cat"]),
 			expand(join(config["figures"], "{did}", "upset.pdf"), did = config["dids"]),
 			expand(join(config["figures"], "{did}", "perf_by_cat_{padj}.{ext}"),\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
