@@ -12,7 +12,7 @@ apply_scdd <- function(sce, pars, ds_only = TRUE) {
         if (!ds_only) {
             suppressWarnings(suppressMessages(
                 assays(sce)$normcounts <- switch(pars$assay, 
-                    logcounts = normcounts(normalize(sce, return_log = FALSE)),
+                    logcounts = normcounts(logNormCounts(computeLibraryFactors(sce), log = FALSE)),
                     vstcounts = exp(vst(counts(sce), show_progress = FALSE)$y))))
         } else {
             assays(sce)$normcounts <- switch(pars$assay,

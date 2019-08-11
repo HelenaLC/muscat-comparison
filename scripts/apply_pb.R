@@ -14,20 +14,22 @@ apply_pb <- function(sce, pars, ds_only = TRUE) {
             suppressWarnings(suppressMessages(
                 assays(sce)[[a]] <- switch(a, 
                     counts = counts(sce),
-                    normcounts = normcounts(normalize(sce, return_log = FALSE)),
-                    logcounts = logcounts(normalize(sce)),
-                    vstresiduals = vst(counts(sce), show_progress = FALSE)$y,
                     cpm = calculateCPM(counts(sce)),
-                    logcpm = log2(calculateCPM(counts(sce)) + 1))))
+                    logcounts = logNormCounts(computeLibraryFactors(sce)),
+                    vstresiduals = vst(counts(sce), show_progress = FALSE)$y)))
         }
         pb <- aggregateData(sce, a, fun = pars$fun, scale = pars$scale)
     })[[3]]
 
     # run & time DS analysis
-    t2 <- system.time(suppressWarnings(
-        res <- tryCatch(error = function(e) NULL, 
-            pbDS(pb, method = pars$method, verbose = FALSE))))[[3]]
+    t2 <- system.time({
+        res <- tryCatch(
+            pbDS(pb, method = pars$method, verbose = FALSE),
+            error = function(e) e)
+        if (!inherits(res, "error"))
+            res <- dplyr::bind_rows(res$table[[1]])
+    })[[3]]
 
     # return results
-    list(rt = c(t1, t2), tbl = dplyr::bind_rows(res$table[[1]]))
+    list(rt = c(t1, t2), tbl = res)
 }

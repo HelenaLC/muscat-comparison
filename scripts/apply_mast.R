@@ -12,7 +12,7 @@ apply_mast <- function(sce, pars, ds_only = TRUE) {
         if (!ds_only) {
             suppressWarnings(
                 assays(sce)$lCount <- switch(pars$assay, 
-                    logcounts = logcounts(normalize(sce)),
+                    logcounts = logNormCounts(computeLibraryFactors(sce)),
                     vstresiduals = vst(counts(sim), show_progress = FALSE)$y))
         } else {
             assays(sce)$lCount <- assays(sce)[[pars$assay]]

@@ -30,7 +30,8 @@ gi <- metadata(sim)$gene_info
 gi <- dplyr::filter(gi, gene %in% rownames(sim))
 metadata(sim)$gene_info <- gi
 
-sim <- suppressWarnings(normalize(sim))
+sim <- computeLibraryFactors(sim)
+sim <- logNormCounts(sim)
 assays(sim)$cpm <- calculateCPM(sim)
 assays(sim)$vstresiduals <- suppressWarnings(
     vst(counts(sim), show_progress = FALSE)$y)
