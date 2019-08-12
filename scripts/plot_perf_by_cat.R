@@ -37,7 +37,7 @@ df <- map(perf, function(u)
     mutate_at("splitval", function(u) {
         u <- gsub("sim_id:([a-z]+)[0-9]+", "\\1", u)
         factor(u, 
-            levels = c("ds", "dp", "dm", "db"),
+            levels = c("de", "dp", "dm", "db"),
             labels = c("DE", "DP", "DM", "DB"))
     }) %>% 
     dplyr::filter(splitval != "overall") %>%

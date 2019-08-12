@@ -48,7 +48,7 @@ df <- map_depth(perf, 2, fdrtpr) %>%
     ungroup %>% mutate_at("sid", factor, 
         labels = gsub("10", "", names(res))) %>% 
     mutate_at("sid", factor, 
-        levels = c("ds", "dp", "dm", "db"),
+        levels = c("de", "dp", "dm", "db"),
         labels = c("DE", "DP", "DM", "DB"))
 
 p <- .plot_perf_points(df) +
