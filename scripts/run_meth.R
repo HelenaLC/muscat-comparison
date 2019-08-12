@@ -36,7 +36,7 @@ gs <- rownames(sim)
 cs <- colnames(sim)
 
 if (g != "x") 
-    gs <- sample(gs, min(nrow(sim), g))
+    gs <- sample(gs, min(nrow(sim), as.numeric(g)))
 
 if (c != "x") {
     cs <- split(cs, list(sim$cluster_id, sim$sample_id))
