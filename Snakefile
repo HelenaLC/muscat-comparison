@@ -155,7 +155,7 @@ rule plot_perf_by_nx:
 			script = join(config["scripts"], "plot_perf_by_nx.R"),
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
-				"/ds10_n" + wc.x + ";.*").search, res_dirs)
+				"/de10_n" + wc.x + ";.*").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "perf_by_n{x}.rds"),
 			fig = join(config["figures"], "{did}", "perf_by_n{x}.pdf")
 	script: "{input.script}"
@@ -165,7 +165,7 @@ rule plot_perf_by_ss:
 			script = join(config["scripts"], "plot_perf_by_ss.R"),
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
-				"/ds10_ss").search, res_dirs)
+				"/de10_ss").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "perf_by_ss.rds"),
 			fig = join(config["figures"], "{did}", "perf_by_ss.pdf")
 	script: "{input.script}"
@@ -175,7 +175,7 @@ rule plot_perf_by_expr:
 			script = join(config["scripts"], "plot_perf_by_expr.R"),
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
-				"/ds10;.*").search, res_dirs)
+				"/de10;.*").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "perf_by_expr_{padj}.rds"),
 			fig = join(config["figures"], "{did}", "perf_by_expr_{padj}.pdf")
 	script: "{input.script}"
@@ -204,7 +204,7 @@ rule plot_runtimes:
 			script = join(config["scripts"], "plot_runtimes.R"),
 			res = lambda wc: filter(re.compile(\
 				config["results"] + "/" + wc.did +\
-				"/ds10_n[g|c];*").search, res_dirs)
+				"/de10_n[g|c];*").search, res_dirs)
 	output:	fig = join(config["figures"], "{did}", "runtimes.pdf")
 	script:	"{input.script}"
 
