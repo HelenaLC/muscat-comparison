@@ -1,5 +1,5 @@
 # workflowr options
-# Version 1.2.0
+# Version 1.4.0
 
 # The seed to use for random number generation. See ?set.seed for details.
 seed: 20190311
