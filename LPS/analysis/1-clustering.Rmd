@@ -1,0 +1,102 @@
+---
+title: "Clustering"
+author: 
+- name: Pierre-Luc Germain
+  affiliation:
+  - &IMLS Institute for Molecular Life Sciences, University of Zurich, Switzerland
+- name: Helena L. Crowell
+  affiliation: 
+  - *IMLS
+  - Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    toc: true,
+    code_folding: show
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+```
+
+```{r setup}
+# increase future's maximum allowed size of objects
+# to be exported from default of 500 MB to 2 GB
+options(future.globals.maxSize = 2048 * 1024 ^ 2)
+```
+
+### Load packages
+```{r load-libs, message = FALSE, warning = FALSE}
+library(cowplot)
+library(Seurat)
+library(SingleCellExperiment)
+```
+
+### Load data
+```{r load-data}
+sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
+```
+
+# Integration
+```{r integration}
+# create SeuratObject
+so <- CreateSeuratObject(
+    counts = counts(sce),
+    meta.data = data.frame(colData(sce)),
+    project = "10xMAGL")
+
+# split by sample
+cells_by_sample <- split(colnames(sce), sce$sample_id)
+so <- lapply(cells_by_sample, function(i)
+    SubsetData(so, cells = i))
+
+# normalize, find variable genes, and scale
+so <- lapply(so, NormalizeData, verbose = FALSE)
+so <- lapply(so, FindVariableFeatures, nfeatures = 2e3,
+    selection.method = "vst", do.plot = FALSE, verbose = FALSE)
+so <- lapply(so, ScaleData, verbose = FALSE)
+
+# find anchors & integrate
+as <- FindIntegrationAnchors(so, verbose = FALSE)
+so <- IntegrateData(anchorset = as, dims = seq_len(30), verbose = FALSE)
+
+# scale integrated data
+DefaultAssay(so) <- "integrated"
+so <- ScaleData(so, display.progress = FALSE)
+```
+
+# Dimension reduction
+```{r dimred}
+so <- RunPCA(so, npcs = 30, verbose = FALSE)
+so <- RunTSNE(so, reduction = "pca", dims = seq_len(20),
+    seed.use = 1, do.fast = TRUE, verbose = FALSE)
+so <- RunUMAP(so, reduction = "pca", dims = seq_len(20),
+    seed.use = 1, verbose = FALSE)
+```
+
+# Clustering
+```{r clustering}
+so <- FindNeighbors(so, reduction = "pca", dims = seq_len(20), verbose = FALSE)
+for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2))
+    so <- FindClusters(so, resolution = res, random.seed = 1, verbose = FALSE)
+```
+
+# DR colored by sample, group, and cluster ID
+```{r fig.width = 10, fig.height = 14}
+thm <- theme(aspect.ratio = 1, legend.position = "none")
+ps <- lapply(c("sample_id", "group_id", "ident"), function(u) {
+    p1 <- DimPlot(so, reduction = "tsne", group.by = u) + thm
+    p2 <- DimPlot(so, reduction = "umap", group.by = u)
+    lgd <- get_legend(p2)
+    p2 <- p2 + thm
+    list(p1, p2, lgd)
+    plot_grid(p1, p2, lgd, nrow = 1,
+        rel_widths = c(1, 1, 0.5))
+})
+plot_grid(plotlist = ps, ncol = 1)
+```
+
+# Save SeuratObject to .rds
+```{r}
+saveRDS(so, file.path("output", "MAGL-SeuratObject.rds"))
+```

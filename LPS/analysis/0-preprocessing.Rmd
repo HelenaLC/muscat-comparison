@@ -1,0 +1,153 @@
+---
+title: "Preprocessing"
+author: 
+- name: Pierre-Luc Germain
+  affiliation:
+  - &IMLS Institute for Molecular Life Sciences, University of Zurich, Switzerland
+- name: Helena L. Crowell
+  affiliation: 
+  - *IMLS
+  - Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_knit$set(root.dir = "..")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+```
+
+### Load packages
+```{r load-libs, message = FALSE, warning = FALSE}
+library(cowplot)
+library(DropletUtils)
+library(ggplot2)
+library(LSD)
+library(Matrix)
+library(readxl)
+library(scater)
+library(scds)
+library(SingleCellExperiment)
+```
+
+# Load & reformat data
+```{r load-data, message = FALSE}
+# load raw counts
+fastq_dirs <- list.dirs("data", recursive = FALSE, full.names = TRUE)
+names(fastq_dirs) <- basename(fastq_dirs)
+sce <- read10xCounts(fastq_dirs)
+
+# rename row/colData colnames & SCE dimnames
+names(rowData(sce)) <- c("ENSEMBL", "SYMBOL")
+names(colData(sce)) <- c("sample_id", "barcode")
+sce$sample_id <- factor(basename(sce$sample_id))
+dimnames(sce) <- list(
+    with(rowData(sce), paste(ENSEMBL, SYMBOL, sep = ".")),
+    with(colData(sce), paste(barcode, sample_id, sep = ".")))
+
+# load metadata
+md_dir <- file.path("data", "metadata.xlsx")
+md <- read_excel(md_dir)
+m <- match(sce$sample_id, md$`Sample ID`)
+sce$group_id <- md$Characteristics[m]
+
+# remove undetected genes
+sce <- sce[rowSums(counts(sce) > 0) > 0, ]
+dim(sce)
+```
+
+# Doublet removal
+```{r doublet-removal, results = "hide"}
+# split SCE by sample
+cs_by_s <- split(colnames(sce), sce$sample_id)
+sce_by_s <- lapply(cs_by_s, function(cs) sce[, cs])
+
+# run 'scds'
+sce_by_s <- lapply(sce_by_s, function(u) 
+    cxds_bcds_hybrid(bcds(cxds(u))))
+
+# remove doublets
+sce_by_s <- lapply(sce_by_s, function(u) {
+    # compute expected nb. of doublets (10x)
+    n_dbl <- ceiling(0.01 * ncol(u)^2 / 1e3)
+    # remove 'n_dbl' cells w/ highest doublet score
+    o <- order(u$hybrid_score, decreasing = TRUE)
+    u[, -o[seq_len(n_dbl)]]
+})
+
+# merge back into single SCE
+sce <- do.call("cbind", sce_by_s)
+```
+
+# Calculate QC Metrics
+```{r}
+(mito <- grep("mt-", rownames(sce), value = TRUE))
+sce <- addQCPerCell(sce, subsets = list(Mt = mito))
+plotHighestExprs(sce, n = 20)
+```
+
+# Filtering
+```{r fig.height = 10, fig.width = 12}
+# get sample-specific outliers
+cols <- c("sum", "detected", "subsets_Mt_percent")
+log <- c(TRUE, TRUE, FALSE)
+type <- c("both", "both", "higher")
+
+drop_cols <- paste0(cols, "_drop")
+for (i in seq_along(cols))
+    colData(sce)[[drop_cols[i]]] <- isOutlier(sce[[cols[i]]], 
+        nmads = 2.5, type = type[i], log = log[i], batch = sce$sample_id)
+
+sapply(drop_cols, function(i) 
+    sapply(drop_cols, function(j)
+        sum(sce[[i]] & sce[[j]])))
+
+cd <- data.frame(colData(sce))
+ps <- lapply(seq_along(cols), function (i) {
+    p <- ggplot(cd, aes_string(x = cols[i], alpha = drop_cols[i])) +
+        geom_histogram(bins = 100, show.legend = FALSE) +
+        scale_alpha_manual(values = c("FALSE" = 1, "TRUE" = 0.4)) +
+        facet_wrap(~sample_id, ncol = 1, scales = "free") + 
+        theme_classic() + theme(strip.background = element_blank())
+    if (log[i]) 
+        p <- p + scale_x_log10()
+    return(p)
+})
+plot_grid(plotlist = ps, ncol = 3)
+```
+
+```{r fig.width = 12, fig.height = 5}
+layout(matrix(1:2, nrow = 1))
+ol <- rowSums(as.matrix(colData(sce)[drop_cols])) != 0
+x <- sce$sum
+y <- sce$detected
+heatscatter(x, y, log="xy", main = "unfiltered", 
+    xlab = "Total counts", ylab = "Non-zero features")
+heatscatter(x[!ol], y[!ol], log="xy", main = "filtered", 
+    xlab = "Total counts", ylab = "Non-zero features")
+
+# summary of cells kept
+ns <- table(sce$sample_id)
+ns_fil <- table(sce$sample_id[!ol])
+print(rbind(
+    unfiltered = ns, filtered = ns_fil, 
+    "%" = ns_fil / ns * 100), digits = 0)
+
+# drop outlier cells
+sce <- sce[, !ol]
+dim(sce)
+
+# require count > 1 in at least 20 cells
+sce <- sce[rowSums(counts(sce) > 1) >= 20, ]
+dim(sce)
+```
+
+# Save SCE to .rds
+```{r}
+saveRDS(sce, file.path("output", "LPS-sce_prepro.rds"))
+```

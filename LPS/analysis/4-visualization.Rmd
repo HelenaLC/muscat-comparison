@@ -1,0 +1,125 @@
+---
+title: "Visualization"
+author: 
+- name: Helena L. Crowell
+  affiliation: 
+  - &IMLS Institute for Molecular Life Sciences, University of Zurich, Switzerland
+  - &SIB Swiss Institute of Bioinformatics (SIB), University of Zurich, Switzerland
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  workflowr::wflow_html:
+    toc: true
+    code_folding: hide
+---
+
+```{r setup, include = FALSE}
+library(BiocStyle)
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+```
+
+```{r collapse = FALSE, message = FALSE, warning = FALSE}
+library(cowplot)
+library(ComplexHeatmap)
+library(dplyr)
+library(ggplot2)
+library(muscat)
+library(RColorBrewer)
+library(purrr)
+library(reshape2)
+library(scater)
+library(SingleCellExperiment)
+library(UpSetR)
+```
+
+# Load data & results
+
+```{r collapse = FALSE}
+sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
+res <- readRDS(file.path("output", "MAGL-DS_res.rds"))
+```
+
+For easy accession, we store the character vectors of cluster and sample IDs, as well as the number of clusters and samples:
+
+```{r}
+nk <- length(kids <- set_names(levels(sce$cluster_id)))
+ns <- length(sids <- set_names(levels(sce$sample_id)))
+ng <- length(gids <- set_names(levels(sce$group_id)))
+```
+
+# Results filtering & overview
+
+To get a general overview of the differential testing results, we first filter them to retain hits with $\text{FDR}<5\%$ and $~|~logFC~|~>1$, and view the number & percentage of differential findings by cluster. Finally, we extract the top hits (lowest adj. p-value) in each cluster.
+
+```{r collapse = FALSE}
+tbl <- res$table[[1]] %>% 
+    # filter abs(logFC) > 1 & FDR < 0.05
+    lapply(dplyr::filter, p_adj.loc < 0.05, abs(logFC) > 1) %>% 
+    # sort by FDR
+    lapply(dplyr::arrange, p_adj.loc)
+
+# nb. & % of hits by cluster
+n_de <- vapply(tbl, nrow, numeric(1))
+cbind(n_de, perc = round(n_de / nrow(sce) * 100, 2))
+```
+
+# Between-cluster concordance
+
+```{r fig.width = 10, fig.height = 6, collapse = TRUE}
+deg_by_k <- lapply(tbl, pull, "gene")
+upset(fromList(deg_by_k), sets = rev(kids)[-c(1, 2)],
+    mb.ratio = c(0.6, 0.4), nintersects = 30,  
+    text.scale = 0.8, point.size = 2, line.size = 0.4)
+```
+
+# Cell-level visualization {.tabset}
+
+The `r Biocpkg("scater")`[@McCarthy2017-scater] packages provides a variety of visualizations for single-cell data. Here, we use `plotExpression` to render violin plots of the top differential genes identified for each cluster. We specify `x = "sample_id"` to obtain one violin per sample, and `colour_by = "group_id"` to signify the experimental condition each sample belongs to. 
+
+```{r violins, results = "asis", fig.wide = TRUE, fig.height = 6}
+# split cells by cluster
+cs_by_k <- split(colnames(sce), sce$cluster_id)
+# get top-hits for ea. cluster
+n <- 8
+top_gs <- lapply(tbl, function(u) {
+    n <- ifelse(nrow(u) < n, nrow(u), n)
+    u$gene[seq_len(n)]
+})
+for (k in kids) {
+    cat("## ", k, "\n")
+    if (length(top_gs[[k]]) != 0)
+        print(plotExpression(
+            sce[, cs_by_k[[k]]], features = top_gs[[k]], 
+            x = "sample_id", colour_by = "group_id") +
+        guides(fill = guide_legend(override.aes = list(size = 2, alpha = 1))) +
+        theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)))
+    cat("\n\n")
+}
+```
+
+# Dimension reduction {.tabset}
+
+```{r dr, results = "asis", fig.wide = TRUE, fig.height = 5}
+for (dr in c("TSNE", "UMAP")) {
+    cat("## ", dr, "\n") 
+    df <- data.frame(reducedDim(sce, dr), colData(sce))
+    labs <- paste(switch(dr, TSNE = "t-SNE", dr), "dim.", 1:2)
+    p <- ggplot(df, aes_string(x = colnames(df)[1], y = colnames(df)[2])) + 
+        labs(x = labs[1], y = labs[2]) +
+        theme_void() + theme(aspect.ratio = 1, 
+            legend.key.height = unit(2, "mm"), 
+            legend.position = "bottom")
+    p1 <-  p + geom_point(size = 0.1, alpha = 0.2, aes(col = cluster_id)) + 
+        scale_color_manual(values = CATALYST:::.cluster_cols) +
+        guides(color = guide_legend(ncol = 3,
+            override.aes = list(size = 2, alpha = 1)))
+    p2 <- p + geom_point(size = 0.1, alpha = 0.2, aes(col = group_id)) +
+        guides(color = guide_legend(ncol = 1,
+            override.aes = list(size = 2, alpha = 1)))
+    ps <- plot_grid(
+        p1 + theme(legend.position = "none"),
+        p2 + theme(legend.position = "none"))
+    ls <- plot_grid(get_legend(p1), get_legend(p2), rel_widths = c(4, 1))
+    print(plot_grid(ps, ls, ncol = 1, rel_heights = c(3, 1)))
+    cat("\n\n")
+}
+```

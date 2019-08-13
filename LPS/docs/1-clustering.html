@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2019-07-31" />
+
+<title>Clustering</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">LPS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Contents</a>
+</li>
+<li>
+  <a href="0-preprocessing.html">Preprocessing</a>
+</li>
+<li>
+  <a href="1-clustering.html">Clustering</a>
+</li>
+<li>
+  <a href="2-annotation.html">Annotation</a>
+</li>
+<li>
+  <a href="3-differential.html">DS analysis</a>
+</li>
+<li>
+  <a href="4-visualization.html">Visualization</a>
+</li>
+<li>
+  <a href="5-geneset.html">Geneset analysis</a>
+</li>
+<li>
+  <a href="6-more.html">Downstream</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://robinsonlabuzh.github.io">Robinson Lab</a>
+</li>
+<li>
+  <a href="https://github.com/HelenaLC/muscat-comparison">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Clustering</h1>
+<h4 class="author">Pierre-Luc Germain</h4>
+<address class="author_afil">
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="author">Helena L. Crowell</h4>
+<address class="author_afil">
+Institute for Molecular Life Sciences, University of Zurich, Switzerland<br><h4 class="date">July 31, 2019</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2019-07-31
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 2
+</p>
+<p>
+<strong>Knit directory:</strong> <code>MAGL/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.4.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div class="panel-group" id="workflowr-checks">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Environment:</strong> objects present </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongobjectspresent" class="panel-collapse collapse">
+<div class="panel-body">
+
+<p>
+The global environment had objects present when the code in the R Markdown file was run. These objects can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment. Use <code>wflow_publish</code> or <code>wflow_build</code> to ensure that the code is always run in an empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+data
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+env
+</td>
+<td style="text-align:left;">
+environment
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190311code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190311)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190311code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190311)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+</p>
+</div>
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div class="panel-body">
+The following chunks had caches available:
+<ul>
+<li>
+clustering
+</li>
+<li>
+dimred
+</li>
+<li>
+integration
+</li>
+<li>
+load-data
+</li>
+<li>
+load-libs
+</li>
+<li>
+session-info-chunk-inserted-by-workflowr
+</li>
+<li>
+setup
+</li>
+<li>
+unnamed-chunk-2
+</li>
+<li>
+unnamed-chunk-3
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory <code>1-clustering_cache</code> and re-run the analysis. To have workflowr automatically delete the cache directory prior to building the file, set <code>delete_cache = TRUE</code> when running <code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree38135d124912572af3d635d69479da47a24d3524targetblank38135d1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/HelenaLC/muscat-comparison/tree/38135d124912572af3d635d69479da47a24d3524" target="_blank">38135d1</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomHelenaLCmuscatcomparisontree38135d124912572af3d635d69479da47a24d3524targetblank38135d1a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    ._.Renviron
+    Ignored:    ._.gitignore
+    Ignored:    ._README.md
+    Ignored:    ._Snakefile
+    Ignored:    ._config.yaml
+    Ignored:    ._session_info.txt
+    Ignored:    .snakemake/
+    Ignored:    MAGL/.DS_Store
+    Ignored:    MAGL/.RData
+    Ignored:    MAGL/.Rhistory
+    Ignored:    MAGL/._.DS_Store
+    Ignored:    MAGL/._.Rprofile
+    Ignored:    MAGL/._.gitignore
+    Ignored:    MAGL/._data
+    Ignored:    MAGL/analysis/._refs.bib
+    Ignored:    MAGL/analysis/0-preprocessing_cache/
+    Ignored:    MAGL/analysis/1-clustering_cache/
+    Ignored:    MAGL/analysis/3-differential_cache/
+    Ignored:    MAGL/analysis/4-visualization_cache/
+    Ignored:    MAGL/analysis/5-geneset_cache/
+    Ignored:    MAGL/analysis/6-more_cache/
+    Ignored:    MAGL/code/._utils.R
+    Ignored:    MAGL/data/
+    Ignored:    MAGL/output/
+    Ignored:    data/
+    Ignored:    figures/
+    Ignored:    meta/
+    Ignored:    results/
+    Ignored:    scripts/.DS_Store
+    Ignored:    scripts/._.DS_Store
+    Ignored:    scripts/._apply_scdd.R
+    Ignored:    scripts/._plot_perf_by_expr.R
+    Ignored:    scripts/._plot_perf_by_ss.R
+    Ignored:    scripts/._plot_runtimes.R
+    Ignored:    scripts/._prep_magl.R
+    Ignored:    scripts/._prep_sim.R
+    Ignored:    scripts/._session_info.R
+    Ignored:    scripts/._sim_data.R
+    Ignored:    scripts/._sim_qc.R
+    Ignored:    scripts/._utils.R
+
+Untracked files:
+    Untracked:  .RData
+    Untracked:  .RDataTmp
+    Untracked:  .Rhistory
+    Untracked:  MAGL/code/utils.R
+    Untracked:  MAGL/current
+    Untracked:  figs/
+
+Unstaged changes:
+    Modified:   MAGL/.Rprofile
+    Deleted:    scripts/plot_perf_by_lfc.R
+    Deleted:    scripts/plot_sim_ex.R
+    Deleted:    scripts/prep_data.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/659320b63102a9b1779af72e6072811bec615663/MAGL/docs/1-clustering.html" target="_blank">659320b</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-26
+</td>
+<td>
+update LPS analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/analysis/1-clustering.Rmd" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+update lps analysis to include removal of doublets
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/1-clustering.html" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+<td>
+update lps analysis to include removal of doublets
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/f10fe14d31f8f621c2235c76a069e3464bc9d8a4/MAGL/analysis/1-clustering.Rmd" target="_blank">f10fe14</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+<td>
+rmv old
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/08bf26003c87dc52a3395028d1117b7a0ffb75a9/MAGL/docs/1-clustering.html" target="_blank">08bf260</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-06-17
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/61c0b067f9144eecf49366d6d9bc4000c4d10986/MAGL/analysis/1-clustering.Rmd" target="_blank">61c0b06</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-20
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/HelenaLC/muscat-comparison/3c5aa5f379847c31386b94463c65fa6295f26fc2/MAGL/docs/1-clustering.html" target="_blank">3c5aa5f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+<td>
+add MAGL prepro,clust,anno
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/10c7525a571656c0b7abe7bc179a09c3d477149b/MAGL/analysis/1-clustering.Rmd" target="_blank">10c7525</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-05-03
+</td>
+<td>
+add MAGL prepro,clust,anno
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/eaed7ecf04d1ff5ca101c68dfa7079d114b49658/MAGL/analysis/1-clustering.Rmd" target="_blank">eaed7ec</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-03-11
+</td>
+<td>
+initial commit
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># increase future&#39;s maximum allowed size of objects
+# to be exported from default of 500 MB to 2 GB
+options(future.globals.maxSize = 2048 * 1024 ^ 2)</code></pre>
+<div id="load-packages" class="section level3">
+<h3>Load packages</h3>
+<pre class="r"><code>library(cowplot)
+library(Seurat)
+library(SingleCellExperiment)</code></pre>
+</div>
+<div id="load-data" class="section level3">
+<h3>Load data</h3>
+<pre class="r"><code>sce &lt;- readRDS(file.path(&quot;output&quot;, &quot;MAGL-SCE.rds&quot;))</code></pre>
+</div>
+<div id="integration" class="section level1">
+<h1>Integration</h1>
+<pre class="r"><code># create SeuratObject
+so &lt;- CreateSeuratObject(
+    counts = counts(sce),
+    meta.data = data.frame(colData(sce)),
+    project = &quot;10xMAGL&quot;)
+
+# split by sample
+cells_by_sample &lt;- split(colnames(sce), sce$sample_id)
+so &lt;- lapply(cells_by_sample, function(i)
+    SubsetData(so, cells = i))</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;SubsetData&#39; is deprecated.
+Use &#39;subset&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>Warning: &#39;OldWhichCells&#39; is deprecated.
+Use &#39;WhichCells&#39; instead.
+See help(&quot;Deprecated&quot;)</code></pre>
+<pre class="r"><code># normalize, find variable genes, and scale
+so &lt;- lapply(so, NormalizeData, verbose = FALSE)
+so &lt;- lapply(so, FindVariableFeatures, nfeatures = 2e3,
+    selection.method = &quot;vst&quot;, do.plot = FALSE, verbose = FALSE)
+so &lt;- lapply(so, ScaleData, verbose = FALSE)
+
+# find anchors &amp; integrate
+as &lt;- FindIntegrationAnchors(so, verbose = FALSE)
+so &lt;- IntegrateData(anchorset = as, dims = seq_len(30), verbose = FALSE)
+
+# scale integrated data
+DefaultAssay(so) &lt;- &quot;integrated&quot;
+so &lt;- ScaleData(so, display.progress = FALSE)</code></pre>
+<pre><code>Centering and scaling data matrix</code></pre>
+</div>
+<div id="dimension-reduction" class="section level1">
+<h1>Dimension reduction</h1>
+<pre class="r"><code>so &lt;- RunPCA(so, npcs = 30, verbose = FALSE)
+so &lt;- RunTSNE(so, reduction = &quot;pca&quot;, dims = seq_len(20),
+    seed.use = 1, do.fast = TRUE, verbose = FALSE)
+so &lt;- RunUMAP(so, reduction = &quot;pca&quot;, dims = seq_len(20),
+    seed.use = 1, verbose = FALSE)</code></pre>
+</div>
+<div id="clustering" class="section level1">
+<h1>Clustering</h1>
+<pre class="r"><code>so &lt;- FindNeighbors(so, reduction = &quot;pca&quot;, dims = seq_len(20), verbose = FALSE)
+for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2))
+    so &lt;- FindClusters(so, resolution = res, random.seed = 1, verbose = FALSE)</code></pre>
+</div>
+<div id="dr-colored-by-sample-group-and-cluster-id" class="section level1">
+<h1>DR colored by sample, group, and cluster ID</h1>
+<pre class="r"><code>thm &lt;- theme(aspect.ratio = 1, legend.position = &quot;none&quot;)
+ps &lt;- lapply(c(&quot;sample_id&quot;, &quot;group_id&quot;, &quot;ident&quot;), function(u) {
+    p1 &lt;- DimPlot(so, reduction = &quot;tsne&quot;, group.by = u) + thm
+    p2 &lt;- DimPlot(so, reduction = &quot;umap&quot;, group.by = u)
+    lgd &lt;- get_legend(p2)
+    p2 &lt;- p2 + thm
+    list(p1, p2, lgd)
+    plot_grid(p1, p2, lgd, nrow = 1,
+        rel_widths = c(1, 1, 0.5))
+})
+plot_grid(plotlist = ps, ncol = 1)</code></pre>
+<p><img src="figure/1-clustering.Rmd/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/HelenaLC/muscat-comparison/blob/244411f3466962bb727005a8b10b41349a588742/MAGL/docs/figure/1-clustering.Rmd/unnamed-chunk-2-1.png" target="_blank">244411f</a>
+</td>
+<td>
+HelenaLC
+</td>
+<td>
+2019-07-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="save-seuratobject-to-.rds" class="section level1">
+<h1>Save SeuratObject to .rds</h1>
+<pre class="r"><code>saveRDS(so, file.path(&quot;output&quot;, &quot;MAGL-SeuratObject.rds&quot;))</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 16.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/local/R/R-3.6.0/lib/libRblas.so
+LAPACK: /home/HelenaLC/soft/miniconda3/lib/libmkl_rt.so
+
+locale:
+ [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8    
+ [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8   
+ [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] SingleCellExperiment_1.6.0  SummarizedExperiment_1.14.0
+ [3] DelayedArray_0.10.0         BiocParallel_1.18.0        
+ [5] matrixStats_0.54.0          Biobase_2.44.0             
+ [7] GenomicRanges_1.36.0        GenomeInfoDb_1.20.0        
+ [9] IRanges_2.18.1              S4Vectors_0.22.0           
+[11] BiocGenerics_0.30.0         Seurat_3.0.2               
+[13] cowplot_0.9.4               ggplot2_3.2.0              
+
+loaded via a namespace (and not attached):
+  [1] Rtsne_0.15             colorspace_1.4-1       ggridges_0.5.1        
+  [4] rprojroot_1.3-2        XVector_0.24.0         fs_1.3.1              
+  [7] listenv_0.7.0          npsurv_0.4-0           ggrepel_0.8.1         
+ [10] codetools_0.2-16       splines_3.6.0          R.methodsS3_1.7.1     
+ [13] lsei_1.2-0             knitr_1.23             jsonlite_1.6          
+ [16] workflowr_1.4.0        ica_1.0-2              cluster_2.1.0         
+ [19] png_0.1-7              R.oo_1.22.0            sctransform_0.2.0     
+ [22] compiler_3.6.0         httr_1.4.0             backports_1.1.4       
+ [25] assertthat_0.2.1       Matrix_1.2-17          lazyeval_0.2.2        
+ [28] htmltools_0.3.6        tools_3.6.0            rsvd_1.0.1            
+ [31] igraph_1.2.4.1         gtable_0.3.0           glue_1.3.1            
+ [34] GenomeInfoDbData_1.2.1 RANN_2.6.1             reshape2_1.4.3        
+ [37] dplyr_0.8.3            Rcpp_1.0.1             gdata_2.18.0          
+ [40] ape_5.3                nlme_3.1-140           gbRd_0.4-11           
+ [43] lmtest_0.9-37          xfun_0.8               stringr_1.4.0         
+ [46] globals_0.12.4         irlba_2.3.3            gtools_3.8.1          
+ [49] future_1.14.0          MASS_7.3-51.4          zlibbioc_1.30.0       
+ [52] zoo_1.8-6              scales_1.0.0           RColorBrewer_1.1-2    
+ [55] yaml_2.2.0             reticulate_1.12        pbapply_1.4-0         
+ [58] gridExtra_2.3          stringi_1.4.3          highr_0.8             
+ [61] caTools_1.17.1.2       bibtex_0.4.2           Rdpack_0.11-0         
+ [64] SDMTools_1.1-221.1     rlang_0.4.0            pkgconfig_2.0.2       
+ [67] bitops_1.0-6           evaluate_0.14          lattice_0.20-38       
+ [70] ROCR_1.0-7             purrr_0.3.2            htmlwidgets_1.3       
+ [73] labeling_0.3           tidyselect_0.2.5       plyr_1.8.4            
+ [76] magrittr_1.5           R6_2.4.0               gplots_3.0.1.1        
+ [79] pillar_1.4.2           whisker_0.3-2          withr_2.1.2           
+ [82] fitdistrplus_1.0-14    survival_2.44-1.1      RCurl_1.95-4.12       
+ [85] tibble_2.1.3           future.apply_1.3.0     tsne_0.1-3            
+ [88] crayon_1.3.4           KernSmooth_2.23-15     plotly_4.9.0          
+ [91] rmarkdown_1.13         grid_3.6.0             data.table_1.12.2     
+ [94] git2r_0.26.1           metap_1.1              digest_0.6.20         
+ [97] tidyr_0.8.3            R.utils_2.9.0          munsell_0.5.0         
+[100] viridisLite_0.3.0     </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
