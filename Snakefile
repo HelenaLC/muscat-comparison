@@ -28,7 +28,6 @@ mids = mids.set_index(mids["id"])
 
 sim_dirs = []
 res_dirs = []
-fig_dirs = []
 for sid in sids:
 	sim_pars = json.loads(open(join(config["sim_pars"], sid + ".json")).read())
 	for did in config["dids"]:
@@ -36,9 +35,6 @@ for sid in sids:
 		if run_pars is None: continue
 		sim_dirs.append(expand(join(\
 			config["sim_data"], "{did}", "{sid};{i}.rds"),\
-			did = did, sid = sid, i = range(1, sim_pars["nr"][0] + 1)))
-		fig_dirs.append(expand(join(\
-			config["figures"], "{did}", "tprfdr", "{sid};{i}.pdf"),\
 			did = did, sid = sid, i = range(1, sim_pars["nr"][0] + 1)))
 		res_dirs.append(expand(join(\
 			config["results"], "{did}", "{sid};{i};{mid};{j};g{g};c{c};k{k};s{s}.rds"),
@@ -50,11 +46,9 @@ for sid in sids:
 
 sim_dirs = sum(sim_dirs, [])
 res_dirs = sum(res_dirs, [])
-fig_dirs = sum(fig_dirs, [])
-fig_dirs = filter(re.compile("d[a-z][0-9]+;").search, fig_dirs)
 
 rule all: 
-	input:	sim_dirs, res_dirs, fig_dirs,
+	input:	sim_dirs, res_dirs,
 			expand(join(config["raw_data"], "{pre}_{did}.rds"), \
 				pre = ["sce", "ref"], did = config["dids"]),
 			#expand(join(config["figures"], "{did}_qc.html"), did = config["dids"]),
@@ -129,15 +123,6 @@ rule plot_null:
 				"/nill;.*").search, res_dirs)
 	output: ggp = join(config["figures"], "{did}", "null.rds"), 
 			fig = join(config["figures"], "{did}", "null.pdf")
-	script: "{input.script}"
-
-rule plot_tprfdr:
-	input:	config["utils"],
-			script = join(config["scripts"], "plot_tprfdr.R"),
-			res = lambda wc: filter(re.compile(\
-				config["results"] + "/" + wc.did + "/" +\
-				wc.sid + ";" + wc.i + ";.*").search, res_dirs)
-	output: fig = join(config["figures"], "{did}", "tprfdr", "{sid};{i}.pdf")
 	script: "{input.script}"
 
 rule plot_perf_by_cat:
