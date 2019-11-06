@@ -1,21 +1,19 @@
-source(snakemake@config$utils)
-
-suppressPackageStartupMessages({
+source(".Rprofile")
+suppressMessages({
     library(data.table)
     library(dplyr)
     library(iCOBRA)
     library(ggplot2)
     library(purrr)
 })
-
-#fns <- list.files("/users/helena/dropbox/portmac/results/kang", "d[a-z][0-9]+;", full.names = TRUE)
+#-------------------------------------------------------------------------------
+#fns <- list.files("results", "kang;d[a-z][0-9]+;", full.names = TRUE)
 res <- .read_res(snakemake@input$res) %>% 
     mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = c("i", "sid", "mid"), flatten = FALSE)
 
 p_adj <- paste0("p_adj.", snakemake@wildcards$padj)
-
 cd <- lapply(seq_along(res), function(i) COBRAData( 
     pval = as.data.frame(bind_rows(map(map_depth(res[[i]], 2, "p_val"), bind_cols))),
     padj = as.data.frame(bind_rows(map(map_depth(res[[i]], 2, p_adj), bind_cols))),

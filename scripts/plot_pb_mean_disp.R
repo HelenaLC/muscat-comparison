@@ -1,6 +1,5 @@
-source(snakemake@config$utils)
-
-suppressPackageStartupMessages({
+source(".Rprofile")
+suppressMessages({
     library(dplyr)
     library(edgeR)
     library(ggplot2)

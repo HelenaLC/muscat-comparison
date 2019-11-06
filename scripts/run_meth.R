@@ -1,13 +1,11 @@
-options(conflicts.policy = list(warn = FALSE))
-
-source(snakemake@config$utils)
-
+source(".Rprofile")
 suppressMessages({
     library(dplyr)
+    library(jsonlite)
     library(purrr)
     library(SingleCellExperiment)
 })
-
+#-------------------------------------------------------------------------------
 wcs <- snakemake@wildcards
 wcs <- wcs[names(wcs) != ""]
 for (wc in names(wcs))
@@ -15,8 +13,8 @@ for (wc in names(wcs))
 
 sim <- readRDS(snakemake@input$sim)
 
-meth_pars <- as.list(jsonlite::fromJSON(snakemake@input$meth_pars))
-run_pars <- as.list(jsonlite::fromJSON(snakemake@input$run_pars))
+meth_pars <- as.list(fromJSON(snakemake@input$meth_pars))
+run_pars <- as.list(fromJSON(snakemake@input$run_pars))
 
 set.seed(run_pars$seed + as.numeric(j))
 

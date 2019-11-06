@@ -1,0 +1,3 @@
+# required for RStudio server
+R_LIBS_USER="~/soft/R-3.6.0/library"
+RETICULATE_PYTHON="~/soft/miniconda3/bin/python"

@@ -1,14 +1,11 @@
-source(snakemake@config$utils)
-
-# load packages
+source(".Rprofile")
 suppressMessages({
     library(dplyr)
     library(edgeR)
     library(Matrix)
-    library(SingleCellExperiment)
+    library(SingleCellExperiment)  
 })
-
-# load data
+#-------------------------------------------------------------------------------
 sce <- readRDS(snakemake@input$sce)
 
 # keep genes w/ count > 1 in at least 10 cells;

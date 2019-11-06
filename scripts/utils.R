@@ -36,7 +36,8 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         res <- map(res, mutate_if, is.factor, as.character) %>% 
             bind_rows %>% mutate_if(is.character, as.factor) %>% 
             mutate_at("category", factor, levels = muscat:::cats) %>% 
-            mutate_at("mid", factor, levels = names(.meth_cols))
+            mutate_at("mid", factor, levels = names(.meth_cols)) %>% 
+            mutate_if(is.factor, droplevels)
     return(res)
 }
 

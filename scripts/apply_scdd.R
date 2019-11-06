@@ -7,24 +7,18 @@ suppressMessages({
 })
 
 apply_scdd <- function(sce, pars, ds_only = TRUE) {
-    # run & time method
     t <- system.time({
-        if (!ds_only) {
-            suppressWarnings(suppressMessages(
-                assays(sce)$normcounts <- switch(pars$assay, 
-                    logcounts = normcounts(logNormCounts(computeLibraryFactors(sce), log = FALSE)),
-                    vstcounts = exp(vst(counts(sce), show_progress = FALSE)$y))))
-        } else {
-            assays(sce)$normcounts <- switch(pars$assay,
+        if (ds_only) {
+            normcounts(sce) <- switch(pars$assay,
                 logcounts = 2^logcounts(sce)-1,
-                vstresiduals = exp(assays(sce)$vstresiduals))
+                vstresiduals = exp(assay(sce, "vstresiduals")))
+        } else {
+            normcounts(sce) <- switch(pars$assay, 
+                logcounts = normcounts(logNormCounts(computeLibraryFactors(sce), log = FALSE)),
+                vstresiduals = exp(vst(counts(sce), show_progress = FALSE)$y))
         }
-        res <- tryCatch(
-            error = function(e) e, 
-            run_scdd(sce))
+        res <- tryCatch(run_scdd(sce), error = function(e) e)
     })[[3]]
-    
-    # return results
     list(rt = t, tbl = res)
 }
 
@@ -34,18 +28,21 @@ run_scdd <- function(sce) {
     if (is(normcounts(sce), "dgCMatrix"))
         normcounts(sce) <- as.matrix(normcounts(sce))
     suppressMessages(
-        lapply(kids, function(k) {
+        res <- lapply(kids, function(k) {
             res <- results(scDD(sce[, cells_by_k[[k]]], 
                 min.nonzero = 20, condition = "group_id",
                 categorize = FALSE, testZeroes = FALSE,
                 param = BiocParallel::MulticoreParam(workers = 1)))
             data.frame(
-                row.names = NULL, 
-                stringsAsFactors = FALSE,
                 gene = rownames(sce), 
                 cluster_id = k,
                 p_val = res$nonzero.pvalue, 
-                p_adj.loc = res$nonzero.pvalue.adj)
-        }) %>% bind_rows %>% dplyr::mutate(p_adj.glb = p.adjust(p_val))
+                p_adj.loc = res$nonzero.pvalue.adj,
+                row.names = NULL, 
+                stringsAsFactors = FALSE)
+        }) 
     )
+    df <- bind_rows(res)
+    df$p_adj.glb <- p.adjust(df$p_val)
+    return(df)
 }

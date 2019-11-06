@@ -1,34 +1,14 @@
-# load packages
+source(".Rprofile")
 suppressMessages({
     library(muscat)
-    library(S4Vectors)
     library(SingleCellExperiment)
 })
-
-# load data
-sce <- readRDS(snakemake@input$sce)
-
-# remove multiplets & unassignet cells
-sce <- sce[, sce$multiplets == "singlet" & !is.na(sce$cell)]
-
-# keep reference samples only
-sce <- sce[, sce$stim == "ctrl"]
-
-# construct sample IDs
-sce$sample_id <- factor(paste0(sce$stim, sce$ind))
-
-# prep. SCE for 'muscat'
-sce <- prepSCE(sce, 
-    cluster_id = "cell",
-    sample_id = "sample_id",
-    group_id = "stim",
-    drop = TRUE)
-
-# remove slots other than counts
-assays(sce) <- SimpleList(counts = counts(sce))
-
-# remove dimension reductions
-reducedDims(sce) <- NULL
-
-# write SCE to .rds
-saveRDS(sce, snakemake@output$sce)
+#-------------------------------------------------------------------------------
+sce <- readRDS(snakemake@input$sce) # load data
+sce <- sce[, sce$multiplets == "singlet"] # remove multiplets
+sce <- sce[, !is.na(sce$cell)] # remove unassigned cells
+sce <- sce[, sce$stim == "ctrl"] # keep control samples only
+sce$sample_id <- factor(paste0(sce$stim, sce$ind)) # construct sample IDs
+sce <- prepSCE(sce, "cell", "sample_id", "stim", TRUE) # prep. SCE for `muscat`
+reducedDims(sce) <- NULL # remove dimensionality reductions
+saveRDS(sce, snakemake@output$sce) # write SCE to .rds

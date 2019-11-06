@@ -1,6 +1,5 @@
-source(snakemake@config$utils)
-
-suppressPackageStartupMessages({
+source(".Rprofile")
+suppressMessages({
     library(data.table)
     library(dplyr)
     library(iCOBRA)
@@ -8,8 +7,8 @@ suppressPackageStartupMessages({
     library(purrr)
     library(reshape2)
 })
-
-#fns <- list.files("~/documents/kang", "nill", full.names = TRUE)
+#-------------------------------------------------------------------------------
+#fns <- list.files("results/kang", "nill", full.names = TRUE)
 df <- .read_res(snakemake@input$res) %>% 
     dplyr::filter(!is.na(p_val)) %>% 
     dplyr::rename(method = mid, replicate = i)
@@ -39,4 +38,3 @@ saveRDS(p, snakemake@output$ggp)
 ggsave(snakemake@output$fig, p,
     units = "cm", width = 15, height = 8,
     dpi = 300, useDingbats = FALSE)
-

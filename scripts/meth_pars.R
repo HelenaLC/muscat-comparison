@@ -1,5 +1,5 @@
 config <- yaml::read_yaml("config.yaml")
-ids <- purrr::set_names(c("pb", "ad", "scdd", "mast", "mm"))
+ids <- purrr::set_names(c("pb", "ad", "scdd", "mast"))#, "mm"))
 
 # aggregation-based ------------------------------------------------------------
 pb <- dplyr::bind_rows(

@@ -1,7 +1,7 @@
 scripts: "scripts"
 utils: "scripts/utils.R"
 
-dids: ["kang", "magl"]
+dids: ["kang"]
 sids: "meta/sim_ids.json"
 mids: "meta/meth_ids.csv"
 
@@ -14,3 +14,4 @@ sim_data: "data/sim_data"
 
 results: "results"
 figures: "figures"
+logs: "logs"
