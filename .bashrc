@@ -1,1 +1,0 @@
-alias Rscript="/Library/Frameworks/R.framework/Versions/3.6/Resources/bin/Rscript"
