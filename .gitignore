@@ -1,7 +1,9 @@
 *._*
 .DS_Store
 .snakemake
-
+.Renviron
+.Rprofile
+figs
 data
 meta
 results
