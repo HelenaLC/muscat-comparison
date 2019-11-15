@@ -1,15 +1,14 @@
-source(snakemake@config$utils)
-
 suppressMessages({
     library(cowplot)
     library(dplyr)
     library(ggplot2)
     library(reshape2)
     library(purrr)
+    library(UpSetR)
 })
 
-#fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
-res <- .read_res(snakemake@input$res) %>% 
+#args <- list(res = list.files("results", "kang,d[a-z][0-9]+,", full.names = TRUE))
+res <- .read_res(args$res) %>% 
     dplyr::mutate(hit = paste(gene, cluster_id, sid, i, sep = ";"))
 
 n_dd <- res %>% 
@@ -27,13 +26,21 @@ top <- group_by(res, sid, i) %>% do({
         summarize(hit = list(hit))
 }) %>% group_by(mid) %>% summarize(hit = list(purrr::reduce(hit, c)))
 
-df <- UpSetR::fromList(set_names(top$hit, top$mid)) %>% dplyr::mutate(
-    code = apply(.[top$mid], 1, paste, collapse = ""),
-    degree = apply(.[top$mid], 1, sum),
-    hit = unique(unlist(top$hit))) %>% {
+df <- fromList(set_names(top$hit, top$mid)) %>% 
+    dplyr::mutate(
+        code = apply(.[top$mid], 1, paste, collapse = ""),
+        degree = apply(.[top$mid], 1, sum),
+        hit = unique(unlist(top$hit))
+    ) %>% {
         m <- match(.$hit, res$hit)
-        dplyr::mutate(., sid = res$sid[m], i = res$i[m], cat = res$category[m])
-    } %>% add_count(code) %>% group_by(code) %>% ungroup
+        dplyr::mutate(., 
+            sid = res$sid[m], 
+            i = res$i[m], 
+            cat = res$category[m])
+    } %>% 
+    add_count(code) %>% 
+    group_by(code) %>% 
+    ungroup
 
 m <- match(unique(df$code), df$code)
 keep <- pull(top_n(df[m, ], 40, n), "code")
@@ -85,8 +92,9 @@ p2 <- ggplot(dfm, aes(x = code, y = method, color = factor(value))) +
         axis.title = element_blank(),
         aspect.ratio = NULL) 
 
-anno <- read.csv(snakemake@config$mids)
-anno$type <- factor(anno$type, levels = names(.typ_cols))
+anno <- read.csv(config$mids)
+anno$type <- factor(anno$type, 
+    levels = names(.typ_cols))
 
 p3 <- ggplot(anno, aes(x = 0, y = id, fill = type)) +
     scale_fill_manual("method", values = .typ_cols, labels = .typ_labs) +
@@ -110,6 +118,6 @@ p <- plot_grid(
         rel_heights = c(3, 2)),
     nrow = 1, rel_widths = c(7, 1))
 
-ggsave(snakemake@output$fig, p, dpi = 300,
+ggsave(args$fig, p, dpi = 300,
     width = 15, height = 8, units = "cm")
 

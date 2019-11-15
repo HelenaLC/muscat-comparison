@@ -1,4 +1,3 @@
-source(".Rprofile")
 suppressMessages({
     library(data.table)
     library(dplyr)
@@ -6,14 +5,14 @@ suppressMessages({
     library(ggplot2)
     library(purrr)
 })
-#-------------------------------------------------------------------------------
+
 #fns <- list.files("results", "kang;d[a-z][0-9]+;", full.names = TRUE)
-res <- .read_res(snakemake@input$res) %>% 
+res <- .read_res(args$res) %>% 
     mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = c("i", "sid", "mid"), flatten = FALSE)
 
-p_adj <- paste0("p_adj.", snakemake@wildcards$padj)
+p_adj <- paste0("p_adj.", wcs$padj)
 cd <- lapply(seq_along(res), function(i) COBRAData( 
     pval = as.data.frame(bind_rows(map(map_depth(res[[i]], 2, "p_val"), bind_cols))),
     padj = as.data.frame(bind_rows(map(map_depth(res[[i]], 2, p_adj), bind_cols))),
@@ -45,7 +44,7 @@ df <- map(perf, function(u)
 p <- .plot_perf_points(df)
 p$facet$params$ncol <- nlevels(df$splitval)
 
-saveRDS(p, snakemake@output$ggp)
-ggsave(snakemake@output$fig, p,
+saveRDS(p, args$ggp)
+ggsave(args$fig, p,
     units = "cm", width = 15, height = 8,
     dpi = 300, useDingbats = FALSE)

@@ -32,8 +32,8 @@ run_pars <- lapply(run_pars, function(l) {
 
 fns0 <- paste0(sim_ids, ".json")
 for (data_id in config$dids) {
-    fns <- paste(data_id, fns0, sep = ";")
-    fns <- file.path(config$run_pars, fns)
+    fns <- paste(data_id, fns0, sep = ",")
+    fns <- paste0(config$run_pars, fns)
     names(fns) <- sim_ids
     for (sim_id in sim_ids) {
         new <- run_pars[[data_id]][[sim_id]]

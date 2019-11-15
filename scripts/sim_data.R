@@ -1,4 +1,3 @@
-source(".Rprofile")
 suppressMessages({
     library(dplyr)
     library(jsonlite)
@@ -7,25 +6,16 @@ suppressMessages({
     library(sctransform)
     library(SingleCellExperiment) 
 })
-#-------------------------------------------------------------------------------
-sce <- readRDS(snakemake@input$sce)
-sim_pars <- fromJSON(snakemake@input$sim_pars)
 
-i <- as.numeric(snakemake@wildcards$i)
-set.seed(sim_pars$seed + i)
-
-kids <- levels(sce$cluster_id)
-sids <- levels(sce$sample_id)
-
-sce <- .filter_sce(sce, 
-    kids = sample(kids, sim_pars$nk),
-    sids = sample(sids, sim_pars$ns))
+# load data & simulation parameters
+sce <- readRDS(args$sce)
+sim_pars <- fromJSON(args$sim_pars)
+set.seed(sim_pars$seed + as.numeric(wcs$i))
 
 sim <- simData(sce, 
-    n_genes = nrow(sce), 
-    n_cells = sim_pars$nc, 
-    p_dd = sim_pars$p_dd, 
-    probs = sim_pars$probs)
+    ng = nrow(sce), nc = sim_pars$nc,
+    ns = sim_pars$ns, nk = sim_pars$nk,
+    p_dd = sim_pars$p_dd, probs = sim_pars$probs)
 
 sim <- sim[rowSums(counts(sim) > 0) >= 10, ]
 sim <- sim[sample(nrow(sim), min(nrow(sim), sim_pars$ng)), ]
@@ -40,4 +30,4 @@ assays(sim)$cpm <- calculateCPM(sim)
 assays(sim)$vstresiduals <- suppressWarnings(
     vst(counts(sim), show_progress = FALSE)$y)
 
-saveRDS(sim, snakemake@output$sce)
+saveRDS(sim, args$sim)

@@ -1,5 +1,3 @@
-source(snakemake@config$utils)
-
 suppressMessages({
     library(cowplot)
     library(dplyr)
@@ -7,12 +5,10 @@ suppressMessages({
     library(purrr)
 })
 
-#fns <- list.files("results/kang", "ds10_n[g|c];", full.names = TRUE)
-fns <- snakemake@input$res
-pat <- "%s;%s;%s;%s;g%s;c%s;k%s;s%s"
-tbl <- .read_res(fns) %>% 
+pat <- "%s,%s,%s,%s,g%s,c%s,k%s,s%s"
+tbl <- .read_res(args$res) %>% 
     dplyr::mutate(id = sprintf(pat, sid, i, mid, j, g, c, k, s))
-rts <- .read_res(fns, slot = "rt") %>% 
+rts <- .read_res(args$res, slot = "rt") %>% 
     vapply(sum, numeric(1)) %>% 
     set_names(gsub(".rds", "", basename(fns)))
 
@@ -60,7 +56,6 @@ p <- plot_grid(
     lgd, ncol = 1, 
     rel_heights = c(4, 1))
 
-ggsave(snakemake@output$fig, p,
+ggsave(args$fig, p,
     units = "cm", width = 15, height = 6.4,
     dpi = 300, useDingbats = FALSE)    
-

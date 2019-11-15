@@ -1,22 +1,15 @@
-source(".Rprofile")
 suppressMessages({
     library(dplyr)
     library(jsonlite)
     library(purrr)
     library(SingleCellExperiment)
 })
-#-------------------------------------------------------------------------------
-wcs <- snakemake@wildcards
-wcs <- wcs[names(wcs) != ""]
-for (wc in names(wcs))
-    assign(wc, wcs[[wc]])
 
-sim <- readRDS(snakemake@input$sim)
+sim <- readRDS(args$sim)
+meth_pars <- as.list(fromJSON(args$meth_pars))
+run_pars <- as.list(fromJSON(args$run_pars))
 
-meth_pars <- as.list(fromJSON(snakemake@input$meth_pars))
-run_pars <- as.list(fromJSON(snakemake@input$run_pars))
-
-set.seed(run_pars$seed + as.numeric(j))
+set.seed(run_pars$seed + as.numeric(wcs$j))
 
 # subset clusters & samples
 kids <- levels(sim$cluster_id)
@@ -24,8 +17,8 @@ sids <- levels(sim$sample_id)
 m <- match(sids, sim$sample_id)
 gids <- sim$group_id[m]
 
-if (k != "x") kids <- sample(kids, k)
-if (s != "x") sids <- sapply(split(sids, gids), sample, s)
+if (wcs$k != "x") kids <- sample(kids, wcs$k)
+if (wcs$s != "x") sids <- sapply(split(sids, gids), sample, wcs$s)
 
 sim <- .filter_sce(sim, kids, sids)
 
@@ -33,17 +26,17 @@ sim <- .filter_sce(sim, kids, sids)
 gs <- rownames(sim)
 cs <- colnames(sim)
 
-if (g != "x") 
-    gs <- sample(gs, min(nrow(sim), as.numeric(g)))
+if (wcs$g != "x") 
+    gs <- sample(gs, min(nrow(sim), as.numeric(wcs$g)))
 
-if (c != "x") {
+if (wcs$c != "x") {
     cs <- split(cs, list(sim$cluster_id, sim$sample_id))
     cs <- unlist(lapply(cs, function(u) 
-        sample(u, min(length(u), as.numeric(c)))))
+        sample(u, min(length(u), as.numeric(wcs$c)))))
 }
 
 # run method & write results to .rds
-source(fun <- snakemake@input$fun)
+source(fun <- args$fun)
 fun <- gsub("(.R)", "", basename(fun))
 res <- get(fun)(sim[gs, cs], meth_pars)
 
@@ -59,8 +52,9 @@ if (!inherits(res$tbl, "error")) {
     res$tbl <- left_join(gi, res$tbl, by = c("gene", "cluster_id")) %>%
         {if ("logFC" %in% names(.)) 
             dplyr::rename(., est_lfc = logFC) else .} %>%
-        dplyr::mutate(did, sid, mid, i, j, g, c, k, s,
+        dplyr::mutate(did = wcs$did, sid = wcs$sid, mid = wcs$mid, 
+            i = wcs$i, j = wcs$j, g = wcs$g, c = wcs$c, k = wcs$k, s = wcs$s,
             is_de = as.integer(!category %in% c("ee", "ep")))
 }
 
-saveRDS(res, snakemake@output$res)
+saveRDS(res, args$res)

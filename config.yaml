@@ -1,17 +1,18 @@
-scripts: "scripts"
+scripts: "scripts/"
 utils: "scripts/utils.R"
 
 dids: ["kang"]
 sids: "meta/sim_ids.json"
 mids: "meta/meth_ids.csv"
 
-sim_pars: "meta/sim_pars"
-run_pars: "meta/run_pars"
-meth_pars: "meta/meth_pars"
+sim_pars: "meta/sim_pars/"
+run_pars: "meta/run_pars/"
+meth_pars: "meta/meth_pars/"
 
-raw_data: "data/raw_data"
-sim_data: "data/sim_data"
+raw_data: "data/raw_data/"
+sim_data: "data/sim_data/"
 
-results: "results"
-figures: "figures"
-logs: "logs"
+results: "results/"
+figures: "figures/"
+plots: "plots/"
+logs: "logs/"

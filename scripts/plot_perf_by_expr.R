@@ -1,4 +1,3 @@
-source(".Rprofile")
 suppressMessages({
     library(data.table)
     library(dplyr)
@@ -6,14 +5,14 @@ suppressMessages({
     library(ggplot2)
     library(purrr)
 })
-#-------------------------------------------------------------------------------
+
 groups <- c("E <= 0.1", "0.1 < E <= 0.5", "0.5 < E <= 1", "E > 1")
 .get_group <- function(u) sapply(u, function(v) 
     if (v <= 0.1) 1 else if (v <= 0.5) 2 else if (v <= 1) 3 else 4) %>% 
     factor
 
 #fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
-res <- .read_res(snakemake@input$res) %>% 
+res <- .read_res(args$res) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::mutate(group = .get_group(.$E)) %>% setDT %>% 
     split(by = c("sid", "i", "group", "mid"), flatten = FALSE)
@@ -53,7 +52,7 @@ df <- map_depth(perf, 2, fdrtpr) %>%
 p <- .plot_perf_points(df) +
     facet_grid(rows = vars(sid), cols = vars(splitval))
 
-saveRDS(p, snakemake@output$ggp)
-ggsave(snakemake@output$fig, p,
+saveRDS(p, args$ggp)
+ggsave(args$fig, p,
     units = "cm", width = 15, height = 16.3,
     dpi = 300, useDingbats = FALSE)

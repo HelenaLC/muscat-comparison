@@ -1,5 +1,5 @@
 config <- yaml::read_yaml("config.yaml")
-ids <- purrr::set_names(c("pb", "ad", "scdd", "mast"))#, "mm"))
+ids <- purrr::set_names(c("pb", "ad", "scdd", "mast"))#, "mm")),
 
 # aggregation-based ------------------------------------------------------------
 pb <- dplyr::bind_rows(
@@ -18,7 +18,7 @@ pb <- dplyr::bind_rows(
         assay = "cpm", fun = "sum", method = "edgeR"
     )    
 )
-pb$id <- with(pb, sprintf("%s.%s(%s%s)", 
+pb$id <- with(pb, sprintf("%s.%s.%s%s", 
     method, fun, ifelse(scale, "scale", ""), assay))
 
 # mixed-models -----------------------------------------------------------------
@@ -35,8 +35,7 @@ ad <-  expand.grid(
     stringsAsFactors = FALSE,
     assay = c("logcounts", "vstresiduals"),
     var = c("sample_id", "group_id"))
-ad$id <- with(ad, sprintf("AD-%s.%s",
-    gsub("(.).*", "\\1id", var), assay))
+ad$id <- with(ad, sprintf("AD-%s.%s", gsub("(.).*", "\\1id", var), assay))
 
 # scDD -------------------------------------------------------------------------
 scdd <- data.frame(
@@ -70,7 +69,7 @@ write.csv(mids_df, config$mids)
 
 # write method parameters to .json ---------------------------------------------
 fns <- paste0(mids, ".json")
-fns <- file.path(config$meth_pars, fns)
+fns <- paste0(config$meth_pars, fns)
 names(fns) <- mids
 
 for (id in mids) {

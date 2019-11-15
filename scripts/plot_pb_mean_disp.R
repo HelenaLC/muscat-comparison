@@ -1,4 +1,7 @@
-source(".Rprofile")
+args <- R.utils::commandArgs(
+    trailingOnly = TRUE, 
+    asValues = TRUE)
+
 suppressMessages({
     library(dplyr)
     library(edgeR)
@@ -9,8 +12,7 @@ suppressMessages({
 })
 
 set.seed(1994)
-
-sce <- readRDS(snakemake@input$sce)
+sce <- readRDS(args$sce)
 
 nk <- length(kids <- levels(sce$cluster_id))
 ns <- length(sids <- levels(sce$sample_id))
@@ -45,8 +47,6 @@ df <- dplyr::filter(res,
     disp_tag > quantile(disp_tag, 0.01),
     disp_tag < quantile(disp_tag, 0.99))
 
-#sub <- res[sample(nrow(res), 1e4), ]
-
 p <- ggplot(df, aes(x = mean, col = id)) +
     facet_wrap(~ cluster_id, nrow = 1) + 
     geom_point_rast(aes(y = disp_tag), size = 0.2, alpha = 0.02) + 
@@ -56,7 +56,7 @@ p <- ggplot(df, aes(x = mean, col = id)) +
     labs(x = "mean logCPM", y = "dispersion") + scale_y_log10() + 
     .prettify("bw", legend.position = "bottom")
 
-saveRDS(p, snakemake@output$ggp)
-ggsave(snakemake@output$fig, p,
+saveRDS(p, args$ggp)
+ggsave(args$fig, p,
     width = 15, height = 6, units = "cm", 
     dpi = 300, useDingbats = FALSE)

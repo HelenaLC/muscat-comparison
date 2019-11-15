@@ -1,12 +1,19 @@
-source(".Rprofile")
+args <- R.utils::commandArgs(
+    trailingOnly = TRUE, 
+    asValues = TRUE)
+
 suppressMessages({
     library(dplyr)
     library(edgeR)
     library(Matrix)
     library(SingleCellExperiment)  
 })
-#-------------------------------------------------------------------------------
-sce <- readRDS(snakemake@input$sce)
+
+# source utils
+source(file.path("scripts", "utils.R"))
+
+# load data
+sce <- readRDS(args$input_sce)
 
 # keep genes w/ count > 1 in at least 10 cells;
 # keep cells w/ at least 100 detected genes
@@ -36,4 +43,4 @@ colnames(y$coefficients) <- betas
 rowData(sce)[, betas] <- y$coefficients
 
 # write SCE to .rds
-saveRDS(sce, snakemake@output$sce)
+saveRDS(sce, args$output_sce)

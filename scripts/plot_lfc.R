@@ -1,6 +1,4 @@
-source(snakemake@config$utils)
-
-suppressPackageStartupMessages({
+suppressMessages({
     library(cowplot)
     library(dplyr)
     library(ggplot2)
@@ -9,7 +7,7 @@ suppressPackageStartupMessages({
 })
 
 #fns <- list.files("~/documents/kang", "d[a-z][0-9]+;", full.names = TRUE)
-df <- .read_res(snakemake@input$res) %>% 
+df <- .read_res(args$res) %>% 
     rename(method = mid) %>%
     dplyr::filter(!(is.na(sim_lfc) | is.na(est_lfc))) %>% 
     mutate_at("method", droplevels) %>% 
@@ -40,7 +38,7 @@ p <- ggplot(sub, aes(x = sim_lfc, y = est_lfc, col = as.logical(is_de))) +
         panel.spacing = unit(1, "mm"),
         legend.position = "bottom")
 
-saveRDS(p, snakemake@output$ggp)
-ggsave(snakemake@output$fig, p,
+saveRDS(p, args$ggp)
+ggsave(args$fig, p,
     width = 15, height = 11, units = "cm",
     dpi = 300, useDingbats = FALSE)
