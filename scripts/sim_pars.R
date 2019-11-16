@@ -3,15 +3,15 @@ config <- yaml::read_yaml("config.yaml")
 de10 <- c(0.9, 0, 0.1, 0, 0, 0)
 
 sim_pars <- list(
-    nill = list(nr = 2, p_dd = diag(6)[1, ], seed = 1), 
-    de10 = list(nr = 3, p_dd = c(0.9, 0, 0.1, 0, 0, 0), seed = 10),
-    dp10 = list(nr = 3, p_dd = c(0.9, 0, 0, 0.1, 0, 0), seed = 30),
-    dm10 = list(nr = 3, p_dd = c(0.9, 0, 0, 0, 0.1, 0), seed = 50),
-    db10 = list(nr = 3, p_dd = c(0.9, 0, 0, 0, 0, 0.1), seed = 70),
+    nill = list(nr = 3, p_dd = diag(6)[1, ], seed = 1), 
+    de10 = list(nr = 5, p_dd = c(0.9, 0, 0.1, 0, 0, 0), seed = 10),
+    dp10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0.1, 0, 0), seed = 30),
+    dm10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0, 0.1, 0), seed = 50),
+    db10 = list(nr = 5, p_dd = c(0.9, 0, 0, 0, 0, 0.1), seed = 70),
     
-    de10_ng = list(nr = 3, nk = 2, ns = 3, seed = 80, nc = 2*2*3*100),
-    de10_nc = list(nr = 3, nk = 2, ns = 3, seed = 90, nc = 2*2*3*500),
-    de10_ns = list(nr = 3, nk = 2, ns = 5, seed = 110)
+    de10_ng = list(nr = 5, nk = 2, ns = 3, seed = 80, nc = 2*2*3*100),
+    de10_nc = list(nr = 5, nk = 2, ns = 3, seed = 90, nc = 2*2*3*500),
+    de10_ns = list(nr = 5, nk = 2, ns = 5, seed = 110)
 )
 
 ss_ns <- 3
@@ -28,7 +28,7 @@ for (i in seq_along(ss)) {
 }
 
 def_pars <- list(nr = 1, nk = 3, ns = 3, 
-    ng = 2e3, nc = function(nk, ns) 2*nk*ns*200, 
+    ng = 4e3, nc = function(nk, ns) 2*nk*ns*200, 
     p_dd = de10, probs = NULL, seed = 1)
 
 sim_pars <- lapply(sim_pars, function(u) {
