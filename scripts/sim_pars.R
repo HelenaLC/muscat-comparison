@@ -11,7 +11,9 @@ sim_pars <- list(
     
     de10_ng = list(nr = 5, nk = 2, ns = 3, seed = 80, nc = 2*2*3*100),
     de10_nc = list(nr = 5, nk = 2, ns = 3, seed = 90, nc = 2*2*3*500),
-    de10_ns = list(nr = 5, nk = 2, ns = 5, seed = 110)
+    de10_ns = list(nr = 5, nk = 2, ns = 5, seed = 110),
+    
+    dx = list(nr = 3, p_dd = c(0.8, 0, rep(0.05, 4)), seed = 200)
 )
 
 ss_ns <- 3
