@@ -10,7 +10,7 @@ tbl <- .read_res(args$res) %>%
     dplyr::mutate(id = sprintf(pat, sid, i, mid, j, g, c, k, s))
 rts <- .read_res(args$res, slot = "rt") %>% 
     vapply(sum, numeric(1)) %>% 
-    set_names(gsub(".rds", "", basename(fns)))
+    set_names(gsub(".rds", "", basename(args$res)))
 
 m <- match(tbl$id, names(rts))
 df <- data.frame(tbl, rt = rts[m],
