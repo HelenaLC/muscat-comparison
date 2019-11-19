@@ -12,7 +12,7 @@ df <- .read_res(args$res) %>%
     dplyr::filter(!(is.na(sim_lfc) | is.na(est_lfc))) %>% 
     mutate_at("method", droplevels) %>% 
     mutate_at("sid", factor, 
-        levels = paste0(c("ds", "dp", "dm", "db"), "10"),
+        levels = paste0(c("de", "dp", "dm", "db"), "10"),
         labels = c("DE", "DP", "DM", "DB"))
 
 # dowsample to 2k cluster-gene combinations
