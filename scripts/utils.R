@@ -8,20 +8,19 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     "edgeR.sum.counts" = "#000000",
     "edgeR.sum.scalecpm" = "#C6C6C6",
     "limma-voom.sum.counts" = "#5E5E5E",
-    "limma-trend.mean.logcounts"    = "#007700",
-    "limma-trend.mean.vstresiduals" = "#00B161",
-    
-    "MM-dream"  = "#336A7C",
+    "limma-trend.mean.logcounts"    = "#349527",
+    "limma-trend.mean.vstresiduals" = "#98F580",
+    "MM-dream2" = "#005E5C",
+    "MM-dream"  = "#00ABA6",
     "MM-nbinom" = "#00E3DD",
-    "MM-vst"    = "#3BB3B7",
-    "scDD.logcounts"    = "royalblue",
-    "scDD.vstresiduals" = "cornflowerblue", 
-    
-    "MAST.logcounts"    = "#A06A50",
-    "AD-gid.logcounts"    = "#B03060",
-    "AD-gid.vstresiduals" = "#FFABD3",
-    "AD-sid.logcounts"    = "#9E6A92",
-    "AD-sid.vstresiduals" = "#E29CF2")
+    "MM-vst"    = "#99F9F9",
+    "scDD.logcounts"    = "#0056B2",
+    "scDD.vstresiduals" = "#009EF6", 
+    "MAST.logcounts"    = "#FFE373",
+    "AD-gid.logcounts"    = "#9A41B3",
+    "AD-gid.vstresiduals" = "#FFA9FF",
+    "AD-sid.logcounts"    = "#E56D4B",
+    "AD-sid.vstresiduals" = "#FBB6A2")
 
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)

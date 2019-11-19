@@ -26,7 +26,7 @@ run_ad <- function(sce, assay, var) {
     cs_by_k <- split(colnames(sce), sce$cluster_id)
     res <- lapply(kids, function(k) {
         sub <- sce[, cs_by_k[[k]]]
-        sub <- sub[rowSums(assay(sub) > 0) > 10, ]
+        sub <- sub[rowSums(assay(sub) > 0) >= 10, ]
         apply(assay(sub, assay), 1, function(y)
             ad.test(form, data = data.frame(y, colData(sub)))) %>% 
             map(function(u) u$ad[5]) %>% 
