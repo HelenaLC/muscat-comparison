@@ -40,6 +40,4 @@ suppressMessages({
     library(workflowr)
     library(yaml)
 })
-writeLines(
-    capture.output(sessionInfo()), 
-    snakemake@output$txt)
+writeLines(capture.output(sessionInfo()), args$txt)
