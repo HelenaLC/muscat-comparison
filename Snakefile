@@ -278,8 +278,7 @@ rule plot_runtimes:
 # write session info to .txt file
 rule session_info:
 	input:	config["scripts"] + "session_info.R"
-	output:	txt = "session_info.txt"
+	output:	"session_info.txt"
 	log:	config["logs"] + "session_info.Rout" 
 	shell:	'''R CMD --no-restore --no-save\
-	"--args txt={output.txt}"\
-	{input.script} {log}'''
+	"--args txt={output}" {input} {log}'''
