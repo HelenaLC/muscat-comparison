@@ -1,5 +1,5 @@
 # this determines which types of methods to include
-names(ids) <- ids <- c("pb", "ad", "scdd", "mast", "mm")
+names(ids) <- ids <- c("pb", "ad", "scdd", "mast")#, "mm")
 
 # aggregation-based ------------------------------------------------------------
 pb <- dplyr::bind_rows(
