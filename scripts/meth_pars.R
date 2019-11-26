@@ -28,6 +28,7 @@ mm <- data.frame(
     vst = c("", "", "sctransform", ""),
     ddf = "Satterthwaite")
 mm$id <- with(mm, paste0("MM-", method))
+mm <- mm[-1, ]
 
 # Anderson-Darling -------------------------------------------------------------
 ad <-  expand.grid(
