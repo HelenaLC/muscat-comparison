@@ -1,5 +1,5 @@
 # this determines which types of methods to include
-names(ids) <- ids <- c("pb", "ad", "scdd", "mast")#, "mm")
+names(ids) <- ids <- c("pb", "ad", "scdd", "mast", "mm")
 
 # aggregation-based ------------------------------------------------------------
 pb <- dplyr::bind_rows(
@@ -28,7 +28,6 @@ mm <- data.frame(
     vst = c("", "", "sctransform", ""),
     ddf = "Satterthwaite")
 mm$id <- with(mm, paste0("MM-", method))
-mm <- mm[-1, ]
 
 # Anderson-Darling -------------------------------------------------------------
 ad <-  expand.grid(
