@@ -24,7 +24,7 @@ pb$id <- with(pb, sprintf("%s.%s.%s%s",
 # mixed-models -----------------------------------------------------------------
 mm <- data.frame(
     stringsAsFactors = FALSE,
-    method = c("dream2", "dream", "vst", "nbinom"),
+    method = c("dream2", "dream", "vst"),#, "nbinom"),
     vst = c("", "", "sctransform", ""),
     ddf = "Satterthwaite")
 mm$id <- with(mm, paste0("MM-", method))
