@@ -25,7 +25,7 @@ pb$id <- with(pb, sprintf("%s.%s.%s%s",
 mm <- data.frame(
     stringsAsFactors = FALSE,
     method = c("dream2", "dream", "vst"),#, "nbinom"),
-    vst = c("", "", "sctransform", ""),
+    vst = c("", "", "sctransform"),#, ""),
     ddf = "Satterthwaite")
 mm$id <- with(mm, paste0("MM-", method))
 
