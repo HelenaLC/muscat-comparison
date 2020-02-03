@@ -7,7 +7,7 @@ suppressMessages({
     library(UpSetR)
 })
 
-#args <- list(res = list.files("results", "kang,d[a-z][0-9]+,", full.names = TRUE))
+#args <- list(res = list.files("~/projects/portmac/results", "kang,d[a-z][0-9]+,", full.names = TRUE))
 res <- .read_res(args$res) %>% 
     dplyr::mutate(hit = paste(gene, cluster_id, sid, i, sep = ";"))
 
@@ -17,14 +17,15 @@ n_dd <- res %>%
     summarize(n_dd = sum(is_de)) %>% 
     acast(sid ~ i, value.var = "n_dd")
 
-top <- group_by(res, sid, i) %>% do({
-    n <- n_dd[.$sid[1], .$i[1]]
+top <- group_by(res, sid, i) %>% do(
     dplyr::filter(., p_adj.loc < 0.05) %>% 
         dplyr::arrange(p_val) %>% 
         group_by(mid, add = TRUE) %>%
-        dplyr::slice(seq_len(n)) %>% 
-        summarize(hit = list(hit))
-}) %>% group_by(mid) %>% summarize(hit = list(purrr::reduce(hit, c)))
+        dplyr::slice(seq_len(n_dd[.$sid[1], .$i[1]])) %>% 
+        summarize(hit = list(hit))) %>% 
+    group_by(mid) %>% 
+    summarize(hit = list(purrr::reduce(hit, c))) %>% 
+    mutate_at("mid", as.character)
 
 df <- fromList(set_names(top$hit, top$mid)) %>% 
     dplyr::mutate(
@@ -76,7 +77,7 @@ dfm <- melt(df, variable.name = "method",
     dplyr::slice(1)
 p2 <- ggplot(dfm, aes(x = code, y = method, color = factor(value))) +
     scale_x_discrete(limits = df$code[m][o]) +
-    scale_y_discrete(limits = rev(top$mid)) +
+    scale_y_discrete(limits = rev(levels(res$mid))) +
     scale_color_manual(values = c("0" = "grey90", "1" = "black")) +
     geom_point(shape = 16, size = 1) +
     geom_path(size = 0.2, data = dplyr::filter(dfm, value != 0), aes(group = code)) +
