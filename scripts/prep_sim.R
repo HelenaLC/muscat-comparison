@@ -2,45 +2,16 @@ args <- R.utils::commandArgs(
     trailingOnly = TRUE, 
     asValues = TRUE)
 
-suppressMessages({
-    library(dplyr)
-    library(edgeR)
-    library(Matrix)
-    library(SingleCellExperiment)  
-})
-
-# source utils
+suppressMessages(library(muscat))
 source(file.path("scripts", "utils.R"))
 
-# load data
-sce <- readRDS(args$input_sce)
+# load reference SCE
+ref <- readRDS(args$input_sce)
 
-# keep genes w/ count > 1 in at least 10 cells;
-# keep cells w/ at least 100 detected genes
-gs <- rowSums(counts(sce) > 1) >= 10
-cs <- colSums(counts(sce) > 0) >= 100
-sce <- sce[gs, cs]
-
-# keep cluster-samples w/ at least 100 cells
-n_cells <- table(sce$cluster_id, sce$sample_id)
-n_cells <- .filter_matrix(n_cells, n = 100)
-
-kids <- rownames(n_cells)
-sids <- colnames(n_cells)
-sce <- .filter_sce(sce, kids, sids)
-
-# esimate/compute gene/cell parameters
-y <- DGEList(counts(sce))
-mm <- model.matrix(~ 0 + sce$sample_id)
-y <- estimateDisp(y, mm)
-y <- glmFit(y, prior.count = 0)
-
-# update row- & colData
-sce$offset <- c(y$offset)
-rowData(sce)$dispersion <- y$dispersion
-betas <- paste("beta", levels(sce$sample_id), sep = ".")
-colnames(y$coefficients) <- betas
-rowData(sce)[, betas] <- y$coefficients
+# prep. SCE for simulation w/ 'muscat::simData'
+sce <- prepSim(ref, drop = TRUE,     # drop irrelevant cell metadata
+    min_count = 1, min_cells = 10,   # keep genes w/ count > 1 in >= 10 cells
+    min_genes = 100, min_size = 100) # keep cells w/ >= 100 detected genes
 
 # write SCE to .rds
 saveRDS(sce, args$output_sce)
