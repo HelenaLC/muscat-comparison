@@ -9,7 +9,8 @@ source(file.path("scripts", "utils.R"))
 ref <- readRDS(args$input_sce)
 
 # prep. SCE for simulation w/ 'muscat::simData'
-sce <- prepSim(ref, drop = TRUE,     # drop irrelevant cell metadata
+sce <- prepSim(ref, 
+    verbose = FALSE, drop = TRUE,    # drop irrelevant cell metadata
     min_count = 1, min_cells = 10,   # keep genes w/ count > 1 in >= 10 cells
     min_genes = 100, min_size = 100) # keep cells w/ >= 100 detected genes
 
