@@ -1,3 +1,4 @@
+print(args$txt)
 suppressMessages({
     library(AnnotationDbi)
     library(circlize)
