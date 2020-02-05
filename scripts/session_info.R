@@ -1,4 +1,3 @@
-print(args$txt)
 suppressMessages({
     library(AnnotationDbi)
     library(circlize)
@@ -41,7 +40,7 @@ suppressMessages({
     library(workflowr)
     library(yaml)
 })
-writeLines(capture.output(sessionInfo(args$txt)))
+writeLines(capture.output(sessionInfo()), args$txt)
 
 # install.packages(c("BiocManager", "devtools"))
 # devtools::install_github('VPetukhov/ggrastr')
