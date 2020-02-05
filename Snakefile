@@ -281,5 +281,5 @@ rule session_info:
 	input:	config["scripts"] + "session_info.R"
 	output:	"session_info.txt"
 	log:	config["logs"] + "session_info.Rout" 
-	shell:	'''R CMD --no-restore --no-save\
+	shell:	'''R CMD BATCH --no-restore --no-save\
 	"--args txt={output}" {input} {log}'''
