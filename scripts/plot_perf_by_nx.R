@@ -6,7 +6,7 @@ suppressMessages({
     library(purrr)
 })
 
-#fns <- list.files("results/kang,ds10_ns", full.names = TRUE)
+#args <- list(res = list.files("~/projects/portmac/results", "kang,de10_ns", full.names = TRUE))
 res <- .read_res(args$res) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
