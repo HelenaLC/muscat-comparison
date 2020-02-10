@@ -281,7 +281,7 @@ rule plot_runtimes:
 rule fig_perf_by_ss:
 	input: 	config["utils"],
 			script = config["scripts"] + "fig_perf_by_ss.R",
-			ggp = expand("{did}-perf_by_ss.rds", did = config["dids"]),
+			ggp = expand(config["plots"] + "{did}-perf_by_ss.rds", did = config["dids"]),
 			sim_pars = expand(config["sim_pars"] + "{sid}.json",\
 				sid = filter(re.compile("de10_ss[0-9]").search, sids))
 	output:	config["figures"] + "perf_by_ss.pdf"
