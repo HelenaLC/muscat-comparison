@@ -6,6 +6,7 @@ suppressMessages({
     library(dplyr)
     library(ggplot2)
     library(magrittr)
+    library(purrr)
     library(reshape2)
 })
 
