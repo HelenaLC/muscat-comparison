@@ -23,7 +23,7 @@ cd <- map_depth(res, 2, function(u) {
     do.call(COBRAData, dfs)
 })
 
-perf <- map_depth(cd, 2, calculate_performance
+perf <- map_depth(cd, 2, calculate_performance,
     aspects = "fdrtpr", binary_truth = "is_de")
 
 gg_df <- map_depth(perf, 2, fdrtpr) %>% 
