@@ -17,10 +17,11 @@ res <- .read_res(args$res) %>%
     dplyr::mutate(group = .get_group(.$E)) %>% setDT %>% 
     split(by = c("sid", "i", "group", "mid"), flatten = FALSE)
 
+p_adj <- paste0("p_adj.", wcs$padj)
 cd <- lapply(names(res), function(sid) {
     lapply(seq_along(res[[sid]]), function(i) COBRAData( 
         pval = as.data.frame(bind_rows(map(map_depth(res[[sid]][[i]], 2, "p_val"), bind_cols))),
-        padj = as.data.frame(bind_rows(map(map_depth(res[[sid]][[i]], 2, "p_adj.loc"), bind_cols))),
+        padj = as.data.frame(bind_rows(map(map_depth(res[[sid]][[i]], 2, p_adj), bind_cols))),
         truth = data.frame(
             row.names = NULL,
             group = unlist(map(map_depth(res[[sid]][[i]], 2, "group"), 1)),
