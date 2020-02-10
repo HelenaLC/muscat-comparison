@@ -1,3 +1,5 @@
+set.seed(2903)
+
 suppressMessages({
     library(countsimQC)
     library(DESeq2)
@@ -6,16 +8,13 @@ suppressMessages({
 })
 
 sce <- readRDS(args$sce)
-probs <- list(
-    table(sce$cluster_id) / ncol(sce),
-    table(sce$sample_id)  / ncol(sce),
-    NULL)
 
-# simulate data
-set.seed(2903)
 sim <- simData(sce,
-    ng = nrow(sce), nc = ncol(sce), 
-    p_dd = diag(6)[1, ], probs = probs)
+    nk = 3, ns = 3,
+    ng = nrow(sce), 
+    nc = ncol(sce), 
+    p_dd = diag(6)[1, ], 
+    probs = list(NULL, NULL, c(1, 0)))
 
 dds_sim <- DESeqDataSetFromMatrix(
     countData = counts(sim),
