@@ -1,4 +1,5 @@
 config <- yaml::read_yaml("config.yaml")
+source(config$utils)
 
 suppressMessages({
     library(cowplot)
