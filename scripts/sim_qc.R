@@ -5,7 +5,7 @@ suppressMessages({
     library(SummarizedExperiment)
 })
 
-sce <- readRDS(sce_fn)
+sce <- readRDS(args$sce)
 probs <- list(
     table(sce$cluster_id) / ncol(sce),
     table(sce$sample_id)  / ncol(sce),
