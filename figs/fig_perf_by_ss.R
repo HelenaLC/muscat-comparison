@@ -1,5 +1,4 @@
 config <- yaml::read_yaml("config.yaml")
-source(config$utils)
 
 suppressMessages({
     library(cowplot)
@@ -10,8 +9,7 @@ suppressMessages({
 })
 
 # load performance plots
-fns <- sapply(config$dids, function(id)
-    list.files(file.path("figures", id), "perf_by_ss.rds", full.names = TRUE))
+fns <- list.files("plots", paste0(config$dids, "-perf_by_ss.rds"), full.names = TRUE)
 ps <- lapply(fns, readRDS)
 lgd1 <- get_legend(ps[[1]])
 ps <- lapply(ps, "+", theme(legend.position = "none",
@@ -19,7 +17,7 @@ ps <- lapply(ps, "+", theme(legend.position = "none",
     strip.text = element_blank()))
 
 # load simulation parameters
-fns <- list.files(config$sim_pars, "ds10_ss[0-9]+.json", full.names = TRUE)
+fns <- list.files(config$sim_pars, "de10_ss[0-9]+.json", full.names = TRUE)
 sim_pars <- lapply(fns, yaml::read_yaml)
 n <- sapply(c("nk", "ns", "nc"), function(u) unlist(map(sim_pars, u)))
 n <- with(as.data.frame(n), nc / (2 * nk * ns))
@@ -67,7 +65,7 @@ p <- plot_grid(p, l, ncol = 1,
     align = "v", axis = "r",
     rel_heights = c(8, 1))
 
-ggsave(file.path("figures", "perf_by_ss.pdf"), p,
+ggsave(file.path(config$figures, "perf_by_ss.pdf"), p,
     width = 15, height = 12.5, units = "cm",
     dpi = 300, useDingbats = FALSE)
 
