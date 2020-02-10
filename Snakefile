@@ -292,6 +292,16 @@ rule fig_perf_by_ss:
 		"--args ggp={params.ggp} sim_pars={params.sim_pars}\
 		fig={output}" {input.script} {log}'''
 
+rule fig_null:
+	input: 	config["utils"],
+			script = config["scripts"] + "fig_null.R",
+			ggp = expand(config["plots"] + "{did}-null.rds", did = config["dids"])
+	params:	ggp = lambda wc, input: ";".join(input.ggp)
+	output:	config["figures"] + "null.pdf"
+	log:	config["logs"] + "fig_null.Rout"
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
+		"--args ggp={params.ggp} fig={output}" {input.script} {log}'''
+
 # write session info to .txt file
 rule session_info:
 	input:	config["scripts"] + "session_info.R"
