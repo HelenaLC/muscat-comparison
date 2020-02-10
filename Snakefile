@@ -278,6 +278,14 @@ rule plot_runtimes:
 #	output:	res = config["results"], "lps", "{mid}.rds")
 #	script:	"{input.script}"
 
+rule fig_sim_pars:
+	input: 	scripts["utils"],
+			script = config["scripts"] + "fig_sim_pars.R"
+	output:	fig = config["figures"] + "fig_sim_pars.pdf"
+	log:	config["logs"] + "fig_sim_pars.Rout"
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
+		"--args fig={output}" {input.script} {log}'''
+
 rule fig_perf_by_ss:
 	input: 	config["utils"],
 			script = config["scripts"] + "fig_perf_by_ss.R",
