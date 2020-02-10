@@ -108,10 +108,10 @@ rule sim_qc:
 	priority: 98
 	input:	script = config["scripts"] + "sim_qc.R",
 			sce = config["raw_data"] + "ref_{did}.rds"
-	output: html = config["plots"] + "{did}-sim_qc.html"
+	output: config["plots"] + "{did}-sim_qc.html"
 	log:	config["logs"] + "sim_qc-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args sce={input.sce} out={output}" {input.script} {log}'''
+		"--args sce={input.sce} html={output}" {input.script} {log}'''
 
 rule sim_data:
 	priority: 98
