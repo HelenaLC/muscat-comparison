@@ -284,10 +284,12 @@ rule fig_perf_by_ss:
 			ggp = expand(config["plots"] + "{did}-perf_by_ss.rds", did = config["dids"]),
 			sim_pars = expand(config["sim_pars"] + "{sid}.json",\
 				sid = filter(re.compile("de10_ss[0-9]").search, sids))
+	params:	ggp = lambda wc, input: ";".join(input.ggp),
+			sim_pars = lambda wc, input: ";".join(input.sim_pars)
 	output:	config["figures"] + "perf_by_ss.pdf"
 	log:	config["logs"] + "fig_perf_by_ss.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args ggp={input.ggp} sim_pars={input.sim_pars}\
+		"--args ggp={params.ggp} sim_pars={params.sim_pars}\
 		fig={output}" {input.script} {log}'''
 
 # write session info to .txt file
