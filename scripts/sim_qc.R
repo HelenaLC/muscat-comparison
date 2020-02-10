@@ -13,7 +13,7 @@ probs <- list(
 
 # simulate data
 set.seed(2903)
-sim <- simData(args$sce,
+sim <- simData(sce,
     ng = nrow(sce), nc = ncol(sce), 
     p_dd = diag(6)[1, ], probs = probs)
 
