@@ -33,8 +33,8 @@ dds_list <- list(
 
 countsimQCReport(
     ddsList = dds_list,
-    outputFile = basename(args$report),
-    outputDir = dirname(args$report),
+    outputFile = basename(args$html),
+    outputDir = dirname(args$html),
     outputFormat = "html_document",
     maxNForCorr = 200,
     maxNForDisp = 500,

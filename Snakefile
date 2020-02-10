@@ -111,7 +111,7 @@ rule sim_qc:
 	output: html = config["plots"] + "{did}-sim_qc.html"
 	log:	config["logs"] + "sim_qc-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args sce={input.sce} out={output} {input.script} {log}'''
+		"--args sce={input.sce} out={output}" {input.script} {log}'''
 
 rule sim_data:
 	priority: 98
