@@ -1,7 +1,3 @@
-args <- R.utils::commandArgs(
-    trailingOnly = TRUE, 
-    asValues = TRUE)
-
 suppressMessages({
     library(dplyr)
     library(edgeR)
@@ -15,7 +11,7 @@ set.seed(1994)
 sce <- readRDS(args$sce)
 
 nk <- ns <- 4
-sim <- simData(sce, nrow(sce), 2*nk*ns*200)
+sim <- simData(sce, nc = 2*nk*ns*200, ng = nrow(sce))
 
 pbs <- list(
     reference = aggregateData(sce),
