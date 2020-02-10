@@ -1,7 +1,3 @@
-args <- R.utils::commandArgs(
-    trailingOnly = TRUE, 
-    asValues = TRUE)
-
 suppressMessages(library(muscat))
 source(file.path("scripts", "utils.R"))
 

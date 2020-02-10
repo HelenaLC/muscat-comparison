@@ -13,7 +13,7 @@ sim_pars <- list(
     de10_nc = list(nr = 2, nk = 2, ns = 3, seed = 90, nc = 2*2*3*500),
     de10_ns = list(nr = 2, nk = 2, ns = 5, seed = 110),
     
-    dx = list(nr = 3, p_dd = c(0.8, 0, rep(0.05, 4)), seed = 200)
+    dx = list(nr = 2, p_dd = c(0.8, 0, rep(0.05, 4)), seed = 200)
 )
 
 ss_ns <- 3
