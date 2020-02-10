@@ -63,7 +63,7 @@ p <- plot_grid(p, l, ncol = 1,
     align = "v", axis = "r",
     rel_heights = c(8, 1))
 
-ggsave(args$output, p,
+ggsave(args$fig, p,
     width = 15, height = 12.5, units = "cm",
     dpi = 300, useDingbats = FALSE)
 
