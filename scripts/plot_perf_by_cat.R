@@ -22,10 +22,8 @@ cd <- lapply(seq_along(res), function(i) COBRAData(
         sim_id = unlist(map(map_depth(res[[i]], 2, "sid"), 1)),
         is_de = unlist(map(map_depth(res[[i]], 2, "is_de"), 1)))))
 
-perf <- lapply(cd, calculate_performance,
-    aspects = c("fdrtpr", "fdrtprcurve"),
-    splv = "sim_id", maxsplit = Inf,
-    binary_truth = "is_de")
+perf <- lapply(cd, calculate_performance, aspects = "fdrtpr", 
+    binary_truth = "is_de", splv = "sim_id", maxsplit = Inf)
 
 df <- map(perf, function(u) 
     select(fdrtpr(u), splitval, thr, method, TPR, FDR)) %>% 
