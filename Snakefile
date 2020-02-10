@@ -278,6 +278,18 @@ rule plot_runtimes:
 #	output:	res = config["results"], "lps", "{mid}.rds")
 #	script:	"{input.script}"
 
+rule fig_perf_by_ss:
+	input: 	config["utils"],
+			script = config["scripts"] + "fig_perf_by_ss.R",
+			ggp = expand("{did}-perf_by_ss.rds", did = config["dids"]),
+			sim_pars = expand(config["sim_pars"] + "{sid}.json",\
+				sid = filter(re.compile("de10_ss[0-9]").search, sids)
+	output:	config["figures"] + "perf_by_ss.pdf"
+	log:	config["logs"] + "fig_perf_by_ss.Rout"
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
+		"--args ggp={input.ggp} sim_pars={input.sim_pars}\
+		fig={output}" {input.script} {log}'''
+
 # write session info to .txt file
 rule session_info:
 	input:	config["scripts"] + "session_info.R"
