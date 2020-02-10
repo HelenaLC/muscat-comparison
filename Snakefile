@@ -54,6 +54,8 @@ rule all:
 	input:	sim_dirs, res_dirs,
 			#expand(config["raw_data"], "sce_{did}.rds"), did = config["dids"]),
 			#expand(config["raw_data"], "ref_{did}.rds"), did = config["dids"]),
+		# 'countsimQC' reports
+			expand(config["plots"] + "{did}-sim_qc.html", did = config["dids"]),
 		# null simulation p-value distributions 
 			expand(config["plots"] + "{did}-null.{ext}",\
 				did = config["dids"], ext = ["rds", "pdf"]),
@@ -102,12 +104,14 @@ rule prep_sim:
 		"--args input_sce={input.sce} output_sce={output.sce}"\
 		{input.script} {log}'''
 
-# rule sim_qc:
-# 	priority: 98
-# 	input:	script = config["scripts"], "sim_qc.R"),
-# 			sce = lambda wc: config["raw_data"], "ref_" + wc.did + ".rds")
-# 	output: html = config["plots"], "{did}_qc.html")
-# 	script:	"{input.script}"
+rule sim_qc:
+	priority: 98
+	input:	script = config["scripts"], "sim_qc.R"),
+			sce = lambda wc: config["raw_data"], "ref_" + wc.did + ".rds")
+	output: html = config["plots"], "{did}-sim_qc.html")
+	log:	config["logs"] + "sim_qc-{did}.Rout"
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
+		"--args sce={input.sce} out={output} {input.script} {log}'''
 
 rule sim_data:
 	priority: 98
