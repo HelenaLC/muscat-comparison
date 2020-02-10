@@ -10,6 +10,10 @@
 # k: # clusters
 # s: # samples
 
+import pandas as pd
+import json
+import re
+
 onstart:
 	shell("Rscript scripts/sim_pars.R")  # simulation parameters
 	shell("Rscript scripts/run_pars.R")  # run mode parameters
@@ -17,11 +21,9 @@ onstart:
 
 configfile: "config.yaml"
 
-import pandas as pd
-import json
-import re
+R = config["R"]
 
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+#os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 sids = json.loads(open(config["sids"]).read())
 mids = pd.read_csv(config["mids"])
@@ -86,7 +88,7 @@ rule prep_sce:
     		sce = config["raw_data"] + "sce0_{did}.rds"
 	output:	sce = config["raw_data"] + "sce_{did}.rds"
 	log:	config["logs"] + "prep_sce-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args input_sce={input.sce} output_sce={output.sce}"\
 		{input.script} {log}'''
 
@@ -96,7 +98,7 @@ rule prep_sim:
 			sce = config["raw_data"] + "sce_{did}.rds"
 	output:	sce = config["raw_data"] + "ref_{did}.rds"
 	log:	config["logs"] + "prep_sim-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args input_sce={input.sce} output_sce={output.sce}"\
 		{input.script} {log}'''
 
@@ -114,7 +116,7 @@ rule sim_data:
 			sce = config["raw_data"] + "ref_{did}.rds"
 	output: sim = config["sim_data"] + "{did},{sid},{i}.rds"
 	log:	config["logs"] + "sim_data-{did},{sid},{i}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} sim={output.sim}\
 		sim_pars={input.sim_pars} wcs={wildcards}"\
 		{input.script} {log}'''
@@ -129,7 +131,7 @@ rule run_meth:
 			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
 	output: res = config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds"
 	log:	config["logs"] + "run_meth-{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sim={input.sim} fun={input.fun} wcs={wildcards}\
 		meth_pars={input.meth_pars} run_pars={input.run_pars} res={output.res}"\
 		{input.script} {log}'''
@@ -142,7 +144,7 @@ rule plot_pb_mean_disp:
 	output: ggp = config["plots"] + "{did}-pb_mean_disp.rds",
 			fig = config["plots"] + "{did}-pb_mean_disp.pdf"
 	log:	config["logs"] + "plot_pb_mean_disp-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
 
@@ -157,7 +159,7 @@ rule plot_null:
 	output: ggp = config["plots"] + "{did}-null.rds", 
 			fig = config["plots"] + "{did}-null.pdf"
 	log:	config["logs"] + "plot_null-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
 
@@ -172,7 +174,7 @@ rule plot_perf_by_cat:
 	output: ggp = config["plots"] + "{did}-perf_by_cat_{padj}.rds",
 			fig = config["plots"] + "{did}-perf_by_cat_{padj}.pdf"
 	log:	config["logs"] + "plot_perf_by_cat-{did},p_adj.{padj}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -188,7 +190,7 @@ rule plot_perf_by_nx:
 	output: ggp = config["plots"] + "{did}-perf_by_n{x}.rds",
 			fig = config["plots"] + "{did}-perf_by_n{x}.pdf"
 	log:	config["logs"] + "plot_perf_by_nx-{did},n{x}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -204,7 +206,7 @@ rule plot_perf_by_ss:
 	output: ggp = config["plots"] + "{did}-perf_by_ss.rds",
 			fig = config["plots"] + "{did}-perf_by_ss.pdf"
 	log:	config["logs"] + "plot_perf_by_ss-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -220,7 +222,7 @@ rule plot_perf_by_expr:
 	output: ggp = config["plots"] + "{did}-perf_by_expr_{padj}.rds",
 			fig = config["plots"] + "{did}-perf_by_expr_{padj}.pdf"
 	log:	config["logs"] + "plot_perf_by_expr-{did},p_adj.{padj}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -234,7 +236,7 @@ rule plot_upset:
 	params:	res = lambda wc, input: ";".join(input.res)
 	output: fig = config["plots"] + "{did}-upset.pdf"
 	log:	config["logs"] + "plot_upset-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
 
@@ -249,7 +251,7 @@ rule plot_lfc:
 	output:	ggp = config["plots"] + "{did}-sim_vs_est_lfc.rds",
 			fig = config["plots"] + "{did}-sim_vs_est_lfc.pdf"
 	log:	config["logs"] + "plot_lfc-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -264,7 +266,7 @@ rule plot_runtimes:
 	params:	res = lambda wc, input: ";".join(input.res)
 	output:	fig = config["plots"] + "{did}-runtimes.pdf"
 	log:	config["logs"] + "plot_runtimes-{did}.Rout"
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
 
@@ -281,5 +283,5 @@ rule session_info:
 	input:	config["scripts"] + "session_info.R"
 	output:	"session_info.txt"
 	log:	config["logs"] + "session_info.Rout" 
-	shell:	'''R CMD BATCH --no-restore --no-save\
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
 	"--args txt={output}" {input} {log}'''
