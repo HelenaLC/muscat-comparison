@@ -76,7 +76,7 @@ rule all:
 			expand(config["plots"] + "{did}-perf_by_ss.{ext}",\
 				did = config["dids"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by expression level 
-			expand(config["plots"] + "{did}-perf_by_expr_{padj}.{ext}",\
+			expand(config["plots"] + "{did}-perf_by_es_{padj}.{ext}",\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# method runtimes versus no. cells/genes
 			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"])
@@ -212,16 +212,16 @@ rule plot_perf_by_ss:
 		{input.script} {log}'''
 
 # TPR-FDR points stratified by expression
-rule plot_perf_by_expr:
+rule plot_perf_by_es:
 	input:	config["utils"],
-			script = config["scripts"] + "plot_perf_by_expr.R",
+			script = config["scripts"] + "plot_perf_by_es.R",
 			res = lambda wc: filter(re.compile(\
 				config["results"] + wc.did +\
 				",de10,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}-perf_by_expr_{padj}.rds",
-			fig = config["plots"] + "{did}-perf_by_expr_{padj}.pdf"
-	log:	config["logs"] + "plot_perf_by_expr-{did},p_adj.{padj}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_es_{padj}.rds",
+			fig = config["plots"] + "{did}-perf_by_es_{padj}.pdf"
+	log:	config["logs"] + "plot_perf_by_es-{did},p_adj.{padj}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -277,38 +277,6 @@ rule plot_runtimes:
 #			fun = lambda wc: config["scripts"], "apply_" + mids.loc[wc.mid, "type"] + ".R")
 #	output:	res = config["results"], "lps", "{mid}.rds")
 #	script:	"{input.script}"
-
-rule fig_sim_pars:
-	input: 	scripts["utils"],
-			script = config["scripts"] + "fig_sim_pars.R"
-	output:	fig = config["figures"] + "fig_sim_pars.pdf"
-	log:	config["logs"] + "fig_sim_pars.Rout"
-	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args fig={output}" {input.script} {log}'''
-
-rule fig_perf_by_ss:
-	input: 	config["utils"],
-			script = config["scripts"] + "fig_perf_by_ss.R",
-			ggp = expand(config["plots"] + "{did}-perf_by_ss.rds", did = config["dids"]),
-			sim_pars = expand(config["sim_pars"] + "{sid}.json",\
-				sid = filter(re.compile("de10_ss[0-9]").search, sids))
-	params:	ggp = lambda wc, input: ";".join(input.ggp),
-			sim_pars = lambda wc, input: ";".join(input.sim_pars)
-	output:	config["figures"] + "perf_by_ss.pdf"
-	log:	config["logs"] + "fig_perf_by_ss.Rout"
-	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args ggp={params.ggp} sim_pars={params.sim_pars}\
-		fig={output}" {input.script} {log}'''
-
-rule fig_null:
-	input: 	config["utils"],
-			script = config["scripts"] + "fig_null.R",
-			ggp = expand(config["plots"] + "{did}-null.rds", did = config["dids"])
-	params:	ggp = lambda wc, input: ";".join(input.ggp)
-	output:	config["figures"] + "null.pdf"
-	log:	config["logs"] + "fig_null.Rout"
-	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args ggp={params.ggp} fig={output}" {input.script} {log}'''
 
 # write session info to .txt file
 rule session_info:
