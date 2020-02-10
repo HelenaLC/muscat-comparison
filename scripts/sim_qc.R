@@ -1,5 +1,5 @@
 set.seed(2903)
-print(args)
+
 suppressMessages({
     library(countsimQC)
     library(DESeq2)
