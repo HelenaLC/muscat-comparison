@@ -27,10 +27,9 @@ cd <- lapply(names(res), function(sid) {
             is_de = unlist(map(map_depth(res[[sid]][[i]], 2, "is_de"), 1)))))
 })
 
-perf <- map_depth(cd, 2, calculate_performance,
-    aspects = c("fdrtpr", "fdrtprcurve"),
-    splv = "group", maxsplit = Inf,
-    binary_truth = "is_de")
+perf <- map_depth(cd, 2, calculate_performance, 
+    aspects = "fdrtpr", binary_truth = "is_de",
+    splv = "group", maxsplit = Inf)
 
 df <- map_depth(perf, 2, fdrtpr) %>% 
     map(bind_rows, .id = "i") %>% 

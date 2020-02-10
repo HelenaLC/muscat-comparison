@@ -24,9 +24,8 @@ cd <- lapply(seq_along(res), function(i) {
     do.call(COBRAData, dfs)
 })
 
-perf <- lapply(cd, calculate_performance,
-    binary_truth = "is_de", 
-    aspects = c("fdrtpr", "fdrtprcurve"),
+perf <- lapply(cd, calculate_performance, 
+    aspects = "fdrtpr", binary_truth = "is_de", 
     splv = wcs$x, maxsplit = Inf)
 
 df <- map(perf, "fdrtpr") %>% 
