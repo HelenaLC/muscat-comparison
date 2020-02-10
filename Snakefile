@@ -283,7 +283,7 @@ rule fig_perf_by_ss:
 			script = config["scripts"] + "fig_perf_by_ss.R",
 			ggp = expand("{did}-perf_by_ss.rds", did = config["dids"]),
 			sim_pars = expand(config["sim_pars"] + "{sid}.json",\
-				sid = filter(re.compile("de10_ss[0-9]").search, sids)
+				sid = filter(re.compile("de10_ss[0-9]").search, sids))
 	output:	config["figures"] + "perf_by_ss.pdf"
 	log:	config["logs"] + "fig_perf_by_ss.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
