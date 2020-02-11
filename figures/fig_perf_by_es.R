@@ -1,12 +1,10 @@
-config <- yaml::read_yaml("config.yaml")
-source(config$utils)
-
 suppressMessages({
     library(cowplot)
     library(ggplot2)
 })
 
-ps <- lapply(file.path("plots", config$dids, "perf_by_es.rds"), readRDS)
+fns <- paste0(config$dids, "-perf_by_es.rds")
+ps <- lapply(file.path("plots", fns), readRDS)
 lgd <- get_legend(ps[[1]])
 ps <- lapply(ps, "+", theme(legend.position = "none"))
 

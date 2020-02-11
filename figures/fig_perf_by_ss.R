@@ -7,9 +7,9 @@ suppressMessages({
     library(reshape2)
 })
 
-print(args)
 # load performance plots
-ps <- lapply(args$ggp, readRDS)
+fns <- paste0(config$dids, "-perf_by_ss.rds")
+ps <- lapply(file.path("plots", fns), readRDS)
 lgd1 <- get_legend(ps[[1]])
 ps <- lapply(ps, "+", theme(legend.position = "none",
     strip.background = element_blank(),

@@ -1,12 +1,10 @@
-config <- yaml::read_yaml("config.yaml")
-source(config$utils)
-
 suppressMessages({
     library(cowplot)
     library(ggplot2)
 })
 
-ps <- lapply(file.path("figures", config$did, "sim_vs_est_lfc.rds"), readRDS)
+fns <- paste0(config$did, "-sim_vs_est_lfc.rds")
+ps <- lapply(file.path("figures", fns), readRDS)
 lgd <- get_legend(ps[[1]])
 ps <- lapply(ps, "+", theme(
     legend.position = "none", 
@@ -22,6 +20,6 @@ p <- plot_grid(ncol = 1,
     label_size = 10,
     label_fontface = "bold")
 
-ggsave(file.path("figures", "sim_vs_est_lfc.pdf"), p,
-    width = 14, height = 20, units = "cm",
+ggsave(file.path("figures", "sim_vs_est_lfc.pdf"), 
+    p, width = 15, height = 20, units = "cm",
     dpi = 200, useDingbats = FALSE)
