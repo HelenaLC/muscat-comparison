@@ -46,5 +46,5 @@ p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, args$ggp)
 ggsave(args$fig, p,
-    units = "cm", width = 15, height = 8,
+    width = 15, height = 6, units = "cm",
     dpi = 300, useDingbats = FALSE)
