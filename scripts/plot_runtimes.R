@@ -34,7 +34,7 @@ ps <- lapply(c("c", "g"), function(x) {
     u$id <- factor(u$id, levels = lvls)
     
     ggplot(u, aes_string(x = x, y = "rt", group = "id", col = "mid", fill = "mid")) +
-        geom_boxplot(alpha = 0.8, size = 0.4, outlier.size = 0.4) + 
+        geom_boxplot(alpha = 0.8, size = 0.4, outlier.size = 0.2) + 
         scale_y_log10() + 
         scale_x_log10(breaks = unique(u[[x]])) +
         scale_color_manual(NULL, values = .meth_cols) +
@@ -49,13 +49,16 @@ ps <- lapply(ps, "+", theme(legend.position = "none"))
 
 p <- plot_grid(
     plot_grid(nrow = 1,
-        plotlist = ps,  
+        plotlist = ps, 
         labels = "auto", 
+        align = "v", 
+        axis = "b",
         label_size = 10, 
         label_fontface = "bold"),
     lgd, ncol = 1, 
-    rel_heights = c(4, 1))
+    rel_heights = c(4, 0.8))
 
 ggsave(args$fig, p,
-    units = "cm", width = 15, height = 6.4,
+    units = "cm", width = 15, height = 6.8,
     dpi = 300, useDingbats = FALSE)    
+
