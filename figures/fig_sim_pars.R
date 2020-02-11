@@ -41,7 +41,7 @@ sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
     u <- as.list(sim_pars[i, ])
     u <- purrr::map(u, 1)
     u <- do.call(simData, c(u, list(x = sce, 
-        ns = 3, nk = 3, nc = 2*2*3*100)))
+        ns = 2, nk = 3, nc = 2*2*3*200)))
     u <- u[sample(nrow(u), 4e3), ]
     u <- logNormCounts(u)
 })
