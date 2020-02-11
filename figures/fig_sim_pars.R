@@ -12,10 +12,10 @@ suppressMessages({
 
 set.seed(160185)
 
-# sce <- readRDS(file.path(config$raw_data, "ref_kang.rds"))
-# sce <- .filter_sce(sce, 
-#     kids = c("B cells", "CD14+ Monocytes", "CD4 T cells"), 
-#     sids = c("ctrl1015", "ctrl1256"))
+ref <- readRDS(file.path(config$raw_data, "ref_kang.rds"))
+ref <- .filter_sce(ref,
+    kids = c("B cells", "CD14+ Monocytes", "CD4 T cells"),
+    sids = c("ctrl1015", "ctrl1256"))
 
 sim_pars <- dplyr::bind_rows(
     expand.grid(
@@ -40,8 +40,10 @@ sim_pars <- dplyr::bind_rows(
 sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
     u <- as.list(sim_pars[i, ])
     u <- purrr::map(u, 1)
-    u <- do.call(simData, c(u, list(x = sce, 
-        ns = 2, nk = 3, nc = 2*2*3*200)))
+    u <- do.call(simData, c(u, 
+        list(x = ref, nc = 2*2*3*200,
+            ns = nlevels(ref$sample_id), 
+            nk = nlevels(ref$cluster_id))))
     u <- u[sample(nrow(u), 4e3), ]
     u <- logNormCounts(u)
 })
