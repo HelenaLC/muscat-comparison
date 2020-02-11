@@ -4,7 +4,7 @@ suppressMessages({
 })
 
 fns <- paste0(config$did, "-sim_vs_est_lfc.rds")
-ps <- lapply(file.path("figures", fns), readRDS)
+ps <- lapply(file.path("plots", fns), readRDS)
 lgd <- get_legend(ps[[1]])
 ps <- lapply(ps, "+", theme(
     legend.position = "none", 
