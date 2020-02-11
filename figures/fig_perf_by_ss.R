@@ -4,6 +4,7 @@ suppressMessages({
     library(ggplot2)
     library(magrittr)
     library(purrr)
+    library(RColorBrewer)
     library(reshape2)
 })
 
@@ -16,12 +17,14 @@ ps <- lapply(ps, "+", theme(legend.position = "none",
     strip.text = element_blank()))
 
 # load simulation parameters
-sim_pars <- lapply(args$sim_pars, yaml::read_yaml)
+sids <- unique(unlist(map(map(ps, "data"), "sid")))
+fns <- paste0(config$sim_pars, sids, ".json")
+sim_pars <- lapply(fns, yaml::read_yaml)
 n <- sapply(c("nk", "ns", "nc"), function(u) unlist(map(sim_pars, u)))
 n <- with(as.data.frame(n), nc / (2 * nk * ns))
 ss <- map(map(sim_pars, "probs"), 2) 
 ss <- sapply(seq_along(ss), function(i) n[i] * ss[[i]]) 
-colnames(ss) <- gsub(".json", "", basename(args$sim_pars))
+colnames(ss) <- gsub(".json", "", basename(fns))
 
 gg_df <- melt(ss) %>% 
     set_colnames(c("sample_id", "sim_id", "n")) %>% 
@@ -33,7 +36,9 @@ gg_df <- melt(ss) %>%
 p0 <- ggplot(gg_df, aes(x = sample_id, y = n, fill = sample_id)) +
     facet_wrap("sim_id", nrow = 1) +
     geom_bar(size = 1, width = 0.5, stat = "identity") +
-    scale_fill_manual(values = c("darkblue", "royalblue", "lightblue", "tomato", "orange", "gold")) +
+    scale_fill_manual(values = c(
+        brewer.pal(9, "Blues")[c(7,5,3)], 
+        brewer.pal(9, "Reds")[c(7,5,3)])) +
     scale_y_continuous("expected\nnb. of cells", limits = c(0, 125)) +
     guides(fill = guide_legend(ncol = 3, byrow = TRUE,
         override.aes = list(size = 0))) +
@@ -63,8 +68,8 @@ p <- plot_grid(p, l, ncol = 1,
     align = "v", axis = "r",
     rel_heights = c(8, 1))
 
-ggsave(args$fig, p,
-    width = 15, height = 12.5, units = "cm",
+ggsave(file.path("figures", "perf_by_ss.pdf"), 
+    p, width = 15, height = 12.5, units = "cm",
     dpi = 300, useDingbats = FALSE)
 
 
