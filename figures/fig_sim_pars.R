@@ -66,7 +66,7 @@ df <- map(sim, function(u) {
     dplyr::mutate(id = factor(paste(cluster_id, group_id))) %>% 
     mutate_at("i", factor, labels = labs)
 
-cols <- CATALYST:::.cluster_cols[
+cols <- muscat:::.cluster_colors[
     seq_len(nlevels(df$id))] %>% 
     set_names(levels(df$id))
 
