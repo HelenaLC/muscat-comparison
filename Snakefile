@@ -223,7 +223,7 @@ rule plot_perf_by_es:
 			script = config["scripts"] + "plot_perf_by_es.R",
 			res = lambda wc: filter(re.compile(\
 				config["results"] + wc.did +\
-				",de10,.*").search, res_dirs)
+				",d[a-z]10,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
 	output: ggp = config["plots"] + "{did}-perf_by_es_{padj}.rds",
 			fig = config["plots"] + "{did}-perf_by_es_{padj}.pdf"
