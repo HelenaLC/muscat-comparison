@@ -40,7 +40,8 @@ sim_pars <- dplyr::bind_rows(
 sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
     u <- as.list(sim_pars[i, ])
     u <- purrr::map(u, 1)
-    u <- do.call(simData, c(u, list(x = sce, nc = 2*2*3*100)))
+    u <- do.call(simData, c(u, list(x = sce, 
+        ns = 3, nk = 3, nc = 2*2*3*100)))
     u <- u[sample(nrow(u), 4e3), ]
     u <- logNormCounts(u)
 })
@@ -48,7 +49,6 @@ sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
 sim <- lapply(sim, function(u) {
     u <- runPCA(u, ncomponents = 20)
     u <- runTSNE(u, use_dimred = "PCA", n_dimred = 20)
-    u <- runUMAP(u, use_dimred = "PCA", n_dimred = 20)
 })
 
 labs <- c(
@@ -70,7 +70,7 @@ cols <- CATALYST:::.cluster_cols[
 
 p <- ggplot(df, aes(x = X1, y = X2, col = id)) +
     facet_wrap(~ i, ncol = 3, scales = "free") + 
-    geom_point_rast(size = 0.2, alpha = 0.4, raster.dpi = 100) + 
+    geom_point_rast(size = 0.2, alpha = 0.4, raster.dpi = 50) + 
     scale_color_manual(values = cols) +
     .prettify("void") + theme(
         legend.position = "none",
