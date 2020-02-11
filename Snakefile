@@ -75,8 +75,8 @@ rule all:
 			expand(config["plots"] + "{did}-perf_by_n{x}.{ext}",\
 				did = "kang", x = "s", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by magnitude of sample-size unbalancing
-			expand(config["plots"] + "{did}-perf_by_ss.{ext}",\
-				did = config["dids"], ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-perf_by_{x}s.{ext}",\
+				did = config["dids"], x = ["s", "g"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by expression level 
 			expand(config["plots"] + "{did}-perf_by_es_{padj}.{ext}",\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
@@ -193,23 +193,23 @@ rule plot_perf_by_nx:
 	params:	res = lambda wc, input: ";".join(input.res)
 	output: ggp = config["plots"] + "{did}-perf_by_n{x}.rds",
 			fig = config["plots"] + "{did}-perf_by_n{x}.pdf"
-	log:	config["logs"] + "plot_perf_by_nx-{did},n{x}.Rout"
+	log:	config["logs"] + "plot_perf_by_n{x}-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
 
-# TPR-FDR points stratified by #(samples)
-rule plot_perf_by_ss:
+# TPR-FDR points stratified by sample/group sizes
+rule plot_perf_by_xs:
 	input:	config["utils"],
-			script = config["scripts"] + "plot_perf_by_ss.R",
+			script = config["scripts"] + "plot_perf_by_xs.R",
 			res = lambda wc: filter(re.compile(\
 				config["results"] + wc.did +\
-				",de10_ss").search, res_dirs)
+				",de10_", + wc.x + "s,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}-perf_by_ss.rds",
-			fig = config["plots"] + "{did}-perf_by_ss.pdf"
-	log:	config["logs"] + "plot_perf_by_ss-{did}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_{x}s.rds",
+			fig = config["plots"] + "{did}-perf_by_{x}s.pdf"
+	log:	config["logs"] + "plot_perf_by_{x}s-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
