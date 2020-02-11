@@ -3,7 +3,8 @@ suppressMessages({
     library(ggplot2)
 })
 
-ps <- lapply(args$ggp, readRDS)
+fns <- paste0(config$dids, "-null.rds")
+ps <- lapply(file.path("plots", fns), readRDS)
 lgd <- get_legend(ps[[1]])
 ps <- lapply(ps, "+", theme(legend.position = "none"))
 
@@ -15,6 +16,6 @@ p <- plot_grid(
     label_size = 10,
     label_fontface = "bold")
 
-ggsave(args$fig, p,
+ggsave(file.path("figures", "null.pdf"), p,
     width = 15, height = 14, units = "cm",
     dpi = 300, useDingbats = FALSE)
