@@ -193,7 +193,7 @@ rule plot_perf_by_nx:
 	params:	res = lambda wc, input: ";".join(input.res)
 	output: ggp = config["plots"] + "{did}-perf_by_n{x}.rds",
 			fig = config["plots"] + "{did}-perf_by_n{x}.pdf"
-	log:	config["logs"] + "plot_perf_by_n{x}-{did}.Rout"
+	log:	config["logs"] + "plot_perf_by_nx-{did},n{x}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -209,7 +209,7 @@ rule plot_perf_by_xs:
 	params:	res = lambda wc, input: ";".join(input.res)
 	output: ggp = config["plots"] + "{did}-perf_by_{x}s.rds",
 			fig = config["plots"] + "{did}-perf_by_{x}s.pdf"
-	log:	config["logs"] + "plot_perf_by_{x}s-{did}.Rout"
+	log:	config["logs"] + "plot_perf_by_xs-{did},{x}s.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
