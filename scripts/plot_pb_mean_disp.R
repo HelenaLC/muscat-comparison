@@ -10,8 +10,8 @@ suppressMessages({
 set.seed(1994)
 sce <- readRDS(args$sce)
 
-sim <- simData(sce, 
-    nk = (nk <- 4), ns = (ns <- 4), 
+nk <- ns <- 4
+sim <- simData(sce, nk = nk, ns = ns,
     nc = 2*nk*ns*200, ng = nrow(sce))
 
 pbs <- list(
