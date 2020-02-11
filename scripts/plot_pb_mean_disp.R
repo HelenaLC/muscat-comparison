@@ -18,8 +18,8 @@ pbs <- list(
     reference = aggregateData(sce),
     simulation = aggregateData(sim))
 
-assayNames(pbs$reference) <- 
-    assayNames(pbs$simulation)
+assays(pbs$reference) <- assays(pbs$reference)[metadata(sim)$ref_kids]
+assayNames(pbs$reference) <- assayNames(pbs$simulation)
 
 res <- lapply(names(pbs), function(id) {
     u <- pbs[[id]]
