@@ -5,23 +5,23 @@ suppressMessages({
     library(purrr)
 })
 
-pat <- "%s,%s,%s,%s,g%s,c%s,k%s,s%s"
+#args <- list(res = list.files("~/projects/portmac/results", "kang,de10_n[g|c],", full.names = TRUE))
+pat <- "%s,%s,%s,%s,%s,g%s,c%s,k%s,s%s"
 tbl <- .read_res(args$res) %>% 
-    dplyr::mutate(id = sprintf(pat, sid, i, mid, j, g, c, k, s))
+    dplyr::mutate(id = sprintf(pat, did, sid, i, mid, j, g, c, k, s))
 rts <- .read_res(args$res, slot = "rt") %>% 
     vapply(sum, numeric(1)) %>% 
     set_names(gsub(".rds", "", basename(args$res)))
 
 m <- match(tbl$id, names(rts))
-df <- data.frame(tbl, rt = rts[m],
-    stringsAsFactors = FALSE) %>% 
-    mutate_at(c("c", "g"), function(u)
-        as.numeric(as.character(u))) %>% 
-    mutate_at("c", function(u) u * 2 * 2 * 3) %>% 
-    mutate_at("g", function(u) u * 2)
+df <- data.frame(tbl, rt = rts[m], stringsAsFactors = FALSE) %>% 
+    mutate_at(c("c", "g"), function(u) 
+        suppressWarnings(as.numeric(as.character(u)))) %>% 
+    mutate_at("g", function(u) u * 2) %>%     # ea. gene x 2 clusters
+    mutate_at("c", function(u) u * 2 * 2 * 3) # ea. cell x 2 clusters x 3 samples per group
 
 ps <- lapply(c("c", "g"), function(x) {
-   u <- dplyr::filter(df, sid == paste0("ds10_n", x)) %>% 
+   u <- dplyr::filter(df, sid == paste0("de10_n", x)) %>% 
        dplyr::mutate(id = paste(mid, get(x), sep = "--")) %>% 
        group_by(id, i) %>% dplyr::slice(1)
     
