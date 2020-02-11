@@ -10,12 +10,16 @@ suppressMessages({
 set.seed(1994)
 sce <- readRDS(args$sce)
 
-nk <- ns <- 4
-sim <- simData(sce, nc = 2*nk*ns*200, ng = nrow(sce))
+sim <- simData(sce, 
+    nk = (nk <- 4), ns = (ns <- 4), 
+    nc = 2*nk*ns*200, ng = nrow(sce))
 
 pbs <- list(
     reference = aggregateData(sce),
     simulation = aggregateData(sim))
+
+assayNames(pbs$reference) <- 
+    assayNames(pbs$simulation)
 
 res <- lapply(names(pbs), function(id) {
     u <- pbs[[id]]
@@ -32,10 +36,6 @@ res <- lapply(names(pbs), function(id) {
             stringsAsFactors = FALSE)
     }) %>% bind_rows
 }) %>% bind_rows
-
-kids <- paste0("cluster", seq_len(nk))
-kids <- kids[as.numeric(factor(res$cluster_id))]
-res$cluster_id <- kids
 
 df <- dplyr::filter(res, 
     disp_tag > quantile(disp_tag, 0.01),
