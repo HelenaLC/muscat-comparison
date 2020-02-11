@@ -207,7 +207,7 @@ rule plot_perf_by_xs:
 			script = config["scripts"] + "plot_perf_by_xs.R",
 			res = lambda wc: filter(re.compile(\
 				config["results"] + wc.did +\
-				",de10_" + wc.x + "s,.*").search, res_dirs)
+				",de10_" + wc.x + "s[0-9],.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
 	output: ggp = config["plots"] + "{did}-perf_by_{x}s.rds",
 			fig = config["plots"] + "{did}-perf_by_{x}s.pdf"
