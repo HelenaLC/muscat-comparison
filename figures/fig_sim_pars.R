@@ -40,11 +40,9 @@ sim_pars <- dplyr::bind_rows(
 sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
     u <- as.list(sim_pars[i, ])
     u <- purrr::map(u, 1)
-    u <- do.call(simData, c(u, list(x = sce, 
-        n_genes = nrow(sce), n_cells = 2*2*3*100)))
+    u <- do.call(simData, c(u, list(x = sce, nc = 2*2*3*100)))
     u <- u[sample(nrow(u), 4e3), ]
-    u <- computeSumFactors(u)
-    u <- normalize(u)
+    u <- logNormCounts(u)
 })
 
 sim <- lapply(sim, function(u) {
