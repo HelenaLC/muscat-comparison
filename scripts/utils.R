@@ -7,16 +7,21 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 .meth_cols <- c(
     "edgeR.sum.counts" = "#000000",
     "edgeR.sum.scalecpm" = "#C6C6C6",
+    
+    "scDD.logcounts"    = "#0056B2",
+    "scDD.vstresiduals" = "#009EF6", 
+    
     "limma-voom.sum.counts" = "#43A047",
     "limma-trend.mean.logcounts"    = "#45BF55",
     "limma-trend.mean.vstresiduals" = "#B5E655",
+    
+    "MAST.logcounts"    = "#FFC300",
+    
     "MM-dream"  = "#005E5C",
     "MM-dream2" = "#00ABA6",
     "MM-nbinom" = "#00E3DD",
     "MM-vst"    = "#95EEE8",
-    "scDD.logcounts"    = "#0056B2",
-    "scDD.vstresiduals" = "#009EF6", 
-    "MAST.logcounts"    = "#FFC300",
+    
     "AD-gid.logcounts"    = "#9A41B3",
     "AD-gid.vstresiduals" = "#FFA9FF",
     "AD-sid.logcounts"    = "#E56D4B",
