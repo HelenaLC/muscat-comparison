@@ -37,13 +37,13 @@ sim_pars <- dplyr::bind_rows(
     )
 )
 
+ns <- nlevels(ref$sample_id)
+nk <- nlevels(ref$cluster_id)
 sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
     u <- as.list(sim_pars[i, ])
     u <- purrr::map(u, 1)
-    u <- do.call(simData, c(u, 
-        list(x = ref, nc = 2*2*3*200,
-            ns = nlevels(ref$sample_id), 
-            nk = nlevels(ref$cluster_id))))
+    u <- do.call(simData, c(u, list(x = ref, 
+        ns = ns, nk = nk, nc = 2*ns*nk*100)))
     u <- u[sample(nrow(u), 4e3), ]
     u <- logNormCounts(u)
 })

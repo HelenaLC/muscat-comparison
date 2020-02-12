@@ -16,5 +16,5 @@ lapply(config$dids, function(id) {
     saveRDS(p, fns[1])
     ggsave(fns[2], p, 
         dpi = 300, useDingbats = FALSE,
-        width = 15, height = 10.1, units = "cm")
+        width = 15, height = 10, units = "cm")
 })

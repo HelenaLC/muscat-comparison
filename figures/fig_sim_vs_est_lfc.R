@@ -21,5 +21,5 @@ p <- plot_grid(ncol = 1,
     label_fontface = "bold")
 
 ggsave(file.path("figures", "sim_vs_est_lfc.pdf"), 
-    p, width = 15, height = 20, units = "cm",
+    p, width = 15, height = 18, units = "cm",
     dpi = 200, useDingbats = FALSE)
