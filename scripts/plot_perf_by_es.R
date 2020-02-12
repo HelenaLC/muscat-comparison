@@ -54,5 +54,5 @@ p <- .plot_perf_points(df) +
 
 saveRDS(p, args$ggp)
 ggsave(args$fig, p,
-    width = 15, height = 16.25, units = "cm",
+    width = 15, height = 16.2, units = "cm",
     dpi = 300, useDingbats = FALSE)
