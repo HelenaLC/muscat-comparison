@@ -11,7 +11,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     "scDD.logcounts"    = "#0056B2",
     "scDD.vstresiduals" = "#009EF6", 
     
-    "limma-voom.sum.counts" = "#43A047",
+    "limma-voom.sum.counts" = "#009262",
     "limma-trend.mean.logcounts"    = "#45BF55",
     "limma-trend.mean.vstresiduals" = "#B5E655",
     
