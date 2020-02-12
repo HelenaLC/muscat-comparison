@@ -34,11 +34,11 @@ p <- ggplot(sub, aes(x = sim_lfc, y = est_lfc, col = as.logical(is_de))) +
     scale_y_continuous(limits = c(-6,6), breaks = seq(-6,6,3), expand = c(0, 1)) +
     labs(x = "simulated logFC", y = "estimated logFC") +
     .prettify("bw") + theme(
-        strip.text = element_text(size = 4),
+        strip.text = element_text(size = 3),
         panel.spacing = unit(1, "mm"),
         legend.position = "bottom")
 
 saveRDS(p, args$ggp)
 ggsave(args$fig, p,
-    width = 15, height = 11, units = "cm",
+    width = 15, height = 10, units = "cm",
     dpi = 300, useDingbats = FALSE)
