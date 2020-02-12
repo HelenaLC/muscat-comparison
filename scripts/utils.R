@@ -13,7 +13,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     "MM-dream"  = "#005E5C",
     "MM-dream2" = "#00ABA6",
     "MM-nbinom" = "#00E3DD",
-    "MM-vst"    = "#0EEAFF",
+    "MM-vst"    = "#95EEE8",
     "scDD.logcounts"    = "#0056B2",
     "scDD.vstresiduals" = "#009EF6", 
     "MAST.logcounts"    = "#FFC300",
@@ -119,7 +119,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
             scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
                 labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
             scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
-            guides(col = guide_legend(ncol = 3,
+            guides(col = guide_legend(ncol = 4,
                 override.aes = list(size = 2, alpha = 1))) +
             .prettify(theme = "bw", legend.position = "bottom"))
 
