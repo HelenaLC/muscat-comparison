@@ -5,7 +5,9 @@ suppressMessages({
     library(purrr)
 })
 
-#args <- list(res = list.files("~/projects/portmac/results", "kang,de10_n[g|c],", full.names = TRUE))
+# args <- list(
+#     fig = file.path("plots", "kang-runtimes.pdf"),
+#     res = list.files("results", "kang,de10_n[g|c],", full.names = TRUE))
 pat <- "%s,%s,%s,%s,%s,g%s,c%s,k%s,s%s"
 tbl <- .read_res(args$res) %>% 
     dplyr::mutate(id = sprintf(pat, did, sid, i, mid, j, g, c, k, s))
@@ -39,7 +41,7 @@ ps <- lapply(c("c", "g"), function(x) {
         scale_x_log10(breaks = unique(u[[x]])) +
         scale_color_manual(NULL, values = .meth_cols) +
         scale_fill_manual(NULL, values = .meth_cols) +
-        guides(col = guide_legend(ncol = 3)) +
+        guides(col = guide_legend(ncol = 4)) +
         labs(x = sprintf("nb. of %s", c(c = "cells", g = "genes")[x]), y = "runtime (s)") +
         .prettify("bw") + theme(legend.position = "bottom", aspect.ratio = 2/3)
 })
@@ -56,9 +58,9 @@ p <- plot_grid(
         label_size = 10, 
         label_fontface = "bold"),
     lgd, ncol = 1, 
-    rel_heights = c(4, 0.8))
+    rel_heights = c(6, 1))
 
 ggsave(args$fig, p,
-    units = "cm", width = 15, height = 6.8,
+    units = "cm", width = 15, height = 6,
     dpi = 300, useDingbats = FALSE)    
 
