@@ -280,7 +280,7 @@ rule run_meth_lps:
 	threads: 30
 	input:	script = config["scripts"] + "run_meth_lps.R",
 			sce = "LPS/output/SCE_annotation.rds",
-			meth_pars = config["meth_pars"], "{mid}.json",
+			meth_pars = config["meth_pars"] + "{mid}.json",
 			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
 	output:	res = "LPS/output/{mid}.rds"
 	log:	config["logs"] + "run_meth_lps-{did}.Rout"
