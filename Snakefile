@@ -280,7 +280,7 @@ rule plot_runtimes:
 
 rule run_meth_lps:
 	threads: 30
-	priority: 0
+	priority: -1
 	input:	script = config["scripts"] + "run_meth_lps.R",
 			sce = "LPS/output/SCE_annotation.rds",
 			meth_pars = config["meth_pars"] + "{mid}.json",
