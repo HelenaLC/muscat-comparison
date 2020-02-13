@@ -276,13 +276,18 @@ rule plot_runtimes:
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
 
-#rule lps_run_meth:
-#	input:	script = config["scripts"], "lps_run_meth.R"),
-#			sce = config["raw_data"], "sce0_magl.rds"),
-#			meth_pars = config["meth_pars"], "{mid}.json"),
-#			fun = lambda wc: config["scripts"], "apply_" + mids.loc[wc.mid, "type"] + ".R")
-#	output:	res = config["results"], "lps", "{mid}.rds")
-#	script:	"{input.script}"
+rule run_meth_lps:
+	threads: 30
+	input:	script = config["scripts"] + "run_meth_lps.R",
+			sce = "LPS/output/SCE_annotation.rds",
+			meth_pars = config["meth_pars"], "{mid}.json",
+			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
+	output:	res = "LPS/output/{mid}.rds"
+	log:	config["logs"] + "run_meth_lps-{did}.Rout"
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
+		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
+		meth_pars={input.meth_pars} res={output.res}"\
+		{input.script} {log}'''
 
 # write session info to .txt file
 rule session_info:
