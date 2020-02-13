@@ -21,10 +21,10 @@ if (grepl("MM-", wcs$mid)) meth_pars$n_threads <- 30
 source(fun <- args$fun)
 fun <- gsub("(.R)", "", basename(fun))
 res <- get(fun)(sce, meth_pars, ds_only = FALSE)$tbl
-res <- mutate_at(res, c("gene", "cluster_id"), as.character)
 
 # assure all gene-cluster combinations are presents in results table
 if (!inherits(res, "error")) {
+    res <- mutate_at(res, c("gene", "cluster_id"), as.character)
     res <- as.data.frame(rowData(sce)) %>% 
         mutate(gene = rownames(.)) %>% 
         replicate(n = nk, simplify = FALSE) %>% 
