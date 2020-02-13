@@ -10,7 +10,7 @@ suppressMessages({
 apply_ad <- function(sce, pars, ds_only = TRUE) {
     t <- system.time({
         if (!ds_only) 
-            assays(sce, pars$assay) <- switch(pars$assay,
+            assay(sce, pars$assay) <- switch(pars$assay,
                 logcounts = logNormCounts(computeLibraryFactors(sce)),
                 vstresiduals = vst(counts(sce), show_progress = FALSE)$y)
         res <- tryCatch(
