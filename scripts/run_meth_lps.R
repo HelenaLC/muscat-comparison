@@ -11,7 +11,7 @@ suppressMessages({
 #     meth_pars = "meta/meth_pars/edgeR.sum.counts.json")
 
 sce <- readRDS(args$sce)
-nk <- length(kids <- nlevels(sce$cluster_id))
+nk <- length(kids <- levels(sce$cluster_id))
 meth_pars <- as.list(fromJSON(args$meth_pars))
 
 # increase number of threads used by mixed model methods
@@ -21,6 +21,7 @@ if (grepl("MM-", wcs$mid)) meth_pars$n_threads <- 30
 source(fun <- args$fun)
 fun <- gsub("(.R)", "", basename(fun))
 res <- get(fun)(sce, meth_pars, ds_only = FALSE)$tbl
+res <- mutate_at(res, c("gene", "cluster_id"), as.character)
 
 # assure all gene-cluster combinations are presents in results table
 if (!inherits(res, "error")) {
