@@ -9,12 +9,15 @@ suppressMessages({
 apply_mast <- function(sce, pars, ds_only = TRUE) {
     t <- system.time({
         if (ds_only) {
-            assay(sce, "lCount") <- assay(sce, pars$assay)
+            a <- assay(sce, pars$assay)
         } else {
-            assay(sce, "lCount") <- switch(pars$assay, 
-                logcounts = logNormCounts(computeLibraryFactors(sce)),
+            a <- switch(pars$assay, 
+                logcounts = normalizeCounts(computeLibraryFactors(sce)),
                 vstresiduals = vst(counts(sim), show_progress = FALSE)$y)
         }
+        if (!is.matrix(a)) 
+            a <- as.matrix(a)
+        assay(sce, "lCount") <- a
         res <- tryCatch(run_mast(sce), error = function(e) e)
     })[[3]]
     list(rt = t, tbl = res)

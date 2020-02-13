@@ -11,8 +11,10 @@ apply_ad <- function(sce, pars, ds_only = TRUE) {
     t <- system.time({
         if (!ds_only) 
             assay(sce, pars$assay) <- switch(pars$assay,
-                logcounts = logNormCounts(computeLibraryFactors(sce)),
+                logcounts = normalizeCounts(computeLibraryFactors(sce)),
                 vstresiduals = vst(counts(sce), show_progress = FALSE)$y)
+        if (!is.matrix(a <- assay(sce, pars$assay))) 
+            assay(sce, pars$assay) <- as.matrix(a)
         res <- tryCatch(
             error = function(e) e, 
             run_ad(sce, pars$assay, pars$var))
