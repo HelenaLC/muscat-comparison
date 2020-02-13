@@ -84,7 +84,7 @@ rule all:
 			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"]),
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 		# run all methods on LPS dataset
-			expand("LPS/output/{mid}.rds", mid = mids.id)
+			expand("LPS/output/DS_results_{mid}.rds", mid = mids.id)
 
 rule prep_sce:
 	priority: 100
@@ -284,7 +284,7 @@ rule run_meth_lps:
 			sce = "LPS/output/SCE_annotation.rds",
 			meth_pars = config["meth_pars"] + "{mid}.json",
 			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
-	output:	res = "LPS/output/{mid}.rds"
+	output:	res = "LPS/output/DS_results_{mid}.rds"
 	log:	config["logs"] + "run_meth_lps-{mid}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
