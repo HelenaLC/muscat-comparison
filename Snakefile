@@ -283,7 +283,7 @@ rule run_meth_lps:
 			meth_pars = config["meth_pars"] + "{mid}.json",
 			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
 	output:	res = "LPS/output/{mid}.rds"
-	log:	config["logs"] + "run_meth_lps-{did}.Rout"
+	log:	config["logs"] + "run_meth_lps-{mid}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
 		meth_pars={input.meth_pars} res={output.res}"\
