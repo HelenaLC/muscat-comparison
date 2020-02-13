@@ -81,8 +81,10 @@ rule all:
 			expand(config["plots"] + "{did}-perf_by_es_{padj}.{ext}",\
 				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# method runtimes versus no. cells/genes
-			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"])
+			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"]),
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
+		# run all methods on LPS dataset
+			expand("LPS/output/{mid}.rds", mid = mids)
 
 rule prep_sce:
 	priority: 100
