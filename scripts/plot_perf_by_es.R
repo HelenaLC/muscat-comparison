@@ -11,7 +11,12 @@ groups <- c("E <= 0.1", "0.1 < E <= 0.5", "0.5 < E <= 1", "E > 1")
     if (v <= 0.1) 1 else if (v <= 0.5) 2 else if (v <= 1) 3 else 4) %>% 
     factor
 
-#fns <- list.files("results/kang", "d[a-z]10;", full.names = TRUE)
+# wcs <- list(padj = "loc")
+# args <- list(
+#     res = list.files("results/kang", "kang,d[a-z]10,", full.names = TRUE),
+#     ggp = file.path("plots", "kang-perf_by_es_loc.rds"),
+#     fig = file.path("plots", "kang-perf_by_es_loc.rds"))
+
 res <- .read_res(args$res) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::mutate(group = .get_group(.$E)) %>% setDT %>% 
