@@ -25,7 +25,7 @@ res <- mutate_at(res, c("gene", "cluster_id"), as.character)
 
 # assure all gene-cluster combinations are presents in results table
 if (!inherits(res, "error")) {
-    as.data.frame(rowData(sce)) %>% 
+    res <- as.data.frame(rowData(sce)) %>% 
         mutate(gene = rownames(.)) %>% 
         replicate(n = nk, simplify = FALSE) %>% 
         bind_rows %>% 
