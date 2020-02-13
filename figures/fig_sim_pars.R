@@ -50,7 +50,7 @@ sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
 
 sim <- lapply(sim, function(u) {
     u <- runPCA(u, ncomponents = 20)
-    u <- runTSNE(u, use_dimred = "PCA", n_dimred = 20)
+    u <- runTSNE(u, dimred = "PCA", n_dimred = 20)
 })
 
 labs <- c(
