@@ -84,7 +84,7 @@ rule all:
 			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"]),
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 		# run all methods on LPS dataset
-			expand("LPS/output/{mid}.rds", mid = mids)
+			expand("LPS/output/{mid}.rds", mid = mids.id)
 
 rule prep_sce:
 	priority: 100
