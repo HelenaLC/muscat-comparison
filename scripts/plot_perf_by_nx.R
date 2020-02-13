@@ -6,20 +6,43 @@ suppressMessages({
     library(purrr)
 })
 
-#args <- list(res = list.files("~/projects/portmac/results", "kang,de10_ns", full.names = TRUE))
+# wcs = list(x = "c", did = "magl")
+# args <- list(
+#     res = list.files("results", sprintf("%s,de10_n%s,", wcs$did, wcs$x), full.names = TRUE),
+#     ggp = file.path("plots", paste0(wcs$did, sprintf("-perf_by_n%s.rds", wcs$x))),
+#     fig = file.path("plots", paste0(wcs$did, sprintf("-perf_by_n%s.pdf", wcs$x))))
+
+pat <- "i%sj%sc%ss%s%s%s"
 res <- .read_res(args$res) %>% 
+    dplyr::mutate(id = sprintf(pat, i, j, c, s, gene, cluster_id)) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
-    split(by = "j", flatten = FALSE) %>% 
+    split(by = "i", flatten = FALSE) %>% 
     map(group_by, mid) %>% map(function(u) 
         setNames(group_split(u), group_keys(u)[[1]]))
 
+# some methods may fail for too low number of cells / replicates;
+# the below chunk fills in missing results to match in dimension
+for (i in seq_along(res)) {
+    u <- res[[i]][[1]]
+    any_missing <- which(sapply(res[[i]], nrow) != nrow(u))
+    for (j in any_missing) {
+        v <- res[[i]][[j]]
+        m <- match(setdiff(u$id, v$id), u$id)
+        filler <- mutate_if(u[m, ], is.numeric, 
+            function(u) replace(u, TRUE, NA))
+        v <- rbind(v, filler)
+        v <- v[match(u$id, v$id), ]
+        res[[i]][[j]] <- v
+    }
+}
+
 cd <- lapply(seq_along(res), function(i) {
-    truth <- res[[i]][[1]][, c(wcs$x, "is_de")] %>% 
+    truth <- res[[i]][[1]][, c("id", "is_de", wcs$x)] %>% 
         data.frame(row.names = NULL, check.names = FALSE)
-    pvals <- lapply(c("p_val", "p_adj.loc"), map, .x = res[[i]]) %>% 
+    ps <- lapply(c("p_val", "p_adj.loc"), map, .x = res[[i]]) %>% 
         map(data.frame, check.names = FALSE)
-    dfs <- c(list(truth), pvals)
+    dfs <- c(list(truth), ps)
     names(dfs) <- c("truth", "pval", "padj")
     do.call(COBRAData, dfs)
 })
@@ -41,7 +64,8 @@ df <- map(perf, "fdrtpr") %>%
     }) %>% 
     group_by(splitval, thr, method) %>% 
     summarise_at(c("FDR", "TPR"), mean) %>% 
-    mutate_at("method", factor, levels = names(.meth_cols))
+    mutate_at("method", factor, levels = names(.meth_cols)) %>% 
+    filter(FDR + TPR != 0)
 
 p <- .plot_perf_points(df)
 p$facet$params$ncol <- nlevels(df$splitval)
