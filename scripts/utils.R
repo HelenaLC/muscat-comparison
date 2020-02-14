@@ -39,6 +39,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         fns <- fns[grepl("limma|edgeR", fns)]
         mids <- names(.treat_cols)
     } else {
+        fns <- fns[-sapply(.treat_mids, grep, fns)]
         mids <- names(.meth_cols)
     }
     res <- map(lapply(fns, readRDS), slot)
