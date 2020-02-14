@@ -67,42 +67,41 @@ rule all:
 			#expand(config["raw_data"], "sce_{did}.rds"), did = config["dids"]),
 			#expand(config["raw_data"], "ref_{did}.rds"), did = config["dids"]),
 		# 'countsimQC' reports
-			expand(config["plots"] + "{did}_{inc}-sim_qc.html",\
+			expand(config["plots"] + "{did}-sim_qc-{inc}.html",\
 				did = config["dids"], inc = subs),
 		# null simulation p-value distributions 
-			expand(config["plots"] + "{did}_{inc}-null.{ext}",\
+			expand(config["plots"] + "{did}-null-{inc}.{ext}",\
 				did = config["dids"], inc = subs,\
 				ext = ["rds", "pdf"]),
 		# expand(config["plots"], "{did}_qc.html"), did = config["dids"]),
-			expand(config["plots"] + "{did}_{inc}-pb_mean_disp.pdf",\
-				did = config["dids"], inc = subs),
-			expand(config["plots"] + "{did}_{inc}-upset.pdf",\
+			expand(config["plots"] + "{did}-pb_mean_disp.pdf", did = config["dids"]),
+			expand(config["plots"] + "{did}-upset-{inc}.pdf",\
 				did = config["dids"], inc = subs),
 		# TPR-FDR stratified by DD category using locally/globally adjusted p-values
-			expand(config["plots"] + "{did}_{inc}-perf_by_cat_{padj}.{ext}",\
+			expand(config["plots"] + "{did}-perf_by_cat_{padj}-{inc}.{ext}",\
 				did = config["dids"], inc = subs,\
 				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# scatters of simulated vs. estimated logFCs
-			expand(config["plots"] + "{did}_{inc}-sim_vs_est_lfc.{ext}",\
+			expand(config["plots"] + "{did}-sim_vs_est_lfc-{inc}.{ext}",\
 				did = config["dids"], inc = subs, ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of cells per cluster-sample
-			expand(config["plots"] + "{did}_{inc}-perf_by_n{x}.{ext}",\
+			expand(config["plots"] + "{did}-perf_by_n{x}-{inc}.{ext}",\
 				did = config["dids"], inc = subs,\
 				x = "c", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of replicates per group
-			expand(config["plots"] + "{did}_{inc}-perf_by_n{x}.{ext}",\
+			expand(config["plots"] + "{did}-perf_by_n{x}-{inc}.{ext}",\
 				did = "kang", inc = subs,\
 				x = "s", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by magnitude of sample-size unbalancing
-			expand(config["plots"] + "{did}_{inc}-perf_by_{x}s.{ext}",\
+			expand(config["plots"] + "{did}-perf_by_{x}s-{inc}.{ext}",\
 				did = config["dids"], inc = subs,\
 				x = ["s", "g"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by expression level 
-			expand(config["plots"] + "{did}_{inc}-perf_by_es_{padj}.{ext}",\
+			expand(config["plots"] + "{did}-perf_by_es_{padj}-{inc}.{ext}",\
 				did = config["dids"], inc = subs,\
 				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# method runtimes versus no. cells/genes
-			expand(config["plots"] + "{did}_{inc}-runtimes.pdf",\
+			expand(config["plots"] + "{did}-runtimes-{inc}.pdf",\
 				did = ["kang"], inc = subs)
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 		# run all methods on LPS dataset
@@ -170,9 +169,9 @@ rule plot_pb_mean_disp:
 	input:	config["utils"],
 			script = config["scripts"] + "plot_pb_mean_disp.R",
 			sce = config["raw_data"] + "ref_{did}.rds",
-	output: ggp = config["plots"] + "{did}_{inc}-pb_mean_disp.rds",
-			fig = config["plots"] + "{did}_{inc}-pb_mean_disp.pdf"
-	log:	config["logs"] + "plot_pb_mean_disp-{did}_{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-pb_mean_disp.rds",
+			fig = config["plots"] + "{did}-pb_mean_disp.pdf"
+	log:	config["logs"] + "plot_pb_mean_disp-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -186,9 +185,9 @@ rule plot_null:
 				config["results"] + wc.did +\
 				",nill,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}_{inc}-null.rds", 
-			fig = config["plots"] + "{did}_{inc}-null.pdf"
-	log:	config["logs"] + "plot_null-{did}_{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-null-{inc}.rds", 
+			fig = config["plots"] + "{did}-null-{inc}.pdf"
+	log:	config["logs"] + "plot_null-{did}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -202,9 +201,9 @@ rule plot_perf_by_cat:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}_{inc}-perf_by_cat_{padj}.rds",
-			fig = config["plots"] + "{did}_{inc}-perf_by_cat_{padj}.pdf"
-	log:	config["logs"] + "plot_perf_by_cat-{did}_{inc},p_adj.{padj}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_cat_{padj}-{inc}.rds",
+			fig = config["plots"] + "{did}-perf_by_cat_{padj}-{inc}.pdf"
+	log:	config["logs"] + "plot_perf_by_cat-{did},p_adj.{padj}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -220,9 +219,9 @@ rule plot_perf_by_nx:
 				config["results"] + wc.did +\
 				",de10_n" + wc.x + ",.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}_{inc}-perf_by_n{x}.rds",
-			fig = config["plots"] + "{did}_{inc}-perf_by_n{x}.pdf"
-	log:	config["logs"] + "plot_perf_by_n{x}-{did}_{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_n{x}-{inc}.rds",
+			fig = config["plots"] + "{did}-perf_by_n{x}-{inc}.pdf"
+	log:	config["logs"] + "plot_perf_by_n{x}-{did}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -238,9 +237,9 @@ rule plot_perf_by_xs:
 				config["results"] + wc.did +\
 				",de10_" + wc.x + "s[0-9],.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}_{inc}-perf_by_{x}s.rds",
-			fig = config["plots"] + "{did}_{inc}-perf_by_{x}s.pdf"
-	log:	config["logs"] + "plot_perf_by_{x}s-{did}_{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_{x}s-{inc}.rds",
+			fig = config["plots"] + "{did}-perf_by_{x}s-{inc}.pdf"
+	log:	config["logs"] + "plot_perf_by_{x}s-{did}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -255,9 +254,9 @@ rule plot_perf_by_es:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}_{inc}-perf_by_es_{padj}.rds",
-			fig = config["plots"] + "{did}_{inc}-perf_by_es_{padj}.pdf"
-	log:	config["logs"] + "plot_perf_by_es-{did}_{inc},p_adj.{padj}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_es_{padj}-{inc}.rds",
+			fig = config["plots"] + "{did}-perf_by_es_{padj}-{inc}.pdf"
+	log:	config["logs"] + "plot_perf_by_es-{did},p_adj.{padj}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -271,8 +270,8 @@ rule plot_upset:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: fig = config["plots"] + "{did}_{inc}-upset.pdf"
-	log:	config["logs"] + "plot_upset-{did}_{inc}.Rout"
+	output: fig = config["plots"] + "{did}-upset-{inc}.pdf"
+	log:	config["logs"] + "plot_upset-{did}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
@@ -286,9 +285,9 @@ rule plot_lfc:
 				config["results"] + wc.did +\
 				",d[a-z]10,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output:	ggp = config["plots"] + "{did}_{inc}-sim_vs_est_lfc.rds",
-			fig = config["plots"] + "{did}_{inc}-sim_vs_est_lfc.pdf"
-	log:	config["logs"] + "plot_lfc-{did}_{inc}.Rout"
+	output:	ggp = config["plots"] + "{did}-sim_vs_est_lfc-{inc}.rds",
+			fig = config["plots"] + "{did}-sim_vs_est_lfc-{inc}.pdf"
+	log:	config["logs"] + "plot_lfc-{did}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -303,8 +302,8 @@ rule plot_runtimes:
 				config["results"] + wc.did +\
 				",de10_n[g|c],*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output:	fig = config["plots"] + "{did}_{inc}-runtimes.pdf"
-	log:	config["logs"] + "plot_runtimes-{did}_{inc}.Rout"
+	output:	fig = config["plots"] + "{did}-runtimes-{inc}.pdf"
+	log:	config["logs"] + "plot_runtimes-{did}-{inc}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
