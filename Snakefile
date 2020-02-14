@@ -130,7 +130,7 @@ rule sim_data:
 rule run_meth:
 	priority: 97
 	threads: 1
-	wildcard_constraints: mid = ".+(?!treat).+"
+	wildcard_constraints: mid = ".+(^treat).+"
 	input:	script = config["scripts"] + "run_meth.R",
 			sim = config["sim_data"] + "{did},{sid},{i}.rds",
 			meth_pars = config["meth_pars"] + "{mid}.json",
