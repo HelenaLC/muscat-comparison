@@ -13,13 +13,14 @@ apply_pb <- function(sce, pars, ds_only = TRUE) {
             assay(sce, a) <- switch(a, 
                 counts = counts(sce),
                 cpm = calculateCPM(counts(sce)),
-                logcounts = logNormCounts(computeLibraryFactors(sce)),
+                logcounts = normalizeCounts(computeLibraryFactors(sce)),
                 vstresiduals = vst(counts(sce), show_progress = FALSE)$y)
         pb <- aggregateData(sce, a, fun = pars$fun, scale = pars$scale)
     })[[3]]
     t2 <- system.time({
         res <- tryCatch(
-            pbDS(pb, method = pars$method, filter = "none", verbose = FALSE),
+            pbDS(pb, filter = "none", verbose = FALSE,
+                method = pars$method, treat = pars$treat),
             error = function(e) e)
         if (!inherits(res, "error"))
             res <- dplyr::bind_rows(res$table[[1]])
