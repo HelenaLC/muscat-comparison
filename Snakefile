@@ -154,6 +154,7 @@ rule run_meth:
 
 # pseudobulk-level mean-dispersion scatters
 rule plot_pb_mean_disp:
+	priority: 50
 	input:	config["utils"],
 			script = config["scripts"] + "plot_pb_mean_disp.R",
 			sce = config["raw_data"] + "ref_{did}.rds",
@@ -166,6 +167,7 @@ rule plot_pb_mean_disp:
 
 # null simulation p-value distributions
 rule plot_null:
+	priority: 50
 	input:	config["utils"],
 			script = config["scripts"] + "plot_null.R",
 			res = lambda wc: filter(re.compile(\
@@ -181,6 +183,7 @@ rule plot_null:
 
 # TPR-FDR stratified by DD category using locally/globally adjusted p-values
 rule plot_perf_by_cat:
+	priority: 50
 	input:	config["utils"],
 			script = config["scripts"] + "plot_perf_by_cat.R",
 			res = lambda wc: filter(re.compile(\
@@ -197,6 +200,7 @@ rule plot_perf_by_cat:
 
 # TPR-FDR points stratified by #(cells)/#(samples)
 rule plot_perf_by_nx:
+	priority: 50
 	wildcard_constraints: x = "s|c"
 	input:	config["utils"],
 			script = config["scripts"] + "plot_perf_by_nx.R",
@@ -214,6 +218,7 @@ rule plot_perf_by_nx:
 
 # TPR-FDR points stratified by sample/group sizes
 rule plot_perf_by_xs:
+	priority: 50
 	wildcard_constraints: x = "s|g"
 	input:	config["utils"],
 			script = config["scripts"] + "plot_perf_by_xs.R",
@@ -231,6 +236,7 @@ rule plot_perf_by_xs:
 
 # TPR-FDR points stratified by expression
 rule plot_perf_by_es:
+	priority: 50
 	input:	config["utils"],
 			script = config["scripts"] + "plot_perf_by_es.R",
 			res = lambda wc: filter(re.compile(\
@@ -246,6 +252,7 @@ rule plot_perf_by_es:
 		{input.script} {log}'''
 
 rule plot_upset:
+	priority: 50
 	input:	config["utils"],
 			script = config["scripts"] + "plot_upset.R",
 			res = lambda wc: filter(re.compile(\
@@ -260,6 +267,7 @@ rule plot_upset:
 
 # scatter plots of estimated vs. simulated logFCs
 rule plot_lfc:
+	priority: 50
 	input:	config["utils"],
 			script = config["scripts"] + "plot_lfc.R",
 			res = lambda wc: filter(re.compile(\
@@ -276,6 +284,7 @@ rule plot_lfc:
 
 # runtimes vs. #(cells)/#(genes)
 rule plot_runtimes:
+	priority: 50
 	input: 	config["utils"],
 			script = config["scripts"] + "plot_runtimes.R",
 			res = lambda wc: filter(re.compile(\
@@ -290,7 +299,7 @@ rule plot_runtimes:
 
 # rule run_meth_lps:
 # 	threads: 20
-# 	priority: -1
+# 	priority: 10
 # 	wildcard_constraints: mid = ".+(?!treat).+"
 # 	input:	script = config["scripts"] + "run_meth_lps.R",
 # 			sce = "LPS/output/SCE_annotation.rds",
@@ -305,6 +314,7 @@ rule plot_runtimes:
 
 # write session info to .txt file
 rule session_info:
+	priority: 1
 	input:	config["scripts"] + "session_info.R"
 	output:	"session_info.txt"
 	log:	config["logs"] + "session_info.Rout" 
