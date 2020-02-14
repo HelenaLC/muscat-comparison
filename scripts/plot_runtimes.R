@@ -8,9 +8,11 @@ suppressMessages({
 # args <- list(
 #     fig = file.path("plots", "kang-runtimes.pdf"),
 #     res = list.files("results", "kang,de10_n[g|c],", full.names = TRUE))
+
 pat <- "%s,%s,%s,%s,%s,g%s,c%s,k%s,s%s"
-tbl <- .read_res(args$res) %>% 
-    dplyr::mutate(id = sprintf(pat, did, sid, i, mid, j, g, c, k, s))
+tbl <- dplyr::mutate(.read_res(args$res), 
+    id = sprintf(pat, did, sid, i, mid, j, g, c, k, s))
+
 rts <- .read_res(args$res, slot = "rt") %>% 
     vapply(sum, numeric(1)) %>% 
     set_names(gsub(".rds", "", basename(args$res)))

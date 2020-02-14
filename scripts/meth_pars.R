@@ -6,24 +6,20 @@ pb <- dplyr::bind_rows(
     expand.grid(
         stringsAsFactors = FALSE,
         assay = "counts", fun = "sum", scale = FALSE, 
-        method = c("edgeR", "limma-voom"),
-        treat = c(TRUE, FALSE)
+        method = c("edgeR", "limma-voom")
     ),
     expand.grid(
         stringsAsFactors = FALSE, scale = FALSE,
         assay = c("logcounts", "vstresiduals"),
-        fun = "mean", method = "limma-trend",
-        treat = c(TRUE, FALSE)
+        fun = "mean", method = "limma-trend"
     ),
-    expand.grid(
+    data.frame(
         stringsAsFactors = FALSE, scale = TRUE,
-        assay = "cpm", fun = "sum", method = "edgeR",
-        treat = c(TRUE, FALSE)
+        assay = "cpm", fun = "sum", method = "edgeR"
     )    
 )
-pb$id <- with(pb, sprintf("%s%s.%s.%s%s", 
-    method, ifelse(treat, "-treat", ""),
-    fun, ifelse(scale, "scale", ""), assay))
+pb$id <- with(pb, sprintf("%s.%s.%s%s", 
+    method, fun, ifelse(scale, "scale", ""), assay))
 
 # mixed-models -----------------------------------------------------------------
 mm <- data.frame(

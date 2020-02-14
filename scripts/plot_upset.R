@@ -8,8 +8,8 @@ suppressMessages({
 })
 
 #args <- list(res = list.files("~/projects/portmac/results", "kang,d[a-z][0-9]+,", full.names = TRUE))
-res <- .read_res(args$res) %>% 
-    dplyr::mutate(hit = paste(gene, cluster_id, sid, i, sep = ";"))
+res <- dplyr::mutate(.read_res(args$res),
+    hit = paste(gene, cluster_id, sid, i, sep = ";"))
 
 n_dd <- res %>% 
     dplyr::filter(mid == .$mid[1]) %>% 

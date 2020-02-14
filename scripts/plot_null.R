@@ -13,17 +13,14 @@ suppressMessages({
 #     ggp = file.path("plots", sprintf("%s-null.rds", id)),
 #     fig = file.path("plots", sprintf("%s-null.pdf", id)))
 
-res <- .read_res(args$res)
-
-df <- res %>% 
+df <- .read_res(args$res) %>% 
     dplyr::filter(!is.na(p_val)) %>% 
-    dplyr::rename(method = mid, replicate = i) %>% 
-    mutate(treat = method %in% .treat_mids)
+    dplyr::rename(method = mid, replicate = i)
 
 p <- ggplot(df, aes(x = p_val, y = ..ndensity.., 
     col = method, fill = method, lty = replicate)) +
     facet_wrap(~ method, ncol = 4) + 
-    geom_density(aes(alpha = treat), adjust = 0.2, size = 0.3) +
+    geom_density(adjust = 0.2, size = 0.3, alpha = 0.1) +
     scale_alpha_manual(values = c("TRUE" = 0.1, "FALSE" = 0.4)) +
     scale_color_manual(values = .meth_cols) +
     scale_fill_manual(values = .meth_cols) +

@@ -8,7 +8,8 @@ suppressMessages({
 
 # wcs <- list(padj = "loc", inc = "treat")
 # args <- list(res = list.files("results", "kang,d[a-z][0-9]+,", full.names = TRUE))
-res <- .read_res(args$res, wcs$inc) %>%  
+
+res <- .read_res(args$res) %>%  
     mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = c("i", "sid", "mid"), flatten = FALSE)
@@ -41,7 +42,7 @@ df <- map(perf, function(u)
     group_by(splitval, thr, method) %>% 
     summarise_at(c("FDR", "TPR"), mean)
 
-p <- .plot_perf_points(df, include = wcs$inc)
+p <- .plot_perf_points(df)
 p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, args$ggp)

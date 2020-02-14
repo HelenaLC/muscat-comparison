@@ -39,28 +39,16 @@ for sid in sids:
 		sim_dirs.append(expand(\
 			config["sim_data"] + "{did},{sid},{i}.rds",\
 			did = did, sid = sid, i = range(1, sim_pars["nr"][0] + 1)))
-		# exclude all treat methods for now
 		res_dirs.append(expand(\
 			config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds",
-			did = did, sid = sid, mid = mids.id[mids.id.str.find("treat") == -1],\
+			did = did, sid = sid, mid = mids.id,\
 			i = range(1, sim_pars["nr"][0] + 1),\
 			j = range(1, run_pars["nr"][0] + 1),\
 			g = run_pars["ng"], c = run_pars["nc"],\
 			k = run_pars["nk"], s = run_pars["ns"]))
-		# include treat methods on for Kang as ref & simulation IDs dx10
-		if bool(re.match(r"d[a-z][0-9]+$", sid)) and did == "kang":
-			res_dirs.append(expand(\
-				config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds",
-				did = did, sid = sid, mid = mids.id[mids.id.str.find("treat") != -1],\
-				i = range(1, sim_pars["nr"][0] + 1),\
-				j = range(1, run_pars["nr"][0] + 1),\
-				g = run_pars["ng"], c = run_pars["nc"],\
-				k = run_pars["nk"], s = run_pars["ns"]))
 
 sim_dirs = sum(sim_dirs, [])
 res_dirs = sum(res_dirs, [])
-
-subs = ["all", "treat"]
 
 rule all: 
 	input:	sim_dirs, res_dirs,
@@ -70,38 +58,30 @@ rule all:
 			expand(config["plots"] + "{did}-sim_qc.html", did = config["dids"]),
 		# pseudobulk-level mean-dispersion plots
 			expand(config["plots"] + "{did}-pb_mean_disp.pdf", did = config["dids"]),
-			expand(config["plots"] + "{did},{inc}-upset.pdf",\
-				did = config["dids"], inc = "all"),
+			expand(config["plots"] + "{did}-upset.pdf", did = config["dids"]),
 		# null simulation p-value distributions 
-			expand(config["plots"] + "{did},{inc}-null.{ext}",\
-				did = config["dids"], inc = "all",\
-				ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-null.{ext}",\
+				did = config["dids"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by DD category using locally/globally adjusted p-values
-			expand(config["plots"] + "{did},{inc}-perf_by_cat_{padj}.{ext}",\
-				did = config["dids"], inc = ["all", "treat"],\
-				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-perf_by_cat_{padj}.{ext}",\
+				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# scatters of simulated vs. estimated logFCs
-			expand(config["plots"] + "{did},{inc}-sim_vs_est_lfc.{ext}",\
-				did = config["dids"], inc = "all", ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-sim_vs_est_lfc.{ext}",\
+				did = config["dids"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of cells per cluster-sample
-			expand(config["plots"] + "{did},{inc}-perf_by_n{x}.{ext}",\
-				did = config["dids"], inc = "all",\
-				x = "c", ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-perf_by_n{x}.{ext}",\
+				did = config["dids"], x = "c", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of replicates per group
-			expand(config["plots"] + "{did},{inc}-perf_by_n{x}.{ext}",\
-				did = "kang", inc = "all",\
-				x = "s", ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-perf_by_n{x}.{ext}",\
+				did = "kang", x = "s", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by magnitude of sample-size unbalancing
-			expand(config["plots"] + "{did},{inc}-perf_by_{x}s.{ext}",\
-				did = config["dids"], inc = "all",\
-				x = ["s", "g"], ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-perf_by_{x}s.{ext}",\
+				did = config["dids"], x = ["s", "g"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by expression level 
-			expand(config["plots"] + "{did},{inc}-perf_by_es_{padj}.{ext}",\
-				did = config["dids"], inc = "all",\
-				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did}-perf_by_es_{padj}.{ext}",\
+				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# method runtimes versus no. cells/genes
-			expand(config["plots"] + "{did},{inc}-runtimes.pdf",\
-				did = ["kang"], inc = "all")
+			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"])
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 		# run all methods on LPS dataset
 			#expand("LPS/output/DS_results_{mid}.rds", mid = mids.id)
@@ -184,9 +164,9 @@ rule plot_null:
 				config["results"] + wc.did +\
 				",nill,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did},{inc}-null.rds", 
-			fig = config["plots"] + "{did},{inc}-null.pdf"
-	log:	config["logs"] + "plot_null-{did},{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-null.rds", 
+			fig = config["plots"] + "{did}-null.pdf"
+	log:	config["logs"] + "plot_null-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} ggp={output.ggp} fig={output.fig}"\
 		{input.script} {log}'''
@@ -200,9 +180,9 @@ rule plot_perf_by_cat:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did},{inc}-perf_by_cat_{padj}.rds",
-			fig = config["plots"] + "{did},{inc}-perf_by_cat_{padj}.pdf"
-	log:	config["logs"] + "plot_perf_by_cat-{did},{inc},p_adj.{padj}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_cat_{padj}.rds",
+			fig = config["plots"] + "{did}-perf_by_cat_{padj}.pdf"
+	log:	config["logs"] + "plot_perf_by_cat-{did},p_adj.{padj}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -218,9 +198,9 @@ rule plot_perf_by_nx:
 				config["results"] + wc.did +\
 				",de10_n" + wc.x + ",.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did},{inc}-perf_by_n{x}.rds",
-			fig = config["plots"] + "{did},{inc}-perf_by_n{x}.pdf"
-	log:	config["logs"] + "plot_perf_by_n{x}-{did},{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_n{x}.rds",
+			fig = config["plots"] + "{did}-perf_by_n{x}.pdf"
+	log:	config["logs"] + "plot_perf_by_n{x}-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -236,9 +216,9 @@ rule plot_perf_by_xs:
 				config["results"] + wc.did +\
 				",de10_" + wc.x + "s[0-9],.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did},{inc}-perf_by_{x}s.rds",
-			fig = config["plots"] + "{did},{inc}-perf_by_{x}s.pdf"
-	log:	config["logs"] + "plot_perf_by_{x}s-{did},{inc}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_{x}s.rds",
+			fig = config["plots"] + "{did}-perf_by_{x}s.pdf"
+	log:	config["logs"] + "plot_perf_by_{x}s-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -253,9 +233,9 @@ rule plot_perf_by_es:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did},{inc}-perf_by_es_{padj}.rds",
-			fig = config["plots"] + "{did},{inc}-perf_by_es_{padj}.pdf"
-	log:	config["logs"] + "plot_perf_by_es-{did},{inc},p_adj.{padj}.Rout"
+	output: ggp = config["plots"] + "{did}-perf_by_es_{padj}.rds",
+			fig = config["plots"] + "{did}-perf_by_es_{padj}.pdf"
+	log:	config["logs"] + "plot_perf_by_es-{did},p_adj.{padj}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -269,8 +249,8 @@ rule plot_upset:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: fig = config["plots"] + "{did},{inc}-upset.pdf"
-	log:	config["logs"] + "plot_upset-{did},{inc}.Rout"
+	output: fig = config["plots"] + "{did}-upset.pdf"
+	log:	config["logs"] + "plot_upset-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
@@ -284,9 +264,9 @@ rule plot_lfc:
 				config["results"] + wc.did +\
 				",d[a-z]10,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output:	ggp = config["plots"] + "{did},{inc}-sim_vs_est_lfc.rds",
-			fig = config["plots"] + "{did},{inc}-sim_vs_est_lfc.pdf"
-	log:	config["logs"] + "plot_lfc-{did},{inc}.Rout"
+	output:	ggp = config["plots"] + "{did}-sim_vs_est_lfc.rds",
+			fig = config["plots"] + "{did}-sim_vs_est_lfc.pdf"
+	log:	config["logs"] + "plot_lfc-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res}\
 		ggp={output.ggp} fig={output.fig}"\
@@ -301,8 +281,8 @@ rule plot_runtimes:
 				config["results"] + wc.did +\
 				",de10_n[g|c],*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output:	fig = config["plots"] + "{did},{inc}-runtimes.pdf"
-	log:	config["logs"] + "plot_runtimes-{did},{inc}.Rout"
+	output:	fig = config["plots"] + "{did}-runtimes.pdf"
+	log:	config["logs"] + "plot_runtimes-{did}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
