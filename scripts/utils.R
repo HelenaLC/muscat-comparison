@@ -28,6 +28,8 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     "AD-sid.vstresiduals" = "#FBB6A2")
 
 .treat_cols <- .meth_cols[grepl("limma|edgeR", names(.meth_cols))]
+treat_mids <- gsub("([^.]+)(\\.)(.*)", "\\1-treat.\\3", names(.treat_cols))
+.treat_cols <- c(.treat_cols, setNames(.treat_cols, treat_mids))
 
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
@@ -121,14 +123,17 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         legend.margin = margin(0,0,1,0,"mm"),
         ...)}
 
-.plot_perf_points <- function(df, color_by = "method", facet = "splitval")
+.plot_perf_points <- function(df, color_by = "method", facet = "splitval", include = "all")
     suppressMessages(
-        ggplot(df, aes_string(x = "FDR", y = "TPR", col = color_by)) +
+        ggplot(mutate(filter(df, FDR + TPR != 0), 
+            treat = as.numeric(.$method %in% treat_mids) + 1), 
+            aes_string(x = "FDR", y = "TPR", col = color_by)) +
             facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
             geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 
             geom_point(size = 1, alpha = 0.8) + 
-            geom_line(size = 0.4, alpha = 0.4, show.legend = FALSE) +
-            scale_color_manual(NULL, values = .meth_cols) +
+            geom_line(aes(lty = treat), size = 0.4, alpha = 0.4, show.legend = FALSE) +
+            scale_color_manual(NULL, values = switch(include, 
+                all = .meth_cols, treat = .treat_cols)) +
             scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
                 labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
             scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +

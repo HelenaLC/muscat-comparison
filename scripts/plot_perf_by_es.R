@@ -54,7 +54,7 @@ df <- map_depth(perf, 2, fdrtpr) %>%
         levels = c("de", "dp", "dm", "db"),
         labels = c("DE", "DP", "DM", "DB"))
 
-p <- .plot_perf_points(df) +
+p <- .plot_perf_points(df, include = wcs$inc) +
     facet_grid(rows = vars(sid), cols = vars(splitval))
 
 saveRDS(p, args$ggp)

@@ -35,7 +35,7 @@ gg_df <- map_depth(perf, 2, fdrtpr) %>%
     summarise_at(c("FDR", "TPR"), mean) %>% 
     mutate_at("method", factor, levels = names(.meth_cols))
 
-p <- .plot_perf_points(gg_df, facet = "sid")
+p <- .plot_perf_points(gg_df, facet = "sid", include = wcs$inc)
 p$facet$params$ncol <- nlevels(factor(gg_df$sid))
 
 saveRDS(p, args$ggp)

@@ -39,9 +39,9 @@ df <- map(perf, function(u)
     }) %>% 
     dplyr::filter(splitval != "overall") %>%
     group_by(splitval, thr, method) %>% 
-    summarise_at(c("FDR", "TPR"), mean) 
+    summarise_at(c("FDR", "TPR"), mean)
 
-p <- .plot_perf_points(df)
+p <- .plot_perf_points(df, include = wcs$inc)
 p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, args$ggp)

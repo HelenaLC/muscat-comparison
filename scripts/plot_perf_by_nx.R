@@ -64,10 +64,9 @@ df <- map(perf, "fdrtpr") %>%
     }) %>% 
     group_by(splitval, thr, method) %>% 
     summarise_at(c("FDR", "TPR"), mean) %>% 
-    mutate_at("method", factor, levels = names(.meth_cols)) %>% 
-    filter(FDR + TPR != 0)
+    mutate_at("method", factor, levels = names(.meth_cols))
 
-p <- .plot_perf_points(df)
+p <- .plot_perf_points(df, include = wcs$inc)
 p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, args$ggp)
