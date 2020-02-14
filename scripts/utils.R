@@ -27,6 +27,8 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     "AD-sid.logcounts"    = "#E56D4B",
     "AD-sid.vstresiduals" = "#FBB6A2")
 
+.treat_cols <- .meth_cols[grepl("limma|edgeR", names(.meth_cols))]
+
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
@@ -42,7 +44,8 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         res <- map(res, mutate_if, is.factor, as.character) %>% 
             bind_rows %>% mutate_if(is.character, as.factor) %>% 
             mutate_at("category", factor, levels = muscat:::cats) %>% 
-            mutate_at("mid", factor, levels = names(.meth_cols)) %>% 
+            mutate_at("mid", factor, levels = names(ifelse(
+                include == "all", .meth_cols, .treat_cols))) %>% 
             mutate_if(is.factor, droplevels)
     return(res)
 }
