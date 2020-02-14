@@ -146,7 +146,7 @@ rule run_meth:
 rule run_meth_treat:
 	priority: 97
 	threads: 1
-	wildcard_constraints: mid = "treat", did = "kang", sid = "de10"
+	wildcard_constraints: mid = "edgeR|limma", did = "kang", sid = "de10"
 	input:	script = config["scripts"] + "run_meth.R",
 			sim = config["sim_data"] + "{did},{sid},{i}.rds",
 			meth_pars = config["meth_pars"] + "{mid}.json",
@@ -298,6 +298,7 @@ rule plot_runtimes:
 rule run_meth_lps:
 	threads: 20
 	priority: -1
+	wildcard_constraints: mid = "^treat"
 	input:	script = config["scripts"] + "run_meth_lps.R",
 			sce = "LPS/output/SCE_annotation.rds",
 			meth_pars = config["meth_pars"] + "{mid}.json",
