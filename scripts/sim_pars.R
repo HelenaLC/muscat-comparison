@@ -31,14 +31,18 @@ for (i in seq_along(ss)) {
         p_dd = de10, probs = list(NULL, ss[[i]], NULL))
 }
 # unbalanced group sizes -------------------------------------------------------
+nk <- 1; ns <- 3; nc <- 200
 gs <- list(c(0.5, 0.5), c(0.45, 0.55), c(0.4, 0.6), c(0.3, 0.7))
+cs <- sapply(gs, function(u) ceiling(nc*nk*ns/u[1]))
+
 for (i in seq_along(gs)) {
     id <- paste0("de10_gs", i)
     sim_pars[[id]] <- list(
-        nr = 2, nk = 2, seed = 150+20*(i-1),
+        nr = 2, seed = 150+20*(i-1),
+        nk = nk, ns = ns, nc = cs[i],
         p_dd = de10, probs = list(NULL, NULL, gs[[i]]))
 }
-
+  
 def_pars <- list(nr = 1, nk = 3, ns = 3, 
     ng = 2e3, nc = function(nk, ns) 2*nk*ns*200, 
     p_dd = de10, probs = NULL, seed = 1)
