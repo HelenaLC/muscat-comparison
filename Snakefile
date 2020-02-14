@@ -288,20 +288,20 @@ rule plot_runtimes:
 		"--args res={params.res} fig={output.fig}"\
 		{input.script} {log}'''
 
-rule run_meth_lps:
-	threads: 20
-	priority: -1
-	wildcard_constraints: mid = ".+(?!treat).+"
-	input:	script = config["scripts"] + "run_meth_lps.R",
-			sce = "LPS/output/SCE_annotation.rds",
-			meth_pars = config["meth_pars"] + "{mid}.json",
-			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
-	output:	res = "LPS/output/DS_results_{mid}.rds"
-	log:	config["logs"] + "run_meth_lps-{mid}.Rout"
-	shell:	'''{R} CMD BATCH --no-restore --no-save\
-		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
-		meth_pars={input.meth_pars} res={output.res} n_threads='20'"\
-		{input.script} {log}'''
+# rule run_meth_lps:
+# 	threads: 20
+# 	priority: -1
+# 	wildcard_constraints: mid = ".+(?!treat).+"
+# 	input:	script = config["scripts"] + "run_meth_lps.R",
+# 			sce = "LPS/output/SCE_annotation.rds",
+# 			meth_pars = config["meth_pars"] + "{mid}.json",
+# 			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
+# 	output:	res = "LPS/output/DS_results_{mid}.rds"
+# 	log:	config["logs"] + "run_meth_lps-{mid}.Rout"
+# 	shell:	'''{R} CMD BATCH --no-restore --no-save\
+# 		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
+# 		meth_pars={input.meth_pars} res={output.res} n_threads='20'"\
+# 		{input.script} {log}'''
 
 # write session info to .txt file
 rule session_info:
