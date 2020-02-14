@@ -1,4 +1,5 @@
 options(conflicts.policy = list(warn = FALSE))
+data.table::setDTthreads(threads = 1)
 
 # source utilities
 config <- yaml::read_yaml("config.yaml")
@@ -23,7 +24,6 @@ args <- R.utils::commandArgs(
 if (!is.null(args$wcs))
 	wcs <- .get_wcs(args$wcs)
 
-for (i in seq_along(args)) {
+for (i in seq_along(args))
     if (any(grepl(";", args[[i]])))
         args[[i]] <- unlist(strsplit(args[[i]], ";"))
-}
