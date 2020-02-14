@@ -279,7 +279,7 @@ rule plot_runtimes:
 		{input.script} {log}'''
 
 rule run_meth_lps:
-	threads: 30
+	threads: 20
 	priority: -1
 	input:	script = config["scripts"] + "run_meth_lps.R",
 			sce = "LPS/output/SCE_annotation.rds",
@@ -289,7 +289,7 @@ rule run_meth_lps:
 	log:	config["logs"] + "run_meth_lps-{mid}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
-		meth_pars={input.meth_pars} res={output.res}"\
+		meth_pars={input.meth_pars} res={output.res} n_threads='20'"\
 		{input.script} {log}'''
 
 # write session info to .txt file
