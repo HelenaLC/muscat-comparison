@@ -30,7 +30,9 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
-.read_res <- function(fns, slot = "tbl") {
+.read_res <- function(fns, include = "all", slot = "tbl") {
+    if (include == "treat")
+        fns <- fns[grepl("limma|edgeR", fns)]
     res <- map(lapply(fns, readRDS), slot)
     rmv <- vapply(res, function(u) 
         is.null(u) | inherits(u, "error"), 

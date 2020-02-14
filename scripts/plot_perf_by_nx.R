@@ -13,7 +13,7 @@ suppressMessages({
 #     fig = file.path("plots", paste0(wcs$did, sprintf("-perf_by_n%s.pdf", wcs$x))))
 
 pat <- "i%sj%sc%ss%s%s%s"
-res <- .read_res(args$res) %>% 
+res <- .read_res(args$res, args$inc) %>% 
     dplyr::mutate(id = sprintf(pat, i, j, c, s, gene, cluster_id)) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 

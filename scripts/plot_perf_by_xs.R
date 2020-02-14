@@ -8,7 +8,7 @@ suppressMessages({
 })
 
 #args <- list(res = list.files("~/projects/portmac/results", "kang,de10_gs[0-9],", full.names = TRUE))
-res <- .read_res(args$res) %>% 
+res <- .read_res(args$res, args$inc) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = c("sid", "i", "mid"), flatten = FALSE)
