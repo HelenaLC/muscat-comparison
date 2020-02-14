@@ -7,8 +7,10 @@ suppressMessages({
 })
 
 #fns <- list.files("~/documents/kang", "d[a-z][0-9]+;", full.names = TRUE)
-df <- .read_res(args$res) %>% 
-    rename(method = mid) %>%
+res <- .read_res(args$res, wcs$inc)
+mids <- levels(res$mid)
+
+df <- rename(res, method = mid) %>%
     dplyr::filter(!(is.na(sim_lfc) | is.na(est_lfc))) %>% 
     mutate_at("method", droplevels) %>% 
     mutate_at("sid", factor, 

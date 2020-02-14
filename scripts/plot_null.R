@@ -12,14 +12,19 @@ suppressMessages({
 #     res = list.files("results", sprintf("%s,nill", id), full.names = TRUE),
 #     ggp = file.path("plots", sprintf("%s-null.rds", id)),
 #     fig = file.path("plots", sprintf("%s-null.pdf", id)))
-df <- .read_res(args$res) %>% 
+
+res <- .read_res(args$res)
+
+df <- res %>% 
     dplyr::filter(!is.na(p_val)) %>% 
-    dplyr::rename(method = mid, replicate = i)
+    dplyr::rename(method = mid, replicate = i) %>% 
+    mutate(treat = method %in% .treat_mids)
 
 p <- ggplot(df, aes(x = p_val, y = ..ndensity.., 
     col = method, fill = method, lty = replicate)) +
     facet_wrap(~ method, ncol = 4) + 
-    geom_density(adjust = 0.2, size = 0.3, alpha = 0.1) +
+    geom_density(aes(alpha = treat), adjust = 0.2, size = 0.3) +
+    scale_alpha_manual(values = c("TRUE" = 0.1, "FALSE" = 0.4)) +
     scale_color_manual(values = .meth_cols) +
     scale_fill_manual(values = .meth_cols) +
     guides(col = FALSE,

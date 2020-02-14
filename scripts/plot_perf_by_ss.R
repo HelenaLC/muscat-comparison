@@ -8,7 +8,11 @@ suppressMessages({
 })
 
 #fns <- list.files("results/kang", "ds10_ss[0-9];", full.names = TRUE)
-res <- .read_res(args$res, wcs$inc) %>% 
+
+res <- .read_res(args$res, wcs$inc)
+mids <- levels(res$mid)
+
+res <- res %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = c("sid", "i", "mid"), flatten = FALSE)
@@ -33,9 +37,9 @@ gg_df <- map_depth(perf, 2, fdrtpr) %>%
         as.numeric(gsub("thr", "", u))) %>% 
     group_by(sid, thr, method) %>% 
     summarise_at(c("FDR", "TPR"), mean) %>% 
-    mutate_at("method", factor, levels = names(.meth_cols))
+    mutate_at("method", factor, levels = mids)
 
-p <- .plot_perf_points(gg_df, facet = "sid", include = wcs$inc)
+p <- .plot_perf_points(gg_df, facet = "sid", include = mids)
 p$facet$params$ncol <- nlevels(factor(gg_df$sid))
 
 saveRDS(p, args$ggp)

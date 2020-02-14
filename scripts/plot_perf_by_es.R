@@ -11,13 +11,16 @@ groups <- c("E <= 0.1", "0.1 < E <= 0.5", "0.5 < E <= 1", "E > 1")
     if (v <= 0.1) 1 else if (v <= 0.5) 2 else if (v <= 1) 3 else 4) %>% 
     factor
 
-# wcs <- list(padj = "loc")
+# wcs <- list(padj = "loc", inc = "all")
 # args <- list(
-#     res = list.files("results/kang", "kang,d[a-z]10,", full.names = TRUE),
+#     res = list.files("results", "kang,d[a-z]10,", full.names = TRUE),
 #     ggp = file.path("plots", "kang-perf_by_es_loc.rds"),
 #     fig = file.path("plots", "kang-perf_by_es_loc.rds"))
 
-res <- .read_res(args$res, wcs$inc) %>% 
+res <- .read_res(args$res, wcs$inc)
+mids <- levels(res$mid)
+
+res <- res %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::mutate(group = .get_group(.$E)) %>% setDT %>% 
     split(by = c("sid", "i", "group", "mid"), flatten = FALSE)
@@ -42,7 +45,7 @@ df <- map_depth(perf, 2, fdrtpr) %>%
     bind_rows(.id = "sid") %>% 
     select(sid, splitval, thr, method, TPR, FDR) %>% 
     mutate_at("thr", function(u) as.numeric(gsub("thr", "", u))) %>%
-    mutate_at("method", factor, levels = names(.meth_cols)) %>% 
+    mutate_at("method", factor, levels = mids) %>% 
     dplyr::filter(splitval != "overall") %>% 
     mutate_at("splitval", function(u) gsub("group:", "", u)) %>% 
     mutate_at("splitval", factor, labels = groups) %>% 
@@ -54,7 +57,7 @@ df <- map_depth(perf, 2, fdrtpr) %>%
         levels = c("de", "dp", "dm", "db"),
         labels = c("DE", "DP", "DM", "DB"))
 
-p <- .plot_perf_points(df, include = wcs$inc) +
+p <- .plot_perf_points(df, include = mids) +
     facet_grid(rows = vars(sid), cols = vars(splitval))
 
 saveRDS(p, args$ggp)

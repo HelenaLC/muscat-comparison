@@ -28,8 +28,8 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
     "AD-sid.vstresiduals" = "#FBB6A2")
 
 .treat_cols <- .meth_cols[grepl("limma|edgeR", names(.meth_cols))]
-treat_mids <- gsub("([^.]+)(\\.)(.*)", "\\1-treat.\\3", names(.treat_cols))
-.treat_cols <- c(.treat_cols, setNames(.treat_cols, treat_mids))
+.treat_mids <- gsub("([^.]+)(\\.)(.*)", "\\1-treat.\\3", names(.treat_cols))
+.treat_cols <- c(.treat_cols, setNames(.treat_cols, .treat_mids))
 
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
@@ -126,7 +126,7 @@ treat_mids <- gsub("([^.]+)(\\.)(.*)", "\\1-treat.\\3", names(.treat_cols))
 .plot_perf_points <- function(df, color_by = "method", facet = "splitval", include = "all")
     suppressMessages(
         ggplot(mutate(filter(df, FDR + TPR != 0), 
-            treat = as.numeric(.$method %in% treat_mids) + 1), 
+            treat = as.numeric(.$method %in% .treat_mids) + 1), 
             aes_string(x = "FDR", y = "TPR", col = color_by)) +
             facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
             geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 

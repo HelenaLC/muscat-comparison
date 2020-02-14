@@ -12,9 +12,14 @@ suppressMessages({
 #     ggp = file.path("plots", paste0(wcs$did, sprintf("-perf_by_n%s.rds", wcs$x))),
 #     fig = file.path("plots", paste0(wcs$did, sprintf("-perf_by_n%s.pdf", wcs$x))))
 
-pat <- "i%sj%sc%ss%s%s%s"
-res <- .read_res(args$res, wcs$inc) %>% 
-    dplyr::mutate(id = sprintf(pat, i, j, c, s, gene, cluster_id)) %>% 
+
+res <- .read_res(args$res, wcs$inc)
+mids <- levels(res$mid)
+
+res <- res %>% 
+    dplyr::mutate(id = sprintf(
+        "i%sj%sc%ss%s%s%s", 
+        i, j, c, s, gene, cluster_id)) %>% 
     dplyr::mutate(E = (sim_mean.A + sim_mean.B) / 2) %>% 
     dplyr::filter(E > 0.1) %>% setDT %>% 
     split(by = "i", flatten = FALSE) %>% 
@@ -64,9 +69,9 @@ df <- map(perf, "fdrtpr") %>%
     }) %>% 
     group_by(splitval, thr, method) %>% 
     summarise_at(c("FDR", "TPR"), mean) %>% 
-    mutate_at("method", factor, levels = names(.meth_cols))
+    mutate_at("method", factor, levels = mids)
 
-p <- .plot_perf_points(df, include = wcs$inc)
+p <- .plot_perf_points(df, include = mids)
 p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, args$ggp)
