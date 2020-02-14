@@ -130,6 +130,23 @@ rule sim_data:
 rule run_meth:
 	priority: 97
 	threads: 1
+	wildcard_constraints: mid = "^treat"
+	input:	script = config["scripts"] + "run_meth.R",
+			sim = config["sim_data"] + "{did},{sid},{i}.rds",
+			meth_pars = config["meth_pars"] + "{mid}.json",
+			run_pars = config["run_pars"] + "{did},{sid}.json",
+			fun = lambda wc: config["scripts"] + "apply_" + mids.loc[wc.mid, "type"] + ".R"
+	output: res = config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds"
+	log:	config["logs"] + "run_meth-{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.Rout"
+	shell:	'''{R} CMD BATCH --no-restore --no-save\
+		"--args sim={input.sim} fun={input.fun} wcs={wildcards}\
+		meth_pars={input.meth_pars} run_pars={input.run_pars} res={output.res}"\
+		{input.script} {log}'''
+
+rule run_meth_treat:
+	priority: 97
+	threads: 1
+	wildcard_constraints: mid = "treat", did = "kang", sid = "de10"
 	input:	script = config["scripts"] + "run_meth.R",
 			sim = config["sim_data"] + "{did},{sid},{i}.rds",
 			meth_pars = config["meth_pars"] + "{mid}.json",
