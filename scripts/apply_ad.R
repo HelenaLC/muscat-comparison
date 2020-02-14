@@ -30,7 +30,7 @@ run_ad <- function(sce, assay, var, n_threads) {
     cs_by_k <- split(colnames(sce), sce$cluster_id)
     lapply(kids, function(k) {
         y <- sce[, cs_by_k[[k]]]
-        y <- sub[rowSums(assay(sub) > 0) >= 10, ]
+        y <- y[rowSums(assay(y) > 0) >= 10, ]
         bplapply(seq_len(nrow(y)), function(g) {
             ad.test(form, data = data.frame(
                 y = assay(y, assay)[g, ], 
