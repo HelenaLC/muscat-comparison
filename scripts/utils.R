@@ -33,8 +33,12 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
 .read_res <- function(fns, include = "all", slot = "tbl") {
-    if (include == "treat")
+    if (include == "treat") {
         fns <- fns[grepl("limma|edgeR", fns)]
+        mids <- names(.treat_cols)
+    } else {
+        mids <- names(.meth_cols)
+    }
     res <- map(lapply(fns, readRDS), slot)
     rmv <- vapply(res, function(u) 
         is.null(u) | inherits(u, "error"), 
@@ -44,8 +48,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         res <- map(res, mutate_if, is.factor, as.character) %>% 
             bind_rows %>% mutate_if(is.character, as.factor) %>% 
             mutate_at("category", factor, levels = muscat:::cats) %>% 
-            mutate_at("mid", factor, levels = names(ifelse(
-                include == "all", .meth_cols, .treat_cols))) %>% 
+            mutate_at("mid", factor, levels = mids) %>% 
             mutate_if(is.factor, droplevels)
     return(res)
 }
