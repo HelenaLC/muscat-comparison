@@ -67,43 +67,41 @@ rule all:
 			#expand(config["raw_data"], "sce_{did}.rds"), did = config["dids"]),
 			#expand(config["raw_data"], "ref_{did}.rds"), did = config["dids"]),
 		# 'countsimQC' reports
-			expand(config["plots"] + "{did}-sim_qc.html",\
-				did = config["dids"], inc = subs),\
+			expand(config["plots"] + "{did}-sim_qc.html", did = config["dids"]),
 		# pseudobulk-level mean-dispersion plots
-			expand(config["plots"] + "{did}-pb_mean_disp.pdf",\
-				did = config["dids"], inc = subs),
+			expand(config["plots"] + "{did}-pb_mean_disp.pdf", did = config["dids"]),
 			expand(config["plots"] + "{did},{inc}-upset.pdf",\
-				did = config["dids"], inc = subs),
+				did = config["dids"], inc = "all"),
 		# null simulation p-value distributions 
 			expand(config["plots"] + "{did},{inc}-null.{ext}",\
-				did = config["dids"], inc = subs,\
+				did = config["dids"], inc = "all",\
 				ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by DD category using locally/globally adjusted p-values
 			expand(config["plots"] + "{did},{inc}-perf_by_cat_{padj}.{ext}",\
-				did = config["dids"], inc = subs,\
+				did = config["dids"], inc = ["all", "treat"],\
 				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# scatters of simulated vs. estimated logFCs
 			expand(config["plots"] + "{did},{inc}-sim_vs_est_lfc.{ext}",\
-				did = config["dids"], inc = subs, ext = ["rds", "pdf"]),
+				did = config["dids"], inc = "all", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of cells per cluster-sample
 			expand(config["plots"] + "{did},{inc}-perf_by_n{x}.{ext}",\
-				did = config["dids"], inc = subs,\
+				did = config["dids"], inc = "all",\
 				x = "c", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of replicates per group
 			expand(config["plots"] + "{did},{inc}-perf_by_n{x}.{ext}",\
-				did = "kang", inc = subs,\
+				did = "kang", inc = "all",\
 				x = "s", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by magnitude of sample-size unbalancing
 			expand(config["plots"] + "{did},{inc}-perf_by_{x}s.{ext}",\
-				did = config["dids"], inc = subs,\
+				did = config["dids"], inc = "all",\
 				x = ["s", "g"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by expression level 
 			expand(config["plots"] + "{did},{inc}-perf_by_es_{padj}.{ext}",\
-				did = config["dids"], inc = subs,\
+				did = config["dids"], inc = "all",\
 				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# method runtimes versus no. cells/genes
 			expand(config["plots"] + "{did},{inc}-runtimes.pdf",\
-				did = ["kang"], inc = subs)
+				did = ["kang"], inc = "all")
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 		# run all methods on LPS dataset
 			#expand("LPS/output/DS_results_{mid}.rds", mid = mids.id)
