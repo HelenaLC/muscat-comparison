@@ -102,7 +102,8 @@ rule all:
 				did = config["dids"], inc = subs,\
 				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# method runtimes versus no. cells/genes
-			expand(config["plots"] + "{did},{inc}-runtimes.pdf", did = ["kang"])
+			expand(config["plots"] + "{did},{inc}-runtimes.pdf",\
+				did = ["kang"], inc = subs)
 			#expand(config["results"], "lps", "{mid}.rds"), mid = mids.id)
 		# run all methods on LPS dataset
 			#expand("LPS/output/DS_results_{mid}.rds", mid = mids.id)
