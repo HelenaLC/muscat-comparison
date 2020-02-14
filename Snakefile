@@ -73,7 +73,7 @@ rule all:
 				did = config["dids"], x = "c", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by no. of replicates per group
 			expand(config["plots"] + "{did}-perf_by_n{x}.{ext}",\
-				did = "kang", x = ["s", "c"], ext = ["rds", "pdf"]),
+				did = "kang", x = "s", ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by magnitude of sample-size unbalancing
 			expand(config["plots"] + "{did}-perf_by_{x}s.{ext}",\
 				did = config["dids"], x = ["s", "g"], ext = ["rds", "pdf"]),
