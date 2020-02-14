@@ -41,7 +41,7 @@ for sid in sids:
 			did = did, sid = sid, i = range(1, sim_pars["nr"][0] + 1)))
 		res_dirs.append(expand(\
 			config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds",
-			did = did, sid = sid, mid = mids.id[mids.id.str.find("treat" != -1)],\
+			did = did, sid = sid, mid = mids.id[mids.id.str.find("treat") != -1],\
 			i = range(1, sim_pars["nr"][0] + 1),\
 			j = range(1, run_pars["nr"][0] + 1),\
 			g = run_pars["ng"], c = run_pars["nc"],\
