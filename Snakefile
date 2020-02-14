@@ -39,6 +39,7 @@ for sid in sids:
 		sim_dirs.append(expand(\
 			config["sim_data"] + "{did},{sid},{i}.rds",\
 			did = did, sid = sid, i = range(1, sim_pars["nr"][0] + 1)))
+		# exclude all treat methods for now
 		res_dirs.append(expand(\
 			config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds",
 			did = did, sid = sid, mid = mids.id[mids.id.str.find("treat") == -1],\
@@ -46,6 +47,15 @@ for sid in sids:
 			j = range(1, run_pars["nr"][0] + 1),\
 			g = run_pars["ng"], c = run_pars["nc"],\
 			k = run_pars["nk"], s = run_pars["ns"]))
+		# include treat methods on for Kang as ref & simulation IDs dx10
+		if bool(re.match(r"d[a-z][0-9]+$", sid)) and did == "kang":
+			res_dirs.append(expand(\
+				config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds",
+				did = did, sid = sid, mid = mids.id[mids.id.str.find("treat") != -1],\
+				i = range(1, sim_pars["nr"][0] + 1),\
+				j = range(1, run_pars["nr"][0] + 1),\
+				g = run_pars["ng"], c = run_pars["nc"],\
+				k = run_pars["nk"], s = run_pars["ns"]))
 
 sim_dirs = sum(sim_dirs, [])
 res_dirs = sum(res_dirs, [])
