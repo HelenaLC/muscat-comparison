@@ -298,7 +298,7 @@ rule run_meth_lps:
 	log:	config["logs"] + "run_meth_lps-{mid}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args sce={input.sce} fun={input.fun} wcs={wildcards}\
-		meth_pars={input.meth_pars} res={output.res} n_threads='20'"\
+		meth_pars={input.meth_pars} res={output.res} n_threads=20"\
 		{input.script} {log}'''
 
 # write session info to .txt file
