@@ -1,4 +1,5 @@
 suppressMessages({
+    library(BiocParallel)
     library(dplyr)
     library(kSamples)
     library(purrr)
@@ -15,33 +16,29 @@ apply_ad <- function(sce, pars, ds_only = TRUE) {
                 vstresiduals = vst(counts(sce), show_progress = FALSE)$y)
         if (!is.matrix(a <- assay(sce, pars$assay))) 
             assay(sce, pars$assay) <- as.matrix(a)
+        if (is.null(n <- pars$n_threads)) n <- 1
         res <- tryCatch(
             error = function(e) e, 
-            run_ad(sce, pars$assay, pars$var))
+            run_ad(sce, pars$assay, pars$var, n))
     })[[3]]
     list(rt = t, tbl = res)
 }
 
-run_ad <- function(sce, assay, var) {
+run_ad <- function(sce, assay, var, n_threads) {
     form <- as.formula(paste("y ~", var))
     kids <- levels(sce$cluster_id)
     cs_by_k <- split(colnames(sce), sce$cluster_id)
-    res <- lapply(kids, function(k) {
-        sub <- sce[, cs_by_k[[k]]]
-        sub <- sub[rowSums(assay(sub) > 0) >= 10, ]
-        apply(assay(sub, assay), 1, function(y)
-            ad.test(form, data = data.frame(y, colData(sub)))) %>% 
-            map(function(u) u$ad[5]) %>% 
+    lapply(kids, function(k) {
+        y <- sce[, cs_by_k[[k]]]
+        y <- sub[rowSums(assay(sub) > 0) >= 10, ]
+        bplapply(seq_len(nrow(y)), function(g) {
+            ad.test(form, data = data.frame(
+                y = assay(y, assay)[g, ], 
+                colData(y)))$ad[5]
+        }, BPPARAM = MulticoreParam(n_threads)) %>% 
             unlist %>% data.frame(
-                gene = names(.), 
-                cluster_id = k,
-                p_val = .,
-                p_adj.loc = p.adjust(.),
-                row.names = NULL,
-                stringsAsFactors = FALSE)
-    })
-    df <- bind_rows(res)
-    df$p_adj.glb <- p.adjust(df$p_val)
-    return(df)
+                gene = rownames(y), cluster_id = k,
+                p_val = ., p_adj.loc = p.adjust(.),
+                row.names = NULL, stringsAsFactors = FALSE)
+    }) %>% bind_rows %>% mutate(p_adj.glb = p.adjust(p_val))
 }
-

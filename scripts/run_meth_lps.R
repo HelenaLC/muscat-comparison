@@ -14,8 +14,9 @@ sce <- readRDS(args$sce)
 nk <- length(kids <- levels(sce$cluster_id))
 meth_pars <- as.list(fromJSON(args$meth_pars))
 
-# increase number of threads used by mixed model methods
-if (grepl("MM-", wcs$mid)) meth_pars$n_threads <- 30
+# increase number of threads used by AD & mixed model methods
+if (grepl("AD|MM|MAST", wcs$mid)) 
+    meth_pars$n_threads <- as.numeric(args$n_threads)
 
 # run method & write results to .rds
 source(fun <- args$fun)
