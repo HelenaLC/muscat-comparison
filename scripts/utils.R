@@ -143,7 +143,7 @@ names(.treat_cols) <- .treat_mids
         scale_color_manual(NULL, values = switch(include, treat = .treat_cols, .meth_cols)) +
         scale_x_sqrt( 
             breaks = c(c(0.01, switch(include == "treat", 0.05, NULL), 0.1), seq(0.2, 1, 0.2)), 
-            limits = c(0, ifelse(include == "treat", 0.1, 1)),
+            limits = c(0, ifelse(include == "treat", 0.05, 1)),
             labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
         scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
         .prettify(theme = "bw", legend.position = "bottom") + guides(
