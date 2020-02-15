@@ -138,11 +138,13 @@ names(.treat_cols) <- .treat_mids
         geom_line(aes(lty = treat), size = 0.4, alpha = 0.4, 
             show.legend = (include == "treat")) +
         scale_color_manual(NULL, values = switch(include, treat = .treat_cols, .meth_cols)) +
-        scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
+        scale_x_sqrt( 
+            breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
+            limits = c(0, ifelse(include == "treat", 0.2, 1)),
             labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
         scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
         .prettify(theme = "bw", legend.position = "bottom") + guides(
-            lty = guide_legend(override.aes = list(alpha = 1)),
+            lty = guide_legend(ncol = 1, override.aes = list(alpha = 1)),
             col = guide_legend(ncol = 4, override.aes = list(size = 2, alpha = 1)))
     suppressMessages(p)
 }
