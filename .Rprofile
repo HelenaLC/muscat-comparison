@@ -29,4 +29,5 @@ for (i in seq_along(args))
         args[[i]] <- unlist(strsplit(args[[i]], ";"))
 
 # print input arguments for logs
-print(args); if (exists("wcs")) print(wcs)
+if (length(args) > 0) print(args)
+if (exists("wcs")) print(wcs)
