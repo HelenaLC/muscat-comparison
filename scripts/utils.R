@@ -30,9 +30,12 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
-.treat_mids <- grep("edgeR|limma-v", names(.meth_cols), value = TRUE)
+i <- grep("edgeR|limma-v", names(.meth_cols))
+.treat_mids <- names(.meth_cols)[i]
 .treat_mids <- c(.treat_mids, gsub("(.*?)(\\.)(.*)", "\\1-treat.\\3", .treat_mids))[
     c(sapply(seq_along(.treat_mids), function(i) c(i, i + length(.treat_mids))))]
+.treat_cols <- rep(.meth_cols[i], each = 2)
+names(.treat_cols) <- .treat_mids
 
 .read_res <- function(fns, include = "all", slot = "tbl") {
     if (include == "treat") {
@@ -125,7 +128,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         ...)}
 
 .plot_perf_points <- function(df, 
-    include = "all",color_by = "method", facet = "splitval") {
+    include = "all", color_by = "method", facet = "splitval") {
     df$treat <- grepl("treat", df$method)
     p <- ggplot(filter(df, FDR + TPR != 0),
         aes_string(x = "FDR", y = "TPR", col = color_by)) +
@@ -134,12 +137,12 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         geom_point(size = 1, alpha = 0.8) + 
         geom_line(aes(lty = treat), size = 0.4, alpha = 0.4, 
             show.legend = (include == "treat")) +
-        scale_color_manual(NULL, values = .meth_cols) +
+        scale_color_manual(NULL, values = switch(include, treat = .treat_cols, .meth_cols)) +
         scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
             labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
         scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
         .prettify(theme = "bw", legend.position = "bottom") + guides(
-            lty = guide_legend(override.aes = list(size = 1, alpha = 1)),
+            lty = guide_legend(override.aes = list(alpha = 1)),
             col = guide_legend(ncol = 4, override.aes = list(size = 2, alpha = 1)))
     suppressMessages(p)
 }
