@@ -11,6 +11,10 @@ suppressMessages({
 #     meth_pars = "meta/meth_pars/edgeR.sum.counts.json")
 
 sce <- readRDS(args$sce)
+
+sce <- sce[, sce$cluster_id == "Astrocytes"]
+sce$cluster_id <- droplevels(sce$cluster_id)
+
 nk <- length(kids <- levels(sce$cluster_id))
 meth_pars <- as.list(fromJSON(args$meth_pars))
 
