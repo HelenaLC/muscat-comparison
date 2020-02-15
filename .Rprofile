@@ -27,3 +27,6 @@ if (!is.null(args$wcs))
 for (i in seq_along(args))
     if (any(grepl(";", args[[i]])))
         args[[i]] <- unlist(strsplit(args[[i]], ";"))
+
+# print input arguments for logs
+print(args); if (exists("wcs")) print(wcs)
