@@ -129,7 +129,10 @@ names(.treat_cols) <- .treat_mids
 
 .plot_perf_points <- function(df, 
     include = "all", color_by = "method", facet = "splitval") {
+    df <- filter(ungroup(df), TPR + FDR != 0)
     df$treat <- grepl("treat", df$method)
+    if (any(rmv <- table(df$splitval) < 2))
+        df <- filter(df, !splitval %in% levels(df$splitval)[rmv])
     p <- ggplot(filter(df, FDR + TPR != 0),
         aes_string(x = "FDR", y = "TPR", col = color_by)) +
         facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
@@ -139,7 +142,7 @@ names(.treat_cols) <- .treat_mids
             show.legend = (include == "treat")) +
         scale_color_manual(NULL, values = switch(include, treat = .treat_cols, .meth_cols)) +
         scale_x_sqrt( 
-            breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
+            breaks = c(c(0.01, switch(include == "treat", 0.05, NULL), 0.1), seq(0.2, 1, 0.2)), 
             limits = c(0, ifelse(include == "treat", 0.1, 1)),
             labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
         scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +

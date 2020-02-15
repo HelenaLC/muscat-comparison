@@ -46,7 +46,7 @@ df <- map(perf, function(u)
     summarise_at(c("FDR", "TPR"), mean)
 
 p <- .plot_perf_points(df, include = wcs$inc)
-p$facet$params$ncol <- nlevels(df$splitval)
+p$facet$params$ncol <- nlevels(p$data$splitval)
 
 saveRDS(p, args$ggp)
 ggsave(args$fig, p,
