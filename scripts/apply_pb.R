@@ -19,8 +19,9 @@ apply_pb <- function(sce, pars, ds_only = TRUE) {
     })[[3]]
     t2 <- system.time({
         res <- tryCatch(
-            pbDS(pb, method = pars$method,
-                filter = "none", verbose = FALSE),
+            do.call(pbDS, c(
+                list(pb = pb, filter = "none", verbose = FALSE),
+                pars[names(pars) %in% names(formals(pbDS))])),
             error = function(e) e)
         if (!inherits(res, "error"))
             res <- dplyr::bind_rows(res$table[[1]])

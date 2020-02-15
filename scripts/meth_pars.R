@@ -6,7 +6,8 @@ pb <- dplyr::bind_rows(
     expand.grid(
         stringsAsFactors = FALSE,
         assay = "counts", fun = "sum", scale = FALSE, 
-        method = c("edgeR", "limma-voom")
+        method = c("edgeR", "limma-voom"),
+        treat = c(FALSE, TRUE)
     ),
     expand.grid(
         stringsAsFactors = FALSE, scale = FALSE,
@@ -15,11 +16,14 @@ pb <- dplyr::bind_rows(
     ),
     data.frame(
         stringsAsFactors = FALSE, scale = TRUE,
-        assay = "cpm", fun = "sum", method = "edgeR"
+        assay = "cpm", fun = "sum", method = "edgeR",
+        treat = c(FALSE, TRUE)
     )    
 )
-pb$id <- with(pb, sprintf("%s.%s.%s%s", 
-    method, fun, ifelse(scale, "scale", ""), assay))
+pb$treat[is.na(pb$treat)] <- FALSE
+pb$id <- with(pb, sprintf("%s%s.%s.%s%s", 
+    method, ifelse(treat, "-treat", ""), 
+    fun, ifelse(scale, "scale", ""), assay))
 
 # mixed-models -----------------------------------------------------------------
 mm <- data.frame(

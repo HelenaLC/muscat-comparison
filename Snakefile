@@ -39,9 +39,14 @@ for sid in sids:
 		sim_dirs.append(expand(\
 			config["sim_data"] + "{did},{sid},{i}.rds",\
 			did = did, sid = sid, i = range(1, sim_pars["nr"][0] + 1)))
+		
+		if bool(re.match(r"d[a-z][0-9]+$", sid)) and did == "kang": 
+			inc_mids = mids.id
+		else:
+			inc_mids = mids.id[mids.id.str.find("treat") == -1]
 		res_dirs.append(expand(\
 			config["results"] + "{did},{sid},{i},{mid},{j},g{g},c{c},k{k},s{s}.rds",
-			did = did, sid = sid, mid = mids.id,\
+			did = did, sid = sid, mid = inc_mids,\
 			i = range(1, sim_pars["nr"][0] + 1),\
 			j = range(1, run_pars["nr"][0] + 1),\
 			g = run_pars["ng"], c = run_pars["nc"],\
@@ -63,8 +68,12 @@ rule all:
 			expand(config["plots"] + "{did}-null.{ext}",\
 				did = config["dids"], ext = ["rds", "pdf"]),
 		# TPR-FDR stratified by DD category using locally/globally adjusted p-values
-			expand(config["plots"] + "{did}-perf_by_cat_{padj}.{ext}",\
-				did = config["dids"], padj = ["loc", "glb"], ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did},{inc}-perf_by_cat_{padj}.{ext}",\
+				did = config["dids"], inc = "all",\
+				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
+			expand(config["plots"] + "{did},{inc}-perf_by_cat_{padj}.{ext}",\
+				did = "kang", inc = "treat",\
+				padj = ["loc", "glb"], ext = ["rds", "pdf"]),
 		# scatters of simulated vs. estimated logFCs
 			expand(config["plots"] + "{did}-sim_vs_est_lfc.{ext}",\
 				did = config["dids"], ext = ["rds", "pdf"]),
@@ -179,9 +188,9 @@ rule plot_perf_by_cat:
 				config["results"] + wc.did +\
 				",d[a-z][0-9]+,.*").search, res_dirs)
 	params:	res = lambda wc, input: ";".join(input.res)
-	output: ggp = config["plots"] + "{did}-perf_by_cat_{padj}.rds",
-			fig = config["plots"] + "{did}-perf_by_cat_{padj}.pdf"
-	log:	config["logs"] + "plot_perf_by_cat-{did},p_adj.{padj}.Rout"
+	output: ggp = config["plots"] + "{did},{inc}-perf_by_cat_{padj}.rds",
+			fig = config["plots"] + "{did},{inc}-perf_by_cat_{padj}.pdf"
+	log:	config["logs"] + "plot_perf_by_cat-{did},{inc},p_adj.{padj}.Rout"
 	shell:	'''{R} CMD BATCH --no-restore --no-save\
 		"--args res={params.res} wcs={wildcards}\
 		ggp={output.ggp} fig={output.fig}"\

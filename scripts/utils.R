@@ -30,7 +30,18 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 #cols <- .meth_cols
 #hist(seq_along(cols), breaks = c(seq_along(cols) - 0.5, length(cols) + 0.5), col = cols)
 
-.read_res <- function(fns, slot = "tbl") {
+.treat_mids <- grep("edgeR|limma-v", names(.meth_cols), value = TRUE)
+.treat_mids <- c(.treat_mids, gsub("(.*?)(\\.)(.*)", "\\1-treat.\\3", .treat_mids))[
+    c(sapply(seq_along(.treat_mids), function(i) c(i, i + length(.treat_mids))))]
+
+.read_res <- function(fns, include = "all", slot = "tbl") {
+    if (include == "treat") {
+        fns <- fns[matrixStats::rowAnys(sapply(.treat_mids, grepl, fns))]
+        mids <- .treat_mids
+    } else {
+        fns <- fns[!grepl("treat", fns)]
+        mids <- names(.meth_cols)
+    }
     res <- map(lapply(fns, readRDS), slot)
     rmv <- vapply(res, function(u) 
         is.null(u) | inherits(u, "error"), 
@@ -40,7 +51,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         res <- map(res, mutate_if, is.factor, as.character) %>% 
             bind_rows %>% mutate_if(is.character, as.factor) %>% 
             mutate_at("category", factor, levels = muscat:::cats) %>% 
-            mutate_at("mid", factor, levels = names(.meth_cols)) %>% 
+            mutate_at("mid", factor, levels = mids) %>% 
             mutate_if(is.factor, droplevels)
     return(res)
 }
@@ -113,19 +124,22 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
         legend.margin = margin(0,0,1,0,"mm"),
         ...)}
 
-.plot_perf_points <- function(df, color_by = "method", facet = "splitval")
-    suppressMessages(
-        ggplot(filter(df, FDR + TPR != 0),
-            aes_string(x = "FDR", y = "TPR", col = color_by)) +
-            facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
-            geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 
-            geom_point(size = 1, alpha = 0.8) + 
-            geom_line(size = 0.4, alpha = 0.4, show.legend = FALSE) +
-            scale_color_manual(NULL, values = .meth_cols) +
-            scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
-                labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
-            scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
-            guides(col = guide_legend(ncol = 4,
-                override.aes = list(size = 2, alpha = 1))) +
-            .prettify(theme = "bw", legend.position = "bottom"))
-
+.plot_perf_points <- function(df, 
+    include = "all",color_by = "method", facet = "splitval") {
+    df$treat <- as.numeric(grepl("treat", df$method)) + 1
+    p <- ggplot(filter(df, FDR + TPR != 0),
+        aes_string(x = "FDR", y = "TPR", col = color_by)) +
+        facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
+        geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 
+        geom_point(size = 1, alpha = 0.8) + 
+        geom_line(aes(lty = treat), size = 0.4, alpha = 0.4, 
+            show.legend = (include == "treat")) +
+        scale_color_manual(NULL, values = .meth_cols) +
+        scale_x_sqrt(limits = c(0, 1), breaks = c(c(0.01, 0.1), seq(0.2, 1, 0.2)), 
+            labels = function(x) format(x, drop0trailing = TRUE), expand = c(0, 0.05)) +
+        scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
+        .prettify(theme = "bw", legend.position = "bottom") + guides(
+            lty = guide_legend(override.aes = list(size = 1, alpha = 1)),
+            col = guide_legend(ncol = 4, override.aes = list(size = 2, alpha = 1)))
+    suppressMessages(p)
+}
