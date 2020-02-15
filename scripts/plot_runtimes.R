@@ -10,7 +10,7 @@ suppressMessages({
 #     res = list.files("results", "kang,de10_n[g|c],", full.names = TRUE))
 
 pat <- "%s,%s,%s,%s,%s,g%s,c%s,k%s,s%s"
-tbl <- dplyr::mutate(.read_res(args$res, slot = "rt"), 
+tbl <- dplyr::mutate(.read_res(args$res), 
     id = sprintf(pat, did, sid, i, mid, j, g, c, k, s))
 
 rts <- .read_res(args$res, slot = "rt") %>% 
