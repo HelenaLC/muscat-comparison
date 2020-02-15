@@ -92,7 +92,8 @@ rule all:
 		# method runtimes versus no. cells/genes
 			expand(config["plots"] + "{did}-runtimes.pdf", did = ["kang"]),
 		# run all methods on LPS dataset
-			expand("LPS/output/DS_results_{mid}.rds", mid = mids.id)
+			expand("LPS/output/DS_results_{mid}.rds",\
+				mid = mids.id[mids.id.str.find("treat") == -1])
 
 rule prep_sce:
 	priority: 100
