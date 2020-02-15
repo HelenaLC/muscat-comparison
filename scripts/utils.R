@@ -126,7 +126,7 @@ names(.cat_cols) <- c("ee", "ep", "de", "dp", "dm", "db")
 
 .plot_perf_points <- function(df, 
     include = "all",color_by = "method", facet = "splitval") {
-    df$treat <- as.numeric(grepl("treat", df$method)) + 1
+    df$treat <- grepl("treat", df$method)
     p <- ggplot(filter(df, FDR + TPR != 0),
         aes_string(x = "FDR", y = "TPR", col = color_by)) +
         facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
