@@ -14,6 +14,7 @@ sce <- readRDS(args$sce)
 
 sce <- sce[, sce$cluster_id %in% c("Endothelial", "Microglia")]
 sce$cluster_id <- droplevels(sce$cluster_id)
+sce <- sce[rowSums(counts(sce) > 0) > 10, ]
 
 nk <- length(kids <- levels(sce$cluster_id))
 meth_pars <- as.list(fromJSON(args$meth_pars))
