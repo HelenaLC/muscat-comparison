@@ -3,8 +3,9 @@
 .snakemake
 .Renviron
 .Rprofile
-figs
 data
 meta
+plots
 results
-figures
+figures/*.pdf
+figures/*.rds
