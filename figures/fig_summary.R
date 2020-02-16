@@ -39,7 +39,7 @@ gg_df <- cbind(md, df) %>%
 ys <- c(rev(values), "method\nclass")
 xs <- group_by(gg_df, id) %>% 
     mutate(score = mean(match(value, rev(levels(value)), nomatch = 0))) %>% 
-    slice(1) %>% ungroup %>% arrange(desc(score)) %>% pull(id)
+    dplyr::slice(1) %>% ungroup %>% arrange(desc(score)) %>% pull(id)
 
 pal <- c(.typ_cols, c("skyblue", "gold", "tomato"))
 names(pal) <- c(.typ_labs, levels(gg_df$value))
