@@ -12,7 +12,7 @@ suppressMessages({
 
 sce <- readRDS(args$sce)
 
-sce <- sce[, sce$cluster_id == "Astrocytes"]
+sce <- sce[, sce$cluster_id %in% c("Endothelial", "Microglia")]
 sce$cluster_id <- droplevels(sce$cluster_id)
 
 nk <- length(kids <- levels(sce$cluster_id))
