@@ -11,10 +11,9 @@ suppressMessages({
 #     meth_pars = "meta/meth_pars/edgeR.sum.counts.json")
 
 sce <- readRDS(args$sce)
-
-sce <- sce[, sce$cluster_id %in% c("Endothelial", "Microglia")]
+sce <- sce[, sce$cluster_id != "CPE cells"]
 sce$cluster_id <- droplevels(sce$cluster_id)
-sce <- sce[rowSums(counts(sce) > 0) > 10, ]
+sce <- sce[rowSums(counts(sce) > 1) > 20, ]
 
 nk <- length(kids <- levels(sce$cluster_id))
 meth_pars <- as.list(fromJSON(args$meth_pars))
