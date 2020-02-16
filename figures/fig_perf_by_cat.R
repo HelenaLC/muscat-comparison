@@ -5,7 +5,7 @@ suppressMessages({
 })
 
 lapply(config$dids, function(id) {
-    fns <- sprintf("%s-perf_by_cat_%s.rds", id, c("loc", "glb"))
+    fns <- sprintf("%s,all-perf_by_cat_%s.rds", id, c("loc", "glb"))
     ps <- lapply(file.path("plots", fns), readRDS)
     df <- bind_rows(map(ps, "data"), .id = "p_adj") %>% 
         mutate_at("p_adj", factor, labels = paste0("p_adj.", c("loc", "glb")))
