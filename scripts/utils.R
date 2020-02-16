@@ -149,8 +149,10 @@ names(.treat_cols) <- .treat_mids
             labels = function(x) format(x, drop0trailing = TRUE)) +
         scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
         .prettify(theme = "bw", legend.position = "bottom", legend.box.just = "center") + 
-        guides(lty = guide_legend(ncol = 1, keywidth = unit(4, "mm"), 
-            override.aes = list(alpha = 1, lty = c(1, 3))),
-            col = guide_legend(order = 1, nrow = 4, override.aes = list(alpha = 1)))
+        guides(
+            lty = guide_legend(ncol = 1, keywidth = unit(4, "mm"), 
+                override.aes = list(alpha = 1, lty = c(1, 3))),
+            col = guide_legend(order = 1, nrow = 4, 
+                override.aes = list(alpha = 1, size = 2)))
     suppressWarnings(suppressMessages(p))
 }
