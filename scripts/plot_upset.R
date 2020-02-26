@@ -74,29 +74,28 @@ thm <- .prettify("classic") + theme(
     axis.title = element_blank(),
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
-    legend.key.size = unit(2, "mm"))
+    legend.key.size = unit(2, "mm"),
+    legend.margin = margin(0,0,0,0, "mm"))
 
 # barplot of intersection sizes
 bars_ee <- ggplot(df_bars_ee, aes(x = code)) +
     stat_count(aes(fill = cat)) + 
     scale_fill_manual("gene\ncategory", limits = levels(df_bars$cat),
         values = .cat_cols, labels = toupper(levels(df_bars$cat))) +
+    guides(fill = guide_legend(
+        override.aes = list(col = "white", size = 0.1))) +
     scale_x_discrete(limits = x_lims, expand = c(0,0)) +
     scale_y_continuous(limits = c(0, y_max_ee), expand = c(0,0)) + 
-    #coord_trans(y = "sqrt", clip = "off") +
     thm + theme(
-        legend.margin = margin(0,0,0,0, "mm"),
         plot.margin = unit(c(1,0,1,1), "mm"),
         panel.grid.major.x = element_blank())
 bars_dx <- ggplot(df_bars_dx, aes(x = code)) +
     stat_count(aes(fill = cat), show.legend = FALSE) + 
     scale_x_discrete(limits = x_lims, expand = c(0,0)) +
     scale_y_continuous(limits = c(0, y_max_dx), expand = c(0,0)) + 
-    #coord_trans(y = "sqrt", clip = "off") +
     scale_fill_manual(NULL, values = .cat_cols, 
         labels = toupper(names(.cat_cols))) + 
     thm + theme(
-        legend.margin = margin(0,0,0,0, "mm"),
         plot.margin = unit(c(1,0,1,1), "mm"),
         panel.grid.major.x = element_blank())
 
@@ -128,11 +127,8 @@ anno <- ggplot(df_anno, aes(x = 0, y = id, fill = type)) +
         plot.margin = unit(c(0,0,0,0), "mm"))
 
 # get legends of DD category & method annotations
-lgd_bars <- get_legend(bars_ee + theme(
-    legend.margin = margin(0,0,0,0, "mm")))
-lgd_anno <- get_legend(anno + theme(
-    legend.justification = "top",
-    legend.margin = margin(0,0,0,0, "mm")))
+lgd_bars <- get_legend(bars_ee)
+lgd_anno <- get_legend(anno + theme(legend.justification = "top")
 bars_ee <- bars_ee + theme(legend.position = "none")
 anno <- anno + theme(legend.position = "none")
 
