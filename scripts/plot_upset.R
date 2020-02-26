@@ -128,7 +128,7 @@ anno <- ggplot(df_anno, aes(x = 0, y = id, fill = type)) +
 
 # get legends of DD category & method annotations
 lgd_bars <- get_legend(bars_ee)
-lgd_anno <- get_legend(anno + theme(legend.justification = "top")
+lgd_anno <- get_legend(anno + theme(legend.justification = "top"))
 bars_ee <- bars_ee + theme(legend.position = "none")
 anno <- anno + theme(legend.position = "none")
 
