@@ -104,7 +104,7 @@ grid <- ggplot(df_grid, aes(x = code, y = mid, color = factor(value))) +
     scale_color_manual(values = c("0" = "grey90", "1" = "black")) +
     scale_x_discrete(limits = x_lims) +
     scale_y_discrete(limits = y_lims) +
-    geom_point(shape = 16, size = 1) +
+    geom_point(shape = 16, size = 1.5) +
     geom_path(aes(group = code), size = 0.2,
         data = filter(df_grid, value != 0)) + 
     annotate("rect", alpha = 0.08, xmin = 0.5, xmax = Inf, 
