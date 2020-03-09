@@ -119,6 +119,7 @@ grid <- ggplot(df_grid, aes(x = code, y = mid, color = factor(value))) +
 # method class annotation
 anno <- ggplot(df_anno, aes(x = 0, y = id, fill = type)) +
     scale_fill_manual("method\nclass", 
+        limits = c("ad","mast","scdd","pb","mm"),
         labels = .typ_labs, values = .typ_cols) + 
     scale_y_discrete(limits = y_lims) +
     geom_tile(col = "white", size = 0.1) + coord_fixed(1) + 
