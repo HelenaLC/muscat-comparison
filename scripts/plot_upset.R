@@ -49,7 +49,7 @@ o <- order(df_bars$degree[m], -df_bars$n[m])
 # construct data.frame of unique method intersections
 df_grid <- melt(df_bars, variable.name = "mid",
     id.var = setdiff(names(df_bars), top$mid)) %>% 
-    group_by(code, mid) %>% slice(1)
+    group_by(code, mid) %>% dplyr::slice(1)
 
 # get method type annotation
 df_anno <- read.csv(config$mids)
@@ -62,10 +62,12 @@ df_bars_ee <- filter(df_bars, cat == "ee")
 df_bars_dx <- filter(df_bars, cat != "ee")
 
 x_lims <- df_bars$code[m][o]
-y_lims <- rev(levels(res$mid))
+y_lims <- rev(unlist(sapply(
+    c("AD", "MAST", "scDD", "edgeR", "limma", "MM"), 
+    function(u) grep(u, levels(res$mid), value = TRUE))))
 
-y_max_ee <- ceiling(max(df_bars_ee$n)/1e3)*1e3
-y_max_dx <- y_max_ee / 10
+y_max_ee <- ceiling(max(table(df_bars_ee$code))/1e3)*1e3
+y_max_dx <- ceiling(max(table(df_bars_dx$code))/1e2)*1e2
 
 # shared aesthetics
 thm <- .prettify("classic") + theme(
