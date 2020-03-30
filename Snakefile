@@ -20,7 +20,6 @@ onstart:
 	shell("Rscript scripts/meth_pars.R") # method parameters
 
 configfile: "config.yaml"
-
 R = config["R"]
 
 #os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
