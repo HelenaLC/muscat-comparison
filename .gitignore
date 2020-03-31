@@ -3,9 +3,12 @@
 .snakemake
 .Renviron
 .Rprofile
+logs
 data
 meta
 plots
 results
+*.txt
+*.Rout
 figures/*.pdf
 figures/*.rds
