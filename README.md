@@ -121,7 +121,7 @@ script      | description
 `plot_tprfdr`       | plots TPR-FDR-curves for a single result
 `plot_perf_cat`     | plots TPR-FDR-points across DD categories for ea. p-value adjustment type (`p_adj.loc/glb`)
 `plot_perf_by_nx`   | plots TPR-FDR-points across the nb. of `x` (cells = `c`, samples = `s`)
-`plot_perf_by_ss`   | plots TPR-FDR-points across increasingly unbalanced sample-sizes
+`plot_perf_by_xs`   | plots TPR-FDR-points across increasingly unbalanced sample/group-sizes
 `plot_perf_by_expr` | plots TPR-FDR-points across expression-level groups
 `plot_upset`        | plots an upset plot for the top gene-subpopulation combinations across methods and simulation replications
 `plot_lfc`          | scatter plots of simulated vs. estimated logFC stratified by method and DD category
