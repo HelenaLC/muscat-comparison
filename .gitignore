@@ -9,6 +9,7 @@ meta
 plots
 results
 *.txt
+*.html
 *.Rout
-figures/*.pdf
 figures/*.rds
+figures/*.pdf
