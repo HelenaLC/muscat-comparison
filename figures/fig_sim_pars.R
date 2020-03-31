@@ -12,7 +12,7 @@ suppressMessages({
 
 set.seed(160185)
 
-ref <- readRDS(file.path(config$raw_data, "ref_kang.rds"))
+ref <- readRDS(paste0(config$raw_data, "ref_kang.rds"))
 ref <- .filter_sce(ref,
     kids = c("B cells", "CD14+ Monocytes", "CD4 T cells"),
     sids = c("ctrl1015", "ctrl1256"))
@@ -40,8 +40,8 @@ sim_pars <- dplyr::bind_rows(
 ns <- nlevels(ref$sample_id)
 nk <- nlevels(ref$cluster_id)
 sim <- lapply(seq_len(nrow(sim_pars)), function(i) {
-    u <- as.list(sim_pars[i, ])
-    u <- purrr::map(u, 1)
+    print(i)
+    u <- map(as.list(sim_pars[i, ]), 1)
     u <- do.call(simData, c(u, list(x = ref, 
         ns = ns, nk = nk, nc = 2*ns*nk*100)))
     u <- u[sample(nrow(u), 4e3), ]

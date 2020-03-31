@@ -13,101 +13,215 @@ output:
 ---
 
 ```{r setup, include = FALSE}
-library(BiocStyle)
-knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
-options(width = 100)
+knitr::opts_knit$set(root.dir = "..")
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE, cache.lazy = FALSE)
 ```
 
 ### load packages
+
 ```{r load-libs, warning = FALSE, message = FALSE}
-library(ComplexHeatmap)
 library(cowplot)
 library(dplyr)
-library(limma)
-library(magrittr)
+library(grid)
+library(gridExtra)
+library(ggplot2)
 library(muscat)
-library(scater)
+library(purrr)
 library(SingleCellExperiment)
+library(UpSetR)
 ```
 
-# Data preparation
+### Load data
 
-## Load data & prep. for `muscat`
-
-```{r prep-data}
-# load data
-sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
-
-# make WT reference group
-sce$group_id <- factor(sce$group_id, levels = c("WT", "LPS"))
-
-# reorder sample levels
-m <- match(levels(sce$sample_id), sce$sample_id)
-o <- order(sce$group_id[m])
-sce$sample_id <- factor(sce$sample_id, levels = levels(sce$sample_id)[o])
-
-# prep. SCE for `muscat`
-sce <- prepSCE(sce, "cluster_id", "sample_id", "group_id")
-(ei <- metadata(sce)$experiment_info)
+```{r load-data}
+# load data, DS results & source utils
+sce <- readRDS(file.path("output", "SCE_annotation.rds"))
+res <- list.files("output", "DS.*.rds", full.names = TRUE)
+names(mids) <- mids <- gsub("DS_results_(.*).rds", "\\1", basename(res))
+res <- setNames(lapply(res, readRDS), mids)
+source(file.path("code", "utils.R"))
 ```
 
-## Cluster annotation
-
-In consideration of the visualizations provided in the [Annotation](docs/2-annotation.html) tab and additional exploration with `r Biocpkg("iSEE")`, we arrive at the following cluster annotations: 
-
-```{r cluster-anno, warning = FALSE}
-anno <- list(
-    "Astrocytes" = 3,
-    "Endothelial" = 13,
-    "Microglia" = 17,
-    "Oligodendrocytes" = 4,
-    "OPC" = 12,
-    "CPE cells" = c(18, 19),
-    "Excit. Neuron" = c(0, 1, 2, 5, 6, 7, 10, 14, 16),
-    "Inhib. Neuron" = c(8, 9, 11, 15))
-
-m <- match(sce$cluster_id, unlist(anno))
-ns <- vapply(anno, length, numeric(1))
-lab <- rep.int(names(anno), ns)
-sce$cluster_id <- factor(lab[m], levels = names(anno))
-
-# cluster-sample cell-counts
-table(sce$cluster_id, sce$sample_id)
-
-# normalize for visualization
-sce <- normalize(sce)
-```
-
-# Aggregation of single-cell to pseudo-bulk data
-
-```{r aggregation}
-system.time(pb <- aggregateData(sce))
-pb
-```
-
-## Pseudobulk-level MDS plot
+# Pseudobulk-level MDS plot
 
 Prior to conducting any formal testing, we can compute a multi-dimensional scaling (MDS) plot of aggregated signal to explore overall sample similarities. Ideally, such a represenation of the data should separate both clusters and groups from one another. Vice versa, samples from the same cluster/group should fall close to each other.
 
+```{r aggregation, message = FALSE, warning = FALSE}
+# aggregation of single-cell to pseudobulk data
+system.time(pbs <- aggregateData(sce))
+pbs
+```
+
 In our MDS plot on pseudobulk counts (Fig. \@ref(fig:pb-mds)), we can observe that cell-populations (clusters) are separated quite well, while WT and stimulated samples (groups) are separated to a lesser (if any) extend.
 
-```{r pb-mds, fig.wide = TRUE, fig.cap = "Pseudobulk-level MDS plot. Each point represent one cluster-sample instance;\npoints are colored by cluster ID and shaped by group ID."}
-pbMDS(pb)
+```{r pb-mds, fig.width = 6, fig.height = 4, fig.cap = "Pseudobulk-level MDS plot. Each point represent one cluster-sample instance;\npoints are colored by cluster ID and shaped by group ID."}
+(p <- pbMDS(pbs) + scale_shape_manual(values = c("Vehicle" = 17, "LPS" = 8)))
 ```
 
-# DS analysis
+```{r echo = FALSE, message = FALSE}
+xy <- p$data[, c(1, 2)]
+.get_lims <- function(u, x = 0.5) {
+    x <- 1/x
+    c(floor(min(u)*x)/x, ceiling(max(u)*x)/x)
+}
+lims <- apply(xy, 2, .get_lims)
+p <- p + .prettify("bw") + coord_equal() + 
+    theme(aspect.ratio = NULL, legend.position = "none") +
+    scale_color_manual(values = cluster_id_pal) +
+    scale_x_continuous("MDS dim. 1", expand = c(0,0),
+        limits = lims[, 1], breaks = seq(-2,4,2)) +
+    scale_y_continuous("MDS dim. 2", expand = c(0,0),
+        limits = lims[, 2], breaks = seq(-2,4,2))
+p$layers[[1]]$aes_params$size <- 1.5
 
-```{r ds-analysis}
-system.time(res <- pbDS(pb, verbose = FALSE))
-tbl <- bind_rows(res$table[[1]])
-tbl <- filter(tbl, p_adj.loc < 0.05, abs(logFC) > 1)
-tbl <- mutate_if(tbl, is.numeric, format, digits = 4)
+fn <- file.path("figures", "pseudobulk_mds.pdf")
+ggsave(fn, p, width = 6, height = 5, units = "cm", useDingbats = FALSE)
 ```
 
-# Save SCE & results
+# Between-method concordance
 
-```{r save-rds}
-saveRDS(sce, file.path("output", "MAGL-SCE.rds"))
-saveRDS(res, file.path("output", "MAGL-DS_res.rds"))
-write.csv(tbl, file.path("output", "MAGL-DS_res.csv"), row.names = FALSE)
+## Prep. data
+
+```{r upset-prep}
+# split by PB/MM-methods & all others
+foo <- grepl("edgeR|limma|MM", names(res))
+sub <- list(res, res[!foo], res[foo])
+
+for (i in seq_along(sub)) {
+    # get gene-cluster combinations by method at FDR 5%
+    tbl <- mutate(bind_rows(sub[[i]]), hit = paste(gene, cluster_id))
+    top <-  filter(tbl, p_adj.loc < 0.05) %>% do(
+        group_by(., mid) %>% summarize(hit = list(hit))) %>% 
+        group_by(mid) %>% summarize(hit = list(purrr::reduce(hit, c)))
+    
+    # get intersections & gene metadata
+    df1 <- fromList(set_names(top$hit, top$mid)) %>% 
+        dplyr::mutate(
+            code = apply(.[top$mid], 1, paste, collapse = ""),
+            degree = apply(.[top$mid], 1, sum),
+            hit = unique(unlist(top$hit))) %>% 
+        mutate(., cluster_id = tbl$cluster_id[match(.$hit, tbl$hit)]) %>% 
+        add_count(code) %>% group_by(code) %>% ungroup
+
+    # order by degree & select most frequent interactions
+    m <- match(unique(df1$code), df1$code)
+        keep <- pull(top_n(df1[m, ], 40, n), "code")
+    df1 <- dplyr::filter(df1, code %in% keep)
+    m <- match(unique(df1$code), df1$code)
+    o <- order(df1$degree[m], -df1$n[m])
+
+    # construct data.frame of unique method intersections
+    df2 <- reshape2::melt(df1, variable.name = "mid",
+        id.var = setdiff(names(df1), top$mid)) %>% 
+        group_by(code, mid) %>% dplyr::slice(1) %>% 
+        ungroup %>% mutate_at("mid", function(u) 
+            droplevels(factor(u, levels = names(res)[
+                c(which(!foo), which(foo))])))
+
+    # method type annotation
+    df3 <- read.csv(file.path("..", config$mids), row.names = 1)
+    df3$type <- factor(df3$type, levels = names(.typ_cols))
+    df3 <- df3[df3$id %in% names(sub[[i]]), ]
+    
+    for (j in seq_len(3)) 
+        assign(sprintf("sub%s_df%s", i, j), get(paste0("df", j)))
+}
+```
+
+## Plotting
+
+```{r upset-plot, fig.width = 8, fig.height = 10}
+# shared aesthetics
+thm <- .prettify("classic") + theme(
+    aspect.ratio = NULL,
+    axis.line = element_blank(),
+    axis.title = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.key.size = unit(2, "mm"),
+    legend.margin = margin(0,0,0,0, "mm"))
+
+for (i in seq_along(sub)) for (j in seq_len(3)) {
+    df <- get(sprintf("sub%s_df%s", i, j))
+    if (j == 1) {
+        m <- match(unique(df$code), df$code)
+        o <- order(df$degree[m], -df$n[m])
+        x_lims <- df$code[m][o]
+        n <- ifelse(max(table(df$code) > 1e3), 1e3, 1e2)
+        # barplot of intersection sizes
+        p <- ggplot(df, aes(x = code)) +
+            stat_count(aes(fill = cluster_id)) + 
+            scale_x_discrete(limits = x_lims, expand = c(0,0)) +
+            scale_y_continuous(expand = c(0,0),
+                limits = c(0, ceiling(max(df$n)/n)*n)) +
+            coord_cartesian(clip = "off") + 
+            scale_fill_manual(values = cluster_id_pal) +
+            guides(fill = guide_legend(ncol = 2,
+                override.aes = list(col = "white", size = 0.1))) +
+            thm + theme(
+                plot.margin = unit(c(1,0,1,1), "mm"),
+                panel.grid.major.x = element_blank())
+        assign(paste0("bars", i), p)
+    } else if (j == 2) {
+        y_lims <- rev(levels(df$mid))
+        # method intersection grid
+        p <- ggplot(df, aes(x = code, y = mid, color = factor(value))) +
+            scale_color_manual(values = c("0" = "grey90", "1" = "black")) +
+            scale_x_discrete(limits = x_lims) +
+            scale_y_discrete(limits = y_lims) +
+            geom_point(shape = 16, size = 1.5) +
+            geom_path(data = filter(df, value != 0), 
+                aes(group = code), size = 0.2) +
+            annotate("rect", alpha = 0.08, xmin = 0.5, xmax = Inf, 
+                ymin = seq(0.5, length(y_lims), 2), 
+                ymax = seq(1.5, length(y_lims)+1, 2)) +
+            thm + theme(
+                legend.position = "none", 
+                panel.grid.major = element_blank(),
+                plot.margin = unit(c(0,0,0,1), "mm")) 
+        assign(paste0("grid", i), p)
+    } else {
+        # method class annotation
+        p <- ggplot(df, aes(x = 0, y = id, fill = type)) +
+            scale_fill_manual("method\nclass", 
+                limits = c("ad","mast","scdd","pb","mm"),
+                labels = .typ_labs, values = .typ_cols) + 
+            scale_y_discrete(limits = y_lims) +
+            geom_tile(col = "white", size = 0.1) + coord_fixed(1) + 
+            guides(fill = guide_legend(ncol = 2)) + 
+            thm + theme(
+                panel.grid = element_blank(),
+                axis.ticks = element_blank(),
+                axis.text = element_blank(),
+                plot.margin = unit(c(0,0,0,0), "mm"))
+        assign(paste0("anno", i), p)
+    }
+}
+
+# arrange plots
+lgd_bars <- get_legend(bars1 + theme(legend.position = "bottom"))
+lgd_anno <- get_legend(anno1 + theme(legend.position = "bottom"))
+for (i in c("bars", "anno")) for (j in seq_along(sub))
+    assign(paste0(i, j), get(paste0(i, j)) + theme(legend.position = "none"))
+foo <- ggplot() + theme_nothing()
+
+(p <- plot_grid(
+    plot_grid(
+    plot_grid(bars1, grid1, bars2, grid2, bars3, grid3,
+        ncol = 1, align = "v", axis = "lr",
+        rel_heights = c(15,16,15,7,15,9),
+        labels = c("a", "", "b", "", "c", ""),
+        label_size = 10, label_fontface = "bold"),
+    plot_grid(foo, anno1, foo, anno2, foo, anno3,
+        ncol = 1, rel_heights = c(15,16,15,7,15,9)),
+    nrow = 1, rel_widths = c(20,0.5)),
+    plot_grid(
+    plot_grid(foo, lgd_bars, lgd_anno, nrow = 1),
+        foo, nrow = 1, rel_widths = c(20,0.5)),
+    ncol = 1, rel_heights = c(12,1)))
+```
+
+```{r echo = FALSE}
+ggsave(file.path("figures", "upset_methods.pdf"), p,
+    dpi = 300, width = 15, height = 15, units = "cm")
 ```

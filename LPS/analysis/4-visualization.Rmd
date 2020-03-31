@@ -13,78 +13,334 @@ output:
 ---
 
 ```{r setup, include = FALSE}
-library(BiocStyle)
-knitr::opts_chunk$set(autodep = TRUE, cache = TRUE)
+knitr::opts_knit$set(root.dir = "..")
+knitr::opts_chunk$set(autodep = TRUE, cache = TRUE, cache.lazy = FALSE)
+options(width = 100)
 ```
 
-```{r collapse = FALSE, message = FALSE, warning = FALSE}
-library(cowplot)
-library(ComplexHeatmap)
+### Load packages
+
+```{r load-libs, message = FALSE, warning = FALSE}
+library(data.table)
 library(dplyr)
-library(ggplot2)
+library(edgeR)
+library(M3C)
+library(magrittr)
 library(muscat)
-library(RColorBrewer)
 library(purrr)
-library(reshape2)
+library(org.Mm.eg.db)
 library(scater)
-library(SingleCellExperiment)
+library(topGO)
 library(UpSetR)
 ```
 
-# Load data & results
+### Load data
 
-```{r collapse = FALSE}
-sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
-res <- readRDS(file.path("output", "MAGL-DS_res.rds"))
+```{r load-data, collapse = FALSE}
+# load data & source utilities
+sce <- readRDS(file.path("output", "SCE_annotation.rds"))
+source(file.path("code", "utils.R"))
 ```
 
-For easy accession, we store the character vectors of cluster and sample IDs, as well as the number of clusters and samples:
+# Dimensionality reduction {.tabset}
 
-```{r}
-nk <- length(kids <- set_names(levels(sce$cluster_id)))
-ns <- length(sids <- set_names(levels(sce$sample_id)))
-ng <- length(gids <- set_names(levels(sce$group_id)))
+```{r umaps, results = "asis", fig.width = 8, fig.height = 6}
+# for ea. cluster, sample equal group sizes
+cs <- split(setDT(cd_df), 
+    by = c("cluster_id", "group_id"), 
+    flatten = FALSE, sorted = TRUE) %>% 
+    map_depth(2, "cell_id") %>% 
+    map_depth(1, function(u) 
+        lapply(u, sample, min(sapply(u, length))))
+cs <- unname(unlist(cs))
+df <- cd_df[sample(cs, length(cs)), ] # randomize rows
+
+# plot UMAP colored by cluster, sample & group ID
+for (id in ids) {
+    cat("## ", id, "\n")
+    print(.plot_dr(df, id, get(paste0(id, "_pal"))))
+    cat("\n\n")
+}
 ```
 
-# Results filtering & overview
+```{r echo = FALSE}
+for (id in ids) {
+    p <- .plot_dr(df, id, get(paste0(id, "_pal"))) +
+        theme(legend.position = "none")
+    fn <- sprintf(file.path("figures", "umap_%s.pdf"), id)
+    ggsave(fn, p, 
+        width = 10, height = 10, units = "cm", 
+        dpi = 300, useDingbats = FALSE)
+}
+```
+
+# Relative cluster abundances
+
+```{r clusters-freqs, fig.width = 6, fig.height = 3, message = FALSE}
+thm <- function(pal, p) p + 
+    facet_wrap("group_id", ncol = 1, scales = "free_y") +
+    geom_bar(stat = "identity", col = "white",  width = 1, size = 0.2) + 
+    scale_fill_manual(values = pal) + scale_x_discrete(expand = c(0, 0)) +
+    .prettify("bw") + coord_flip() + theme(aspect.ratio = NULL, 
+        panel.grid = element_blank(), panel.spacing = unit(1, "mm"), 
+        strip.text = element_blank(),  strip.background = element_blank()) 
+
+# cluster frequencies by sample
+fqs <- prop.table(table(sce$cluster_id, sce$sample_id), 2)
+df <- set_colnames(reshape2::melt(fqs), c("cluster_id", "sample_id", "frequency"))
+df$group_id <- sce$group_id[match(df$sample_id, sce$sample_id)]
+
+(p1 <- thm(cluster_id_pal, ggplot(df,
+    aes(x = sample_id, y = frequency, fill = cluster_id)) +
+    scale_y_continuous(breaks = seq(0, 1, 0.2), expand = c(0,0))))
+
+# excluding neuronal subpopulations
+sub <- sce[, !sce$cluster_id %in% c("Excit. Neuron", "Inhib. Neuron")]
+fqs <- prop.table(table(sub$cluster_id, sub$sample_id), 2)
+df <- set_colnames(reshape2::melt(fqs), c("cluster_id", "sample_id", "frequency"))
+df$group_id <- sub$group_id[match(df$sample_id, sub$sample_id)]
+
+(p2 <- thm(cluster_id_pal, ggplot(df, 
+    aes(x = sample_id, y = frequency, fill = cluster_id)) +
+    scale_y_continuous(breaks = seq(0, 1, 0.2), expand = c(0,0))))
+
+# cell counts by sample
+df <- set_colnames(reshape2::melt(table(sce$sample_id)), c("sample_id", "n_cells"))
+df$group_id <- sce$group_id[match(df$sample_id, sce$sample_id)]
+
+(p3 <- thm(group_id_pal, ggplot(df, 
+    aes(x = sample_id, y = n_cells, fill = group_id)) +
+    scale_y_continuous("nb. of cells", limits = c(0, 5e3), 
+        breaks = seq(0, 5e3, 2500), expand = c(0,0))))
+```
+
+```{r echo = FALSE}
+l1 <- get_legend(p1); l2 <- get_legend(p3)
+ls <- plot_grid(l1, l2, ggplot() + theme_nothing(),
+    ncol = 1, align = "v", axis = "tl", rel_heights = c(3,1.5,2.5))
+p2 <- p2 + xlab(NULL); p3 <- p3 + xlab(NULL)
+ps <- lapply(list(p1, p2, p3), "+", theme(
+    legend.position = "none", plot.margin = margin(1,3,0,0,"mm")))
+p <- plot_grid(ps[[1]], ps[[2]], ps[[3]], ls, nrow = 1, 
+    rel_widths = c(3,2,2,1.2), align = "h", axis = "tl")
+fn <- file.path("figures", "cluster_frequencies.pdf")
+ggsave(fn, p, width = 15, height = 5, units = "cm", useDingbats = FALSE) 
+```
+
+# Filter & format results
 
 To get a general overview of the differential testing results, we first filter them to retain hits with $\text{FDR}<5\%$ and $~|~logFC~|~>1$, and view the number & percentage of differential findings by cluster. Finally, we extract the top hits (lowest adj. p-value) in each cluster.
 
-```{r collapse = FALSE}
-tbl <- res$table[[1]] %>% 
-    # filter abs(logFC) > 1 & FDR < 0.05
-    lapply(dplyr::filter, p_adj.loc < 0.05, abs(logFC) > 1) %>% 
-    # sort by FDR
-    lapply(dplyr::arrange, p_adj.loc)
+```{r ds-pb}
+# compute pseudobulks (sum of counts) by cluster-sample & run DS analysis
+pbs <- aggregateData(sce[, sce$cluster_id != "CPE cells"])
+res <- pbDS(pbs, method = "edgeR", filter = "genes", verbose = FALSE)$table$LPS
+
+# filter abs(logFC) > 1 & FDR < 0.05, 
+# sort by FDR & extract DS genes for ea. cluster
+res_fil <- .get_ds_gs(res, fdr = 0.05, lfc = 1)
+ds_gs_by_k <- map(res_fil, "gene")
 
 # nb. & % of hits by cluster
-n_de <- vapply(tbl, nrow, numeric(1))
+n_de <- vapply(ds_gs_by_k, length, numeric(1))
 cbind(n_de, perc = round(n_de / nrow(sce) * 100, 2))
 ```
 
 # Between-cluster concordance
 
-```{r fig.width = 10, fig.height = 6, collapse = TRUE}
-deg_by_k <- lapply(tbl, pull, "gene")
-upset(fromList(deg_by_k), sets = rev(kids)[-c(1, 2)],
-    mb.ratio = c(0.6, 0.4), nintersects = 30,  
-    text.scale = 0.8, point.size = 2, line.size = 0.4)
+```{r upset, fig.width = 8, fig.height = 6}
+(upset <- upset(fromList(ds_gs_by_k), nintersects = 100,  
+    sets = names(ds_gs_by_k), sets.bar.color = cluster_id_pal[names(ds_gs_by_k)],
+    mb.ratio = c(0.6, 0.4), text.scale = 0.8, point.size = 2, line.size = 0.4))
+```
+
+```{r echo = FALSE}
+fn <- file.path("figures", "upset_clusters.pdf")
+pdf(fn, width = 15/2.54, height = 9/2.54, onefile = FALSE)
+upset; dev.off()
+```
+
+# Heatmap of cluster-wise logFCs
+
+```{r lfc-heatmap, message = FALSE, fig.width = 14, fig.height = 10}
+# construct SCE containing logFCs for ea. cluster
+ref <- pbs$group_id == "Vehicle"
+lfc <- lapply(assays(pbs), function(u) {
+    y <- DGEList(u)
+    y <- calcNormFactors(y)
+    lcpm <- log1p(cpm.DGEList(y))
+    lfc <- lcpm - rowMeans(lcpm[, ref])
+    SingleCellExperiment(lfc, 
+        colData = colData(pbs),
+        rowData = rowData(sce)) 
+}) %>% do.call(what = cbind)
+lfc$cluster_id <- factor(
+    rep(assayNames(pbs), each = ns), 
+    levels = assayNames(pbs))
+
+# consensus clustering of DS genes
+ds_gs <- unique(unlist(ds_gs_by_k))
+cc <- M3C(t(assay(lfc[ds_gs, ])), method = 2, 
+    seed = NULL, removeplots = TRUE)
+cc_ids <- cc$realdataresults[[3]]$assignments
+cc_cols <- brewer.pal(length(unique(cc_ids)), "Set2")
+names(cc_cols) <- unique(cc_ids)
+
+# column & row annoations 
+col_df <- data.frame(
+    cluster_id = rep(assayNames(pbs), each = ns), 
+    group_id = rep(pbs$group_id, length(assays(pbs))))
+col_cols <- sapply(ids, function(id) get(paste0(id, "_pal")))
+col_anno <- HeatmapAnnotation(
+    df = col_df, col = col_cols,
+    show_annotation_name = FALSE,
+    annotation_legend_param = .hm_lgd_aes)
+
+row_anno <- rowAnnotation(
+    show_annotation_name = FALSE,
+    df = data.frame(consensus_id = cc_ids),
+    col = list(consensus_id = cc_cols),
+    simple_anno_size = unit(2, "mm"),
+    annotation_legend_param = .hm_lgd_aes)
+
+qs <- quantile(assay(lfc[ds_gs, ]), c(0.01, 0.99))
+brks <- .get_brks(qs, 0.5)
+cols <- colorRamp2(brks, .hm_cols)
+(hm <- .plot_hm(lfc[ds_gs, ], cols, brks, 
+    col_anno, row_anno, cc_ids, row_title = NULL, 
+    cluster_row_slices = FALSE, cluster_column_slices = FALSE, 
+    use_raster = TRUE, raster_device = "CairoPNG"))
+```
+
+```{r echo = FALSE}
+hm@top_annotation@anno_list[[1]]@show_legend <- FALSE
+hm@top_annotation@anno_list[[2]]@show_legend <- FALSE
+g <- grid.grabExpr(draw(hm))
+ggsave(file.path("figures", "lfc_heatmap.pdf"),
+    grid.draw(g), width = 15, height = 8, units = "cm",
+    dpi = 300, useDingbats = FALSE)
+```
+
+## Consensus ID 3 only
+
+```{r lfc-heatmap-ccid3, fig.width = 14, fig.height = 12}
+# subset genes w/ consensus clustering ID 3
+# & more stringent filtering for 0.001% FDR
+gs <- intersect(
+    names(which(cc_ids == 3)),
+    .get_ds_gs(res, fdr = 1e-4, lfc = 1, simplify = TRUE))
+
+qs <- quantile(assay(lfc[gs, ]), c(0.01, 0.99))
+brks <- .get_brks(qs, 0.5)
+cols <- colorRamp2(brks, .hm_cols)
+
+tmp <- lfc[gs, ]
+rownames(tmp) <- gsub(".*[.]{1}", "", rownames(tmp))
+(hm <- .plot_hm(tmp, cols, brks, 
+    col_anno, row_title = NULL, row_nms = TRUE,
+    cluster_row_slices = FALSE, cluster_column_slices = FALSE, 
+    row_names_gp = gpar(fontsize = 4),
+    column_title_gp = gpar(fontsize = 8),
+    use_raster = TRUE, raster_device = "CairoPNG"))
+```
+
+```{r echo = FALSE}
+ggsave(file.path("figures", "lfc_heatmap_ccid3.pdf"), 
+    grid.draw(grid.grabExpr(draw(hm))),
+    width = 15, height = 18, units = "cm",
+    dpi = 300, useDingbats = FALSE) 
+```
+
+# Cell-level linear decomposition
+
+```{r linear-decomp, warning = FALSE, fig.width = 10, fig.height = 3}
+cs_by_k <- split(colnames(sce), sce$cluster_id)[assayNames(pbs)]
+ld <- lapply(assayNames(pbs), function(k) {
+    # subset SCE to include only 
+    # DS genes & cells in cluster k
+    gs <- ds_gs_by_k[[k]]
+    cs <- cs_by_k[[k]]
+    if (length(gs) == 0 | length(cs) == 0) 
+        return(NULL)
+    es <- logcounts(sce[gs, cs])
+    # decompose values as a linear combination of the group's logFCs
+    ld <- t(es) %*% pull(filter(res[[k]], gene %in% gs), "logFC")
+    # assure values are comparable across clusters
+    ld[, 1] / max(ld)
+})
+rmv <- vapply(ld, is.null, logical(1))
+ld <- set_names(unlist(ld[!rmv]), unlist(cs_by_k[!rmv]))
+cd_df[names(ld), "ld"] <- ld
+
+# violins by cluster-sample
+(p <- ggplot(filter(cd_df, !is.na(ld)), 
+    aes(x = sample_id, y = ld, fill = group_id)) +
+    facet_wrap("cluster_id", nrow = 1) +
+    geom_hline(yintercept = 0, size = 0.1, lty = 2) +
+    scale_fill_manual(values = group_id_pal) + 
+    geom_violin(size = 0.1, width = 1) + 
+    geom_boxplot(size = 0.1, width = 0.2, show.legend = FALSE,
+        outlier.shape = 16, outlier.size = 0.1) +
+    scale_y_continuous(limits = c(-0.6, 1.1), breaks = seq(-0.5,1,0.5), expand = c(0,0)) +
+    ylab("effect coefficient") + .prettify("bw") + theme(
+        aspect.ratio = 1, panel.spacing = unit(2, "mm"),
+        axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1)))
+```
+
+```{r echo = FALSE}
+p <- p + xlab(NULL) + theme(
+    legend.position = "none", panel.spacing = unit(0, "mm"),
+    axis.ticks.x = element_blank(), axis.text.x = element_blank(),
+    strip.background = element_blank(), strip.text = element_blank()) +
+    scale_y_continuous(position = "right", expand = c(0,0),
+        limits = c(-0.6, 1.1), breaks = seq(-0.5,1,0.5))
+p$facet$params$ncol <- nk
+ggsave(file.path("figures", "ld_violins.pdf"),
+    p, width = 13.5, height = 2.5, units = "cm",
+    dpi = 300, useDingbats = FALSE)
+```
+
+# GO term enrichment analysis
+
+```{r go, message = FALSE}
+go <- lapply(split(names(cc_ids), cc_ids), function(gs) {
+    ss1 <- strsplit(gs, ".", fixed = TRUE)
+    ss2 <- strsplit(rownames(sce), ".", fixed = TRUE)
+    fs1 <- unique(sapply(ss1, .subset, 2))
+    fs2 <- sapply(ss2, .subset, 2)
+    l <- as.numeric(fs2 %in% fs1)
+    names(l) <- fs2
+    go <- new("topGOdata", 
+        nodeSize = 20,
+        ontology = "BP",
+        allGenes = l,
+        geneSel = function(u) u == 1,
+        annot = annFUN.org,
+        mapping = "org.Mm.eg.db",
+        ID = "symbol")
+    res <- runTest(go, algorithm = "classic", statistic = "fisher")
+    GenTable(go, classicFisher = res, orderBy = "classicFisher", topNodes = 100)
+})
+# view top 10 GO terms per consensus ID
+lapply(go, head, 10)
 ```
 
 # Cell-level visualization {.tabset}
 
-The `r Biocpkg("scater")`[@McCarthy2017-scater] packages provides a variety of visualizations for single-cell data. Here, we use `plotExpression` to render violin plots of the top differential genes identified for each cluster. We specify `x = "sample_id"` to obtain one violin per sample, and `colour_by = "group_id"` to signify the experimental condition each sample belongs to. 
+The `r BiocStyle::Biocpkg("scater")` packages provides a variety of visualizations for single-cell data. Here, we use `plotExpression` to render violin plots of the top differential genes identified for each cluster. We specify `x = "sample_id"` to obtain one violin per sample, and `colour_by = "group_id"` to signify the experimental condition each sample belongs to. 
 
 ```{r violins, results = "asis", fig.wide = TRUE, fig.height = 6}
 # split cells by cluster
 cs_by_k <- split(colnames(sce), sce$cluster_id)
-# get top-hits for ea. cluster
+# get top hits for ea. cluster
 n <- 8
-top_gs <- lapply(tbl, function(u) {
+top_gs <- lapply(res_fil, function(u) {
     n <- ifelse(nrow(u) < n, nrow(u), n)
-    u$gene[seq_len(n)]
+    arrange(u, p_adj.loc) %>% 
+        dplyr::slice(seq_len(n)) %>% 
+        pull("gene")
 })
-for (k in kids) {
+for (k in assayNames(pbs)) {
     cat("## ", k, "\n")
     if (length(top_gs[[k]]) != 0)
         print(plotExpression(
@@ -96,30 +352,10 @@ for (k in kids) {
 }
 ```
 
-# Dimension reduction {.tabset}
+# Write logFCs to .rds & top 100 GOs to .csv
 
-```{r dr, results = "asis", fig.wide = TRUE, fig.height = 5}
-for (dr in c("TSNE", "UMAP")) {
-    cat("## ", dr, "\n") 
-    df <- data.frame(reducedDim(sce, dr), colData(sce))
-    labs <- paste(switch(dr, TSNE = "t-SNE", dr), "dim.", 1:2)
-    p <- ggplot(df, aes_string(x = colnames(df)[1], y = colnames(df)[2])) + 
-        labs(x = labs[1], y = labs[2]) +
-        theme_void() + theme(aspect.ratio = 1, 
-            legend.key.height = unit(2, "mm"), 
-            legend.position = "bottom")
-    p1 <-  p + geom_point(size = 0.1, alpha = 0.2, aes(col = cluster_id)) + 
-        scale_color_manual(values = CATALYST:::.cluster_cols) +
-        guides(color = guide_legend(ncol = 3,
-            override.aes = list(size = 2, alpha = 1)))
-    p2 <- p + geom_point(size = 0.1, alpha = 0.2, aes(col = group_id)) +
-        guides(color = guide_legend(ncol = 1,
-            override.aes = list(size = 2, alpha = 1)))
-    ps <- plot_grid(
-        p1 + theme(legend.position = "none"),
-        p2 + theme(legend.position = "none"))
-    ls <- plot_grid(get_legend(p1), get_legend(p2), rel_widths = c(4, 1))
-    print(plot_grid(ps, ls, ncol = 1, rel_heights = c(3, 1)))
-    cat("\n\n")
-}
+```{r save-lfc}
+write.csv(head(go$`3`, 100), file.path("output", "topGO_ccid3.csv"))
+saveRDS(lfc, file.path("output", "logFCs_by_cluster-sample.rds"))
 ```
+

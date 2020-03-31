@@ -87,7 +87,7 @@ sce <- do.call("cbind", sce_by_s)
 # Calculate QC Metrics
 ```{r}
 (mito <- grep("mt-", rownames(sce), value = TRUE))
-sce <- addQCPerCell(sce, subsets = list(Mt = mito))
+sce <- addPerCellQC(sce, subsets = list(Mt = mito))
 plotHighestExprs(sce, n = 20)
 ```
 
@@ -149,5 +149,5 @@ dim(sce)
 
 # Save SCE to .rds
 ```{r}
-saveRDS(sce, file.path("output", "LPS-sce_prepro.rds"))
+saveRDS(sce, file.path("output", "SCE_preprocessing.rds"))
 ```
