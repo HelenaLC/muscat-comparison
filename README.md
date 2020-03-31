@@ -2,14 +2,40 @@
 
 This repository contains all the necessary code to perform the evaluations and analyses from our preprint available on [bioRxiv](https://www.biorxiv.org/content/10.1101/713412v1).
 
-### LPS dataset analysis
+## LPS dataset analysis
 
 Analyses discussed in the **Differential state analysis of mouse cortex exposed to LPS treatment**  
 results section are provided as a browsable `workflowr`<sup>[1](#f1)</sup> website [HERE](http://htmlpreview.github.io/?https://github.com/HelenaLC/muscat-comparison/blob/master/MAGL/docs/index.html).
 
-### Comparison of DS analysis methods
+## Comparison of DS analysis methods
 
-In brief, our `snakemake` workflow for method comparison is organized into
+### Prerequisites
+
+The `Snakemake` workflow described below requires installation of the following packages via
+
+```r
+install.packages(c("devtools", "BiocManager"))
+devtools::install_github("VPetukhov/ggrastr"")
+devtools::install_github("HelenaLC/muscat", ref = "fix_sim") # this will change
+BiocManager::install(c(
+    "AnnotationDbi","circlize","countsimQC","cowplot","data.table","DESeq2",
+    "DropletUtils","dplyr","edgeR","ggplot2","ggrastr","iCOBRA","kSamples",
+    "jsonlite","limma","M3C","magrittr","MAST","Matrix","msigdbr",
+    "org.Mm.eg.db","pheatmap","purrr","RColorBrewer","readxl","reshape2",
+    "S4Vectors","scater","scDD","scds","scran","sctransform","Seurat",
+    "SingleCellExperiment","topGO","UpSetR","viridis","workflowr","yaml"))
+```
+
+and initializing once all required output directories, as well as simulation, run and method parameters via
+
+```
+cd muscat-comparison
+R CMD BATCH setup.R 
+```
+
+### Workflow description
+
+In brief, our `Snakemake` workflow for method comparison is organized into
 
 - a `config.yaml` file specify key parameters and directories
 - a `scripts` folder housing all utilized scripts (see below)
