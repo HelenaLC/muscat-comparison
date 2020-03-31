@@ -2,7 +2,7 @@
 
 This repository contains all the necessary code to perform the evaluations and analyses from our preprint available on [bioRxiv](https://www.biorxiv.org/content/10.1101/713412v1).
 
-Analyses discussed in the **Differential state analysis of mouse cortex exposed to LPS treatment** results section are provided as a browsable `workflowr`<sup>[1](#f1)</sup> website [HERE](http://htmlpreview.github.io/?https://github.com/HelenaLC/muscat-comparison/blob/master/MAGL/docs/index.html).
+Analyses discussed in the **Differential state analysis of mouse cortex exposed to LPS treatment** results section are provided as a browsable `workflowr`<sup>[1](#f1)</sup> website [HERE](http://htmlpreview.github.io/?https://github.com/HelenaLC/muscat-comparison/blob/master/LPS/docs/index.html).
 
 ## Prerequisites
 
