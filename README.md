@@ -117,8 +117,8 @@ script      | description
 `sim_data`  | provided with a reference dataset and simulation parameters,<br>simulates data and writes a SCE to `data/sim_data`
 `apply_X`   | wrapper to run DS method of type X (`pb`, `mm`, `ad`, `mast`, `scdd`)
 `run_meth`  | reads in simulated data, method parameters, and performs DS analysis<br>by running the corresponding `apply_X` script
+`run_meth_lps` | wrapper to apply method to the LPS dataset
 `plot_null` | for ea. reference ID, plots nominal p-value distributions for all null simulations
-`plot_tprfdr`       | plots TPR-FDR-curves for a single result
 `plot_perf_cat`     | plots TPR-FDR-points across DD categories for ea. p-value adjustment type (`p_adj.loc/glb`)
 `plot_perf_by_nx`   | plots TPR-FDR-points across the nb. of `x` (cells = `c`, samples = `s`)
 `plot_perf_by_xs`   | plots TPR-FDR-points across increasingly unbalanced sample/group-sizes
@@ -127,7 +127,7 @@ script      | description
 `plot_lfc`          | scatter plots of simulated vs. estimated logFC stratified by method and DD category
 `plot_pb_mean_disp` | provided with a reference dataset, simulates a null dataset (no DS, no type-genes)<br>and plots pseudobulk-level mean-dispersion estimates for simulated vs. reference data
 `plot_runtimes`     | barplots of runtimes vs. nb. of genes/cells
-`utils`     | various helpers for data handling, formatting, and plotting
+`utils`        | various helpers for data handling, formatting, and plotting
 `session_info` | generates a `.txt` file capturing the output of `session_info()`
 
 ### References
