@@ -113,7 +113,7 @@ grid <- ggplot(df_grid, aes(x = code, y = mid, color = factor(value))) +
         ymin = seq(0.5,nrow(top),2), ymax = seq(1.5, nrow(top)+1, 2)) +
     thm + theme(
         legend.position = "none", 
-        panel.grid = element_blank(),
+        panel.grid.major = element_blank(),
         plot.margin = unit(c(0,0,0,0), "mm")) 
 
 # method class annotation

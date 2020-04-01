@@ -67,8 +67,13 @@ df <- map(perf, "fdrtpr") %>%
     summarise_at(c("FDR", "TPR"), mean) %>% 
     mutate_at("method", factor, levels = names(.meth_cols))
 
+anno <- read.csv(config$mids)
+m <- match(df$method, anno$id)
+df$type <- factor(anno$type[m], 
+    levels = names(.typ_labs),
+    labels = .typ_labs)
+
 p <- .plot_perf_points(df)
-p$facet$params$ncol <- nlevels(df$splitval)
 
 saveRDS(p, args$ggp)
 ggsave(args$fig, p,

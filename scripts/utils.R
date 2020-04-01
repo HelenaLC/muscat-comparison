@@ -127,32 +127,62 @@ names(.treat_cols) <- .treat_mids
         legend.margin = margin(0,0,1,0,"mm"),
         ...)}
 
-.plot_perf_points <- function(df, 
-    include = "all", color_by = "method", facet = "splitval") {
+.plot_perf_points <- function(df, include = "all", facet = "splitval") {
     df <- filter(ungroup(df), TPR + FDR != 0)
     df$treat <- grepl("treat", df$method)
-    if (any(rmv <- table(df$splitval) < 2))
-        df <- filter(df, !splitval %in% levels(df$splitval)[rmv])
+    if (any(rmv <- table(df[[facet]]) < 2))
+        df <- df[df[[facet]] %in% levels(df[[facet]])[!rmv], ]
     df$method <- factor(
         gsub("-treat", "", df$method), 
         levels = levels(df$method))
-    p <- ggplot(filter(df, FDR + TPR != 0),
-        aes_string(x = "FDR", y = "TPR", col = color_by)) +
-        facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
-        geom_vline(size = 0.2, lty = 2, aes(xintercept = thr)) + 
-        geom_point(size = 1, alpha = 0.8) + 
-        geom_line(aes(lty = treat), size = 0.4, alpha = 0.4, show.legend = (include == "treat")) +
-        scale_color_manual(NULL, values = switch(include, treat = .treat_cols, .meth_cols)) +
-        scale_x_sqrt(expand = c(0, 0.05),
-            breaks = c(c(0.01, switch(include == "treat", 0.05, NULL), 0.1), seq(0.2, 1, 0.2)), 
-            limits = c(0, ifelse(include == "treat", 0.05, 1)),
-            labels = function(x) format(x, drop0trailing = TRUE)) +
-        scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2), expand = c(0, 0.05)) +
-        .prettify(theme = "bw", legend.position = "bottom", legend.box.just = "center") + 
-        guides(
-            lty = guide_legend(ncol = 1, keywidth = unit(4, "mm"), 
-                override.aes = list(alpha = 1, lty = c(1, 3))),
-            col = guide_legend(order = 1, nrow = 4, 
+    if (include == "all") {
+        shapes <- c(8, 15, 23, 17, 19)
+        names(shapes) <- levels(df$type)
+        m <- match(levels(df$method), df$method)
+        shapes <- shapes[df$type[m]]
+        names(shapes) <- levels(df$method)
+        aes <- aes(FDR, TPR, col = method, fill = method, shape = method)
+        scales <- function(p) { p +
+            scale_color_manual("", values = .meth_cols) +
+            scale_fill_manual("", values = .meth_cols) +
+            scale_shape_manual("", values = shapes)
+        }
+        guides <- guides(
+            col = guide_legend(order = 1, nrow = 4),
+            fill = guide_legend(order = 1, nrow = 4),
+            shape = guide_legend(order = 1, nrow = 4, 
                 override.aes = list(alpha = 1, size = 2)))
+        x_lims <- c(0, 1)
+        x_brks <- c(0.01, 0.1, seq(0.2, 1, 0.2))
+    } else if (include == "treat") {
+        aes <- aes(FDR, TPR, col = method, lty = treat)
+        scales <- function(p) { p +
+            scale_color_manual(NULL, values = .treat_cols) 
+        }
+        guides <- guides(
+            color = guide_legend(order = 1, nrow = 4, 
+                override.aes = list(alpha = 1, size = 2)),
+            lty = guide_legend(ncol = 1, keywidth = unit(4, "mm"), 
+                override.aes = list(alpha = 1, lty = c(1, 3)))) 
+        x_lims <- c(0, 0.05)
+        x_brks <- c(0.01, 0.05)
+    }
+    p <- ggplot(filter(df, FDR + TPR != 0), aes) +
+        facet_wrap(facet, labeller = labeller(.multi_line = FALSE)) +
+        geom_vline(size = 0.2, lty = 2, xintercept = c(0.01, 0.05, 0.1)) + 
+        geom_line(aes(lty = treat), size = 0.4, alpha = 0.4, 
+            show.legend = (include == "treat")) +
+        geom_point(size = 1.2, alpha = 0.8) +
+        scale_x_sqrt(
+            expand = c(0, 0.05), limits = x_lims, breaks = x_brks,
+            labels = function(x) format(x, drop0trailing = TRUE)) +
+        scale_y_continuous(
+            expand = c(0, 0.05), limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+        .prettify(theme = "bw", 
+            legend.position = "bottom", 
+            legend.box.just = "center")
+    p <- scales(p + guides)
+    p$facet$params$ncol <- length(unique(df[[facet]]))
     suppressWarnings(suppressMessages(p))
 }
+

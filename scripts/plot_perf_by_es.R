@@ -54,6 +54,12 @@ df <- map_depth(perf, 2, fdrtpr) %>%
         levels = c("de", "dp", "dm", "db"),
         labels = c("DE", "DP", "DM", "DB"))
 
+anno <- read.csv(config$mids)
+m <- match(df$method, anno$id)
+df$type <- factor(anno$type[m], 
+    levels = names(.typ_labs),
+    labels = .typ_labs)
+
 p <- .plot_perf_points(df) +
     facet_grid(rows = vars(sid), cols = vars(splitval))
 

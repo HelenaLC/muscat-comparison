@@ -27,7 +27,7 @@ cd <- map_depth(res, 2, function(u) {
 perf <- map_depth(cd, 2, calculate_performance,
     aspects = "fdrtpr", binary_truth = "is_de")
 
-gg_df <- map_depth(perf, 2, fdrtpr) %>% 
+df <- map_depth(perf, 2, fdrtpr) %>% 
     map(bind_rows, .id = "i") %>% 
     bind_rows(.id = "sid") %>%
     mutate_at("thr", function(u) 
@@ -36,8 +36,13 @@ gg_df <- map_depth(perf, 2, fdrtpr) %>%
     summarise_at(c("FDR", "TPR"), mean) %>% 
     mutate_at("method", factor, levels = names(.meth_cols))
 
-p <- .plot_perf_points(gg_df, facet = "sid")
-p$facet$params$ncol <- nlevels(factor(gg_df$sid))
+anno <- read.csv(config$mids)
+m <- match(df$method, anno$id)
+df$type <- factor(anno$type[m], 
+    levels = names(.typ_labs),
+    labels = .typ_labs)
+
+p <- .plot_perf_points(df, facet = "sid")
 
 saveRDS(p, args$ggp)
 ggsave(args$fig, p,
