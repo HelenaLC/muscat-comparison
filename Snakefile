@@ -14,20 +14,21 @@ import pandas as pd
 import json
 import re
 
-onstart:
-	shell("Rscript scripts/sim_pars.R")  # simulation parameters
-	shell("Rscript scripts/run_pars.R")  # run mode parameters
-	shell("Rscript scripts/meth_pars.R") # method parameters
-
 configfile: "config.yaml"
 R = config["R"]
 
-#os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+# check for updates in simulation, run, method parameters
+l = config["logs"]
+onstart:
+	shell("{R} CMD BATCH --no-restore --no-save scripts/sim_pars.R  '{l}sim_pars.Rout'")  
+	shell("{R} CMD BATCH --no-restore --no-save scripts/run_pars.R  '{l}run_pars.Rout'")  
+	shell("{R} CMD BATCH --no-restore --no-save scripts/meth_pars.R '{l}meth_pars.Rout'") 
 
 sids = json.loads(open(config["sids"]).read())
 mids = pd.read_csv(config["mids"])
 mids = mids.set_index(mids["id"])
 
+# construct output paths
 sim_dirs = []
 res_dirs = []
 for sid in sids:
@@ -56,8 +57,6 @@ res_dirs = sum(res_dirs, [])
 
 rule all: 
 	input:	sim_dirs, res_dirs,
-			#expand(config["raw_data"], "sce_{did}.rds"), did = config["dids"]),
-			#expand(config["raw_data"], "ref_{did}.rds"), did = config["dids"]),
 		# 'countsimQC' reports
 			expand(config["plots"] + "{did}-sim_qc.html", did = config["dids"]),
 		# pseudobulk-level mean-dispersion plots
