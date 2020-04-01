@@ -10,5 +10,6 @@ plots
 results
 *.txt
 *.html
+*.Rout
 figures/*.rds
 figures/*.pdf

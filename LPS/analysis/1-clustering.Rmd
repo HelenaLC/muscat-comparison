@@ -28,13 +28,14 @@ options(future.globals.maxSize = 2048 * 1024 ^ 2)
 ### Load packages
 ```{r load-libs, message = FALSE, warning = FALSE}
 library(cowplot)
+library(ggplot2)
 library(Seurat)
 library(SingleCellExperiment)
 ```
 
 ### Load data
 ```{r load-data}
-sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
+sce <- readRDS(file.path("output", "SCE_preprocessing.rds"))
 ```
 
 # Integration
@@ -43,17 +44,16 @@ sce <- readRDS(file.path("output", "MAGL-SCE.rds"))
 so <- CreateSeuratObject(
     counts = counts(sce),
     meta.data = data.frame(colData(sce)),
-    project = "10xMAGL")
+    project = "LPS")
 
 # split by sample
 cells_by_sample <- split(colnames(sce), sce$sample_id)
-so <- lapply(cells_by_sample, function(i)
-    SubsetData(so, cells = i))
+so <- lapply(cells_by_sample, function(i) subset(so, cells = i))
 
 # normalize, find variable genes, and scale
 so <- lapply(so, NormalizeData, verbose = FALSE)
-so <- lapply(so, FindVariableFeatures, nfeatures = 2e3,
-    selection.method = "vst", do.plot = FALSE, verbose = FALSE)
+so <- lapply(so, FindVariableFeatures, nfeatures = 2e3, 
+    selection.method = "vst", verbose = FALSE)
 so <- lapply(so, ScaleData, verbose = FALSE)
 
 # find anchors & integrate
@@ -62,11 +62,11 @@ so <- IntegrateData(anchorset = as, dims = seq_len(30), verbose = FALSE)
 
 # scale integrated data
 DefaultAssay(so) <- "integrated"
-so <- ScaleData(so, display.progress = FALSE)
+so <- ScaleData(so, verbose = FALSE)
 ```
 
 # Dimension reduction
-```{r dimred}
+```{r dimred, warning = FALSE}
 so <- RunPCA(so, npcs = 30, verbose = FALSE)
 so <- RunTSNE(so, reduction = "pca", dims = seq_len(20),
     seed.use = 1, do.fast = TRUE, verbose = FALSE)
@@ -98,5 +98,5 @@ plot_grid(plotlist = ps, ncol = 1)
 
 # Save SeuratObject to .rds
 ```{r}
-saveRDS(so, file.path("output", "MAGL-SeuratObject.rds"))
+saveRDS(so, file.path("output", "SO_clustering.rds"))
 ```

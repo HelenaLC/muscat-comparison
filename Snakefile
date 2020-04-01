@@ -311,7 +311,7 @@ rule run_meth_lps:
 
 # write session info to .txt file
 rule session_info:
-	priority: 1
+	priority: 1000
 	input:	config["scripts"] + "session_info.R"
 	output:	"session_info.txt"
 	log:	config["logs"] + "session_info.Rout" 

@@ -40,5 +40,3 @@ output:
     - Cluster-level GSEA using `camera`
     - Heatmap summary
     - Barcode plots
-    
-- [Downstream](6-more.html)

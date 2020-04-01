@@ -17,8 +17,6 @@ navbar:
     href: 4-visualization.html
   - text: "Geneset analysis"
     href: 5-geneset.html
-  - text: "Downstream"
-    href: 6-more.html
   right:
   - text: Robinson Lab
     href: https://robinsonlabuzh.github.io
